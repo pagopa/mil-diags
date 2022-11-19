@@ -70,7 +70,7 @@ group#Gold confirm
 	
 	'**************** Nodo sends sendPaymentResult ****************
 	group Nodo sends payment result
-		Nodo -> NoticeSrv : PATCH /payments///<transaction id>//
+		Nodo -> NoticeSrv : POST /payments///<transaction id>//
 			rnote left #lightgray 
 				__request body__
 				{
