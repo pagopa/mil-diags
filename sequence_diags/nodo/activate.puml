@@ -1,0 +1,127 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold activate
+    alt QR-code
+	Client -> NoticeSrv : PATCH /paymentNotices///<qr code>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+
+			__request body__
+			{
+				"idempotencyKey": "//<idempotency key>//",
+				"amount": "//<amount>//"
+			}
+		end note
+
+		NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+    else w/o QR-code
+        Client -> NoticeSrv : PATCH /paymentNotices///<pa tax code>/////<notice number>//
+    		rnote left
+    			__header__
+    			- Version: //<api version>//
+    			- AcquirerId: //<acquirer id>//
+    			- Channel: //<channel>//
+    			- TerminalId: //<terminal id>//
+
+    			__request body__
+    			{
+    				"idempotencyKey": "//<idempotency key>//",
+    				"amount": "//<amount>//"
+    			}
+    		end note
+    end
+
+	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+
+	NoticeSrv -> Nodo : POST /activatePaymentNotice
+		rnote left
+			__request body__
+			<activatePaymentNoticeV2Request>
+			    <idPSP>//<psp id>//</idPSP>
+			    <idBrokerPSP>//<psp broker id>//</idBrokerPSP>
+			    <idChannel>//<terminal id>//</idChannel>
+			    <password>//<password>//</password>
+			    <idempotencyKey>//<idempotency key>//</idempotencyKey>
+			    <qrCode>
+			        <fiscalCode>//<pa tax code>//</fiscalCode>
+			        <noticeNumber>//<notice number>//</noticeNumber>
+			    </qrCode>
+			    <expirationTime>//<expiration time>//</expirationTime>
+			    <amount>//<amount>//</amount>
+			</activatePaymentNoticeV2Request>
+		end note
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		rnote left
+		    <font color="red">Currently the Nodo doesn't return the category of each transfer</font>
+			__response body__
+			<activatePaymentNoticeV2Response>
+			    <outcome>OK</outcome>
+			    <totalAmount>//<amount>//</totalAmount>
+			    <paymentDescription>//<payment description>//</paymentDescription>
+			    <fiscalCodePA>//<pa tax code>//</fiscalCodePA>
+			    <companyName>//<institution name>//</companyName>
+			    <officeName>//<office name>//</officeName>
+			    <paymentToken>//<payment token>//</paymentToken>
+			    <transferList>
+			        <transfer>
+			            <idTransfer>1</idTransfer>
+			            <transferAmount>//<amount #1>//</transferAmount>
+			            <fiscalCodePA>//<pa tax code #1>//</fiscalCodePA>
+			            <IBAN>//<iban #1>//</IBAN>
+			            <remittanceInformation>//<remittance info #1>//</remittanceInformation>
+			            <metadata>
+			                <mapEntry>
+			                    <key>//<key #1.1>//</key>
+			                    <value>//<value #1.1>//</value>
+			                </mapEntry>
+			                .
+			                .
+			                .
+			            </metadata>
+			        </transfer>
+			        .
+			        .
+			        .
+			    </transferList>
+			    <metadata>
+			        <mapEntry>
+			            <key>//<key #1>//</key>
+			            <value>//<value #1>//</value>
+			        </mapEntry>
+			        .
+			        .
+			        .
+			    </metadata>
+			    <creditorReferenceId>//<creditor ref id #1>//</creditorReferenceId>
+			</activatePaymentNoticeV2Response>
+		end note
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		rnote left
+			__response body__
+            {
+                "outcome": "OK",
+                "amount": //<amount>//,
+                "paTaxCode": "//<pa tax code>//",
+                "paymentToken": "//<payment token>//",
+                "transfers": [
+                    {
+                        "paTaxCode": "//<pa tax code #1>//",
+                        "category": "**//<font color="red"><category #1></font>//**"
+                    },
+                    .
+                    .
+                    .
+                ]
+            }
+		end note
+end
+@enduml
+ 

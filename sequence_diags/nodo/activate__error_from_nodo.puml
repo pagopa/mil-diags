@@ -1,0 +1,80 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold activate
+    alt QR-code
+	Client -> NoticeSrv : PATCH /paymentNotices///<qr code>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+
+			__request body__
+			{
+				"idempotencyKey": "//<idempotency key>//",
+				"amount": "//<amount>//"
+			}
+		end note
+
+		NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+    else w/o QR-code
+        Client -> NoticeSrv : PATCH /paymentNotices///<pa tax code>/////<notice number>//
+    		rnote left
+    			__header__
+    			- Version: //<api version>//
+    			- AcquirerId: //<acquirer id>//
+    			- Channel: //<channel>//
+    			- TerminalId: //<terminal id>//
+
+    			__request body__
+    			{
+    				"idempotencyKey": "//<idempotency key>//",
+    				"amount": "//<amount>//"
+    			}
+    		end note
+    end
+
+	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+
+	NoticeSrv -> Nodo : POST /activatePaymentNotice
+		rnote left
+			__request body__
+			<activatePaymentNoticeV2Request>
+			    <idPSP>//<psp id>//</idPSP>
+			    <idBrokerPSP>//<psp broker id>//</idBrokerPSP>
+			    <idChannel>//<terminal id>//</idChannel>
+			    <password>//<password>//</password>
+			    <idempotencyKey>//<idempotency key>//</idempotencyKey>
+			    <qrCode>
+			        <fiscalCode>//<pa tax code>//</fiscalCode>
+			        <noticeNumber>//<notice number>//</noticeNumber>
+			    </qrCode>
+			    <expirationTime>//<expiration time>//</expirationTime>
+			    <amount>//<amount>//</amount>
+			</activatePaymentNoticeV2Request>
+		end note
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		rnote left
+			__response body__
+			<activatePaymentNoticeV2Response>
+			    <outcome>KO</outcome>
+			    <fault>
+			        <faultCode>//<fault code>//</faultCode>
+			        <originalFaultString>//<original fault string>//</originalFaultString>
+			    </fault>
+			</activatePaymentNoticeV2Response>
+		end note
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		rnote left
+			__response body__
+			{
+			    "outcome": "//<outcome>//"
+			}
+		end note
+end
+@enduml

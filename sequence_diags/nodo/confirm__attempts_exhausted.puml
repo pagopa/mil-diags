@@ -1,0 +1,96 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold confirm
+	group Accepting phase
+		Client -> NoticeSrv : POST /payments
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+
+				__request body__
+				{
+				    "outcome": "OK",
+				    "paymentTokens": [
+				        "//<payment token>//",
+				        .
+				        .
+				        .
+					],
+					"paymentMethod": "//<payment method>//",
+					"transactionId": "//<transaction id>//",
+					"totalAmount": "//<total amount>//",
+					"fee": "//<total fee>//",
+					"timestampOperation": "//<operation timestamp>//"
+				}
+			end note
+
+		NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+
+		!include_many close_payment.puml
+
+		rnote over NoticeSrv
+		    <font color="red">Excluding the first case, we don't know </font>
+		    <font color="red">how the closePayment on the Nodo went,  </font>
+		    <font color="red">so we wait for sendPaymentResult from   </font>
+		    <font color="red">the Nodo.                               </font>
+		end note
+
+		{wait_for_attempt_1_begin} NoticeSrv --> Client : HTTP 200 (ok)
+			rnote left
+				__header__
+				- Location: /payment///<transaction id>//
+				- Retry-After: //<retry after>//
+				- Max-Retries: //<max retries>//
+			end note
+	end
+
+	'**************** 1st attempt ****************
+	group 1st attempt
+		{wait_for_attempt_1_end} Client -> NoticeSrv : GET /payments///<transaction id>//
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+			end note
+
+		{wait_for_attempt_1_begin} <-> {wait_for_attempt_1_end} : <font color="darkorange">1) Retry-After: //<retry after>//</font>
+		
+		NoticeSrv -> NoticeCache : GET //<transaction id>//
+		NoticeCache --> NoticeSrv : null
+		
+		{wait_for_attempt_2_begin} NoticeSrv --> Client : HTTP 404 (not found)
+	end
+	
+	...
+	
+	'**************** last attempt ****************
+	group //<max retries>// attempt
+		{wait_for_attempt_2_end} Client -> NoticeSrv : GET /payments///<transaction id>//
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+			end note
+		
+		{wait_for_attempt_2_begin} <-> {wait_for_attempt_2_end} : <font color="darkorange">//<max retries>//) Retry-After: //<retry after>//</font>
+		
+		NoticeSrv -> NoticeCache : GET //<transaction id>//
+		NoticeCache --> NoticeSrv : null
+		
+		NoticeSrv --> Client : HTTP 404 (not found)
+			rnote left
+				<font color="red">**TRANSACTION UNDER RESERVE**</font>
+			end note
+	end
+end
+@enduml
+ 

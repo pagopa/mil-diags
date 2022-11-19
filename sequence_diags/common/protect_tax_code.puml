@@ -1,0 +1,17 @@
+group Protect tax code
+	TCSrv -> Tokenizer : PUT /tokens
+		rnote left
+			__request body__
+			{
+				"pii": "//<tax code>//"
+			}
+		end note
+					
+	Tokenizer --> TCSrv : HTTP 200 (ok)
+		rnote left
+			__response body__
+			{
+				"token": "//<tax code token>//"
+			}
+		end note
+end

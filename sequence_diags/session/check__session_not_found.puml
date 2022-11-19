@@ -1,0 +1,16 @@
+group Check session
+	$client -> SessionSrv : GET /sessions///<session id>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+		end note
+	
+	SessionSrv -> SessionCache : GET //<session id>//
+	
+	SessionCache --> SessionSrv : null
+	
+	SessionSrv --> $client : HTTP 404 (not found)
+end

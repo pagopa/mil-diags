@@ -1,0 +1,44 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold init
+	Client -> SessionSrv : POST /sessions
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+			
+			__request body__
+			{
+				"panToken": "//<pan token>//"
+			}
+		end note
+	
+	!include_many retrieve_tax_code__go_to_scheme.puml
+	
+	!include_many ../terms-and-conditions/check_acceptance_of_tc.puml
+	
+	!$client = SessionSrv
+	!include_many ../save-new-cards/check.puml
+	
+	opt //<save new cards flag>// = true
+		!include_many ../save-new-cards/pre-save.puml
+	end
+	
+	!include_many generate_and_store_session.puml
+	
+	SessionSrv --> Client : HTTP 201 (created)
+		rnote left
+			__header__
+			- Location: /sessions///<session id>//
+			
+			__response body__
+			{
+				"outcome": "OK"
+			}
+		end note
+end
+@enduml

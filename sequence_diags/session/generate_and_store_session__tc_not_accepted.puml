@@ -1,0 +1,14 @@
+group Generate and store session
+	SessionSrv -> SessionSrv : generate //<session id>//
+	
+	SessionSrv -> SessionCache : JSON.SET //<session id>// $ '//<value>//'
+		rnote left
+			__value__
+			{
+				"taxCode": "//<tax code>//",
+				"termsAndCondsAccepted": false
+			}
+		end note
+	
+	SessionCache --> SessionSrv
+end

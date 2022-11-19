@@ -1,0 +1,22 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+
+group#Gold end
+	Client -> SessionSrv : DELETE /sessions///<session id>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+		end note
+	
+		SessionSrv -> SessionCache : DEL //<session id>//
+		
+		SessionCache --> SessionSrv : 0
+	
+	SessionSrv --> Client : HTTP 404 (not found)
+end
+@enduml

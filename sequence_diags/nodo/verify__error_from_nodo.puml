@@ -1,0 +1,66 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold verify
+	alt QR-code
+    	Client -> NoticeSrv : GET /paymentNotices///<qr code>//
+            rnote left
+    		    __header__
+    			- Version: //<api version>//
+    			- AcquirerId: //<acquirer id>//
+    			- Channel: //<channel>//
+    			- TerminalId: //<terminal id>//
+    		end note
+
+    	NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+    else w/o QR-code
+        Client -> NoticeSrv : GET /paymentNotices///<pa tax code>/////<notice number>//
+    		rnote left
+    	        __header__
+    			- Version: //<api version>//
+    			- AcquirerId: //<acquirer id>//
+    			- Channel: //<channel>//
+    			- TerminalId: //<terminal id>//
+    		end note
+    end
+	
+	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+	
+	NoticeSrv -> Nodo : POST /verifyPaymentNotice
+		rnote left
+			__request body__
+			<verifyPaymentNoticeReq>
+			    <idPSP>//<psp id>//</idPSP>
+			    <idBrokerPSP>//<psp broker id>//</idBrokerPSP>
+			    <idChannel>//<terminal id>//</idChannel>
+			    <password>//<password>//</password>
+			    <qrCode>
+			        <fiscalCode>//<pa tax code>//</fiscalCode>
+			        <noticeNumber>//<notice number>//</noticeNumber>
+			    </qrCode>
+			</verifyPaymentNoticeReq>
+		end note
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		rnote left
+			__response body__
+			<verifyPaymentNoticeRes>
+			    <outcome>KO</outcome>
+			    <fault>
+			        <faultCode>//<fault code>//</faultCode>
+			        <originalFaultString>//<original fault string>//</originalFaultString>
+			    </fault>
+			</verifyPaymentNoticeRes>
+		end note
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		rnote left
+			__response body__
+			{
+			    "outcome": "//<outcome>//"
+			}
+		end note
+end
+@enduml
+ 

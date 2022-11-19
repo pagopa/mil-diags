@@ -1,0 +1,37 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold confirm
+	Client -> NoticeSrv : POST /payments
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+
+			__request body__
+			{
+			    "outcome": "<font color="red">KO</font>",
+			    "paymentTokens": [
+			        "//<payment token>//",
+			        .
+			        .
+			        .
+			    ],
+			    "paymentMethod": "//<payment method>//",
+			    "transactionId": "//<transaction id>//",
+			    "totalAmount": "//<total amount>//",
+			    "fee": "//<total fee>//",
+			    "timestampOperation": "//<operation timestamp>//"
+			}
+		end note
+	
+	NoticeSrv --> Client : HTTP 202 (accepted)
+	
+	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+	
+	!include_many close_payment_ko.puml
+end
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+
+group#Gold navigate
+	Client -> FunctionSrv : GET /services
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+		end note
+	
+	FunctionSrv -> FunctionDB : readItem ( //<channel>// )
+	
+	FunctionDB --> FunctionSrv : null
+	
+	FunctionSrv --> Client : HTTP 404 (not found)
+end
+@enduml

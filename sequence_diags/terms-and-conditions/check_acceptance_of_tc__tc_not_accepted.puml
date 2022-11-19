@@ -1,0 +1,35 @@
+group Check acceptance of T&C
+	SessionSrv -> TCSrv : GET /acceptedTermsConds///<tax code token>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+		end note
+		
+	!include_many ../common/protect_tax_code.puml
+	
+	TCSrv -> TCDB : readItem ( //<tax code token>// )
+	
+	alt The accepted version is older then the current one
+		TCDB --> TCSrv : { "version": "//<t&c version>//" }
+		
+		TCSrv -> TCSrv : check //<t&c version>//
+			rnote left
+				The accepted version is older then the current one
+			end note
+		
+		TCSrv --> SessionSrv : HTTP 200 (ok)
+			rnote left
+				__response body__
+				{
+					"outcome": "TERMS_AND_CONDITIONS_NOT_YET_ACCEPTED"
+				}
+			end note
+	else T&C never accepted
+		TCDB --> TCSrv : null
+		
+		TCSrv --> SessionSrv : HTTP 404 (not found)
+	end
+end

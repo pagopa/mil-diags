@@ -1,0 +1,28 @@
+participant "Client" as Client
+
+box Multichannel Integration Layer #GhostWhite
+	participant "Session Service" as SessionSrv
+	database "Cache\n(Redis)" as SessionCache
+	
+	participant "T&C Service" as TCSrv
+	database "DB\n(CosmosDB)" as TCDB
+	
+	participant "Function Service" as FunctionSrv
+	database "DB\n(CosmosDB)" as FunctionDB
+	
+	participant "Payment Notice Service" as NoticeSrv
+	database "Cache\n(Redis)" as NoticeCache
+	
+	participant "Wallet Service" as WalletWrp
+end box
+
+box CDE/PCI Environment #GhostWhite
+	participant "PM-RTD" as PANTokenizer
+	participant "PM-Wallet" as Wallet
+end box
+
+participant "PDV-Tokenizer" as Tokenizer
+participant "Bancomat | Nexi | SIA |\nPoste Italiane |\nIntesa Sanpaolo | ICCREA" as ServiceCenter
+participant "IO Back-end" as IO
+participant "Nodo" as Nodo
+participant "Gestione Evoluta\nCommissioni" as GEC

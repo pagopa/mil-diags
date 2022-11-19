@@ -1,0 +1,39 @@
+group Interaction with the Nodo
+	NoticeSrv -> Nodo : POST /closepayment
+		rnote left
+			__request body__
+			{
+				"paymentTokens": [
+					"//<payment token>//",
+					.
+					.
+					.
+				],
+				"outcome": "<font color="red">KO</font>",
+				"idPSP": "//<psp id>//",
+				"idBrokerPSP": "//<psp broker id>//",
+				"idChannel": "//<channel id>//",
+				"paymentMethod": "//<payment method>//",
+				"transactionId": "//<transaction id>//",
+				"totalAmount": "//<total amount>//",
+				"fee": "//<total fee>//",
+				"timestampOperation": "//<operation timestamp>//",
+				"additionalPaymentInformations": { }
+			}
+		end note
+				
+	opt 200
+		Nodo --> NoticeSrv : HTTP 200 (ok)
+			rnote left
+				__response body__
+				{
+					"outcome": "OK"
+				}
+			end note
+	else else
+		Nodo --> NoticeSrv : //any other HTTP status code and response, timeout and included//
+			rnote left
+				<font color="red">**Retry sending POST //n// times, with //n// configurable**</font>
+			end note
+	end
+end

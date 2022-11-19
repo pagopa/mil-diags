@@ -1,0 +1,30 @@
+group Check session
+	$client -> SessionSrv : GET /sessions///<session id>//
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+		end note
+	
+	SessionSrv -> SessionCache : GET //<session id>//
+
+	SessionCache --> SessionSrv
+		rnote left
+			__value__
+			{
+				"taxCode": "//<tax code>//",
+				"termsAndCondsAccepted": false
+			}
+		end note
+
+	SessionSrv --> $client : HTTP 200 (ok)
+		rnote left
+			__response body__
+			{
+				"outcome": "TERMS_AND_CONDITIONS_NOT_YET_ACCEPTED",
+				"taxCode": "//<tax code>//"
+			}
+		end note
+end

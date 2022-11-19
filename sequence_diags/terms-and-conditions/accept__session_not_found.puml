@@ -1,0 +1,32 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+
+group#Gold accept
+	Client -> TCSrv : POST /acceptedTermsConds
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+			- SessionId: //<session id>//
+		end note
+		
+	!$client = TCSrv
+	!include_many ../session/check__session_not_found.puml
+	
+	TCSrv --> Client : HTTP 400 (bad request)
+		rnote left
+			__response body__
+			{
+			    "violations": [
+			        {
+			            "message": "SESessionSrvION_NOT_FOUND"
+			        }
+			    ]
+			}
+		end note
+end
+@enduml

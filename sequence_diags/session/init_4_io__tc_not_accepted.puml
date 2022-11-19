@@ -1,0 +1,125 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold init
+	group Accepting phase
+		Client -> SessionSrv : POST /sessions
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+				
+				__request body__
+				{
+					"panToken": "//<pan token>//"
+				}
+			end note
+		
+		!include_many retrieve_tax_code__go_to_scheme__not_found.puml
+		
+		'**************** Pairing token generation ****************
+		SessionSrv -> SessionSrv : generate //<pairing token>//
+		
+		{wait_for_attempt_1_begin} SessionSrv --> Client : HTTP 202 (accepted)
+			rnote left
+				__header__
+				- Location: /sessions?pairingToken=//<pairing token>//
+				- Retry-After: //<retry after>//
+				- Max-Retries: //<max retries>//
+				
+				__response body__
+				{
+					"outcome": "PAIR_WITH_IO",
+					"pairingToken": "//<pairing token>//"
+				}
+			end note
+	end
+	
+	'**************** 1st attempt to check pairing completion ****************
+	group 1st attempt
+		{wait_for_attempt_1_end} Client -> SessionSrv : GET /sessions?pairingToken=//<pairing token>//
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+			end note
+		
+		{wait_for_attempt_1_begin} <-> {wait_for_attempt_1_end} : <font color="darkorange">1) Retry-After: //<retry after>//</font>
+		
+		SessionSrv -> SessionCache : GETDEL //<pairing token>//
+		SessionCache --> SessionSrv : null
+		
+		{wait_for_attempt_2_begin} SessionSrv --> Client : HTTP 404 (not found)
+	end
+	
+	'**************** Pairing with App IO ****************
+	group Pairing with App IO
+		IO -> SessionSrv : POST /pairings
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>// (*)
+				- Channel: //<channel>// (*)
+				- TerminalId: //<terminal id>// (*)
+				
+				__request body__
+				{
+					"pairingToken" : "//<pairing token>//", (*)
+					"taxCode": "//<tax code>//"
+				}
+				
+				__notes__
+				(*) It's encoded in the QR-code scanned by App IO
+			end note
+		
+		SessionSrv -> SessionCache : JSON.SET //<pairing token>// $ '{ "taxCode": "//<tax code>//" }'
+		
+		SessionCache --> SessionSrv : OK
+		
+		SessionSrv --> IO : HTTP 204 (no content)
+	end
+	
+	'**************** 2nd attempt to check pairing completion ****************
+	group 2nd attempt
+		{wait_for_attempt_2_end} Client -> SessionSrv : GET /sessions?pairingToken=//<pairing token>//
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+			end note
+		
+		{wait_for_attempt_2_begin} <-> {wait_for_attempt_2_end} : <font color="darkorange">2) Retry-After: //<retry after>//</font>
+		
+		SessionSrv -> SessionCache : GETDEL //<pairing token>//
+		SessionCache --> SessionSrv
+			rnote left
+				__value__
+				{
+					"taxCode": "//<tax code>//"
+				}
+			end note
+		
+		!include_many ../terms-and-conditions/check_acceptance_of_tc__tc_not_accepted.puml
+		
+		!include_many generate_and_store_session__tc_not_accepted.puml
+		
+		SessionSrv --> Client : HTTP 200 (created)
+			rnote left
+				__header__
+				- Location: /sessions///<session id>//
+				
+				__response body__
+				{
+					"outcome": "TERMS_AND_CONDITIONS_NOT_YET_ACCEPTED"
+				}
+			end note
+	end
+end
+@enduml

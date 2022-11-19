@@ -1,0 +1,88 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold getFee
+	Client -> NoticeSrv : POST /fees
+		rnote left
+			__header__
+			- Version: //<api version>//
+			- AcquirerId: //<acquirer id>//
+			- Channel: //<channel>//
+			- TerminalId: //<terminal id>//
+
+			__request body__
+			{
+			    "paymentMethod": "//<payment method>//",
+			    "notices": [
+			        {
+			            "amount": //<amount>//,
+			            "paTaxCode": "//<pa tax code>//",
+			            "transfers": [
+			                {
+			                    "paTaxCode": "//<pa tax code #1>//",
+			                    "category": "//<category #1>//"
+			                },
+			                .
+			                .
+			                .
+			            ]
+			        },
+			        .
+			        .
+			        .
+			    ]
+			}
+		end note
+
+    NoticeSrv -> GEC : POST /fees
+		rnote left
+		    <font color="red">Currently the GEC doesn't accept a list of notices</font>
+			__request body__
+			{
+			    "paymentAmount": //<amount>//,
+			    "primaryCreditorInstitution": "//<pa tax code>//",
+			    "paymentMethod": "//<remapped payment method>//",
+			    "touchpoint": "//<remapped channel>//",
+			    "transferList": [
+			        {
+			            "creditorInstitution": "//<pa tax code>//",
+			            "transferCategory": "//<category #1>//"
+			        },
+			        .
+			        .
+			        .
+			    ]
+			}
+		end note
+
+    GEC --> NoticeSrv : HTTP 200 (ok)
+        rnote left
+            __response body__
+            [
+                {
+                    "taxPayerFee": //<fee>//,
+                    "primaryCiIncurredFee": //<primary ci incurred fee>//,
+                    "paymentMethod": "//<remapped payment method>//",
+                    "touchpoint": "//<remapped payment method>//",
+                   "idBundle": "//<bundle id>//",
+                   "bundleName": "//<bundle name>//",
+                   "bundleDescription": "//<bundle description>//",
+                   "idCiBundle": "//<ci bundle id>//",
+                   "idPsp": "//<psp id>//"
+               },
+               .
+                .
+                .
+            ]
+        end note
+
+    NoticeSrv --> Client : HTTP 200 (ok)
+    rnote left
+        {
+          "fee": //<fee>//
+        }
+    end note
+
+end
+@enduml

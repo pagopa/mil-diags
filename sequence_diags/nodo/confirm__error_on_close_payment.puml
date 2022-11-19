@@ -1,0 +1,86 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold confirm
+	group Accepting phase
+		Client -> NoticeSrv : POST /payments
+			rnote left
+				__header__
+				- Version: //<api version>//
+				- AcquirerId: //<acquirer id>//
+				- Channel: //<channel>//
+				- TerminalId: //<terminal id>//
+
+				__request body__
+				{
+				    "outcome": "OK",
+				    "paymentTokens": [
+				        "//<payment token>//",
+				        .
+				        .
+				        .
+				    ],
+				    "paymentMethod": "//<payment method>//",
+				    "transactionId": "//<transaction id>//",
+				    "totalAmount": "//<total amount>//",
+				    "fee": "//<total fee>//",
+				    "timestampOperation": "//<operation timestamp>//"
+				}
+			end note
+		
+		NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+		
+		group Interaction with the Nodo
+			NoticeSrv -> Nodo : POST /closepayment
+				rnote left
+					__request body__
+					{
+						"paymentTokens": [
+							"//<payment token>//",
+							.
+							.
+							.
+						],
+						"outcome": "OK",
+						"idPSP": "//<psp id>//",
+						"idBrokerPSP": "//<psp broker id>//",
+						"idChannel": "//<channel id>//",
+						"paymentMethod": "//<payment method>//",
+						"transactionId": "//<transaction id>//",
+						"totalAmount": "//<total amount>//",
+						"fee": "//<total fee>//",
+						"timestampOperation": "//<operation timestamp>//",
+						"additionalPaymentInformations": { }
+					}
+				end note
+			
+			opt 200
+				Nodo --> NoticeSrv : HTTP 200 (ok)
+					rnote left
+						__response body__
+						{
+							"outcome": "KO"
+						}
+					end note
+			else 400 
+				Nodo --> NoticeSrv : HTTP 400 (bad request)
+			else 404
+				Nodo --> NoticeSrv : HTTP 404 (not found)
+			else 422
+				Nodo --> NoticeSrv : HTTP 422 (unprocessable entry)
+			end
+		end
+	
+		NoticeSrv --> Client : HTTP 200 (ok)
+			rnote left
+				<font color="red">**MUST THE e-MONEY TRANSACTION BE ROLLED BACK**</font>
+				__response body__
+				{
+					"outcome": "KO"
+				}
+		end note
+	end
+end
+@enduml
+ 
