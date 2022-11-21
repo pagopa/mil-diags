@@ -33,10 +33,10 @@
                     <sourceFiles>
                         <directory>${basedir}</directory>
                         <includes>
-                            <include>puml/**/*.puml</include>
+                            <include>**/*.puml</include>
                         </includes>
                     </sourceFiles>
-                    <outputDirectory>puml-png</outputDirectory>
+                    <outputDirectory>target/puml-png</outputDirectory>
                 </configuration>
                 <dependencies>
                     <dependency>
