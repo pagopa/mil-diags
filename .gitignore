@@ -24,3 +24,6 @@ hs_err_pid*
 
 # IntelliJ IDEA
 .idea/*
+
+# DrawIO temp files
+/component_diags/.$components.drawio.bkp
