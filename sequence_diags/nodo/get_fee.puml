@@ -3,7 +3,7 @@
 !include_many ../common/actors.puml
 
 group#Gold getFee
-	Client -> NoticeSrv : POST /fees
+	Client -> FeeSrv : POST /fees
 		rnote left
 			__header__
 			- Version: //<api version>//
@@ -35,9 +35,9 @@ group#Gold getFee
 			}
 		end note
 
-    NoticeSrv -> GEC : POST /fees
+    FeeSrv -> GEC : POST /fees
 		rnote left
-		    <font color="red">Currently the GEC doesn't accept a list of notices</font>
+		    <font color="red">Currently GEC doesn't accept a list of notices</font>
 			__request body__
 			{
 			    "paymentAmount": //<amount>//,
@@ -56,7 +56,7 @@ group#Gold getFee
 			}
 		end note
 
-    GEC --> NoticeSrv : HTTP 200 (ok)
+    GEC --> FeeSrv : HTTP 200 (ok)
         rnote left
             __response body__
             [
@@ -65,11 +65,11 @@ group#Gold getFee
                     "primaryCiIncurredFee": //<primary ci incurred fee>//,
                     "paymentMethod": "//<remapped payment method>//",
                     "touchpoint": "//<remapped payment method>//",
-                   "idBundle": "//<bundle id>//",
-                   "bundleName": "//<bundle name>//",
-                   "bundleDescription": "//<bundle description>//",
-                   "idCiBundle": "//<ci bundle id>//",
-                   "idPsp": "//<psp id>//"
+                    "idBundle": "//<bundle id>//",
+                    "bundleName": "//<bundle name>//",
+                    "bundleDescription": "//<bundle description>//",
+                    "idCiBundle": "//<ci bundle id>//",
+                    "idPsp": "//<psp id>//"
                },
                .
                 .
@@ -77,12 +77,11 @@ group#Gold getFee
             ]
         end note
 
-    NoticeSrv --> Client : HTTP 200 (ok)
+    FeeSrv --> Client : HTTP 200 (ok)
     rnote left
         {
-          "fee": //<fee>//
+            "fee": //<fee>//
         }
     end note
-
 end
 @enduml

@@ -14,6 +14,8 @@ box Multichannel Integration Layer #GhostWhite
 	database "Cache\n(Redis)" as NoticeCache
 	
 	participant "Wallet Service" as WalletWrp
+
+	participant "Fee Calculator" as FeeSrv
 end box
 
 box CDE/PCI Environment #GhostWhite
