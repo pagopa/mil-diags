@@ -26,7 +26,7 @@ group pre-save
 		    {
 		        "violations": [
 		            {
-		                "message": "SAVE_NEW_CACacheS_FLAG_IS_FALSE"
+		                "message": "SAVE_NEW_CARDS_FLAG_IS_FALSE"
 		            }
 		        ]
 		    }

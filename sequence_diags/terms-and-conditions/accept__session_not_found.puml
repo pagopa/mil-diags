@@ -23,7 +23,7 @@ group#Gold accept
 			{
 			    "violations": [
 			        {
-			            "message": "SESessionSrvION_NOT_FOUND"
+			            "message": "SESSION_NOT_FOUND"
 			        }
 			    ]
 			}

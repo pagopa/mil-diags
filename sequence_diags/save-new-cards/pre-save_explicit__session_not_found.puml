@@ -26,7 +26,7 @@ group pre-save
 			{
 			    "violations": [
 			        {
-			            "message": "SESessionSrvION_NOT_FOUND"
+			            "message": "SESSION_NOT_FOUND"
 			        }
 			    ]
 			}
