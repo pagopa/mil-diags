@@ -1,0 +1,23 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity Channel {
+}
+
+entity Service {
+  serviceId : string (36)
+}
+
+entity Labels {
+  it : string (1, 256)
+  --
+  en : string (1, 256)
+  fr : string (1, 256)
+  de : string (1, 256)
+  es : string (1, 256)
+}
+
+Channel ||.right.|{ Service
+Service ||.right.|| Labels
+@enduml

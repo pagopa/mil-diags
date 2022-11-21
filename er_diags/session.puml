@@ -1,0 +1,12 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity Session {
+  id : string (6, 36)
+  --
+  taxCode : string (11, 16)
+  termsAndCondsAccepted : boolean
+  saveNewCards : boolean
+}
+@enduml
