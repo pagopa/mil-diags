@@ -7,7 +7,7 @@ box Multichannel Integration Layer #GhostWhite
 	participant "T&C Service" as TCSrv
 	database "DB\n(CosmosDB)" as TCDB
 	
-	participant "Function Service" as FunctionSrv
+	participant "Functions Service" as FunctionSrv
 	database "DB\n(CosmosDB)" as FunctionDB
 	
 	participant "Payment Notice Service" as NoticeSrv
