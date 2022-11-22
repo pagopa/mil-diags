@@ -1,0 +1,9 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity Acceptance {
+  taxCodeToken : string (36)
+  version : string (5, 64)
+}
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity Transaction {
+  transactionId : string (1, 255)
+  --
+  outcome : string (2)
+  paymentDate : string (19)
+}
+
+entity Payment {
+  --
+  paymentToken : string (1, 35)
+  description : string (1, 140)
+  creditorReferenceId : string (1, 35)
+  paTaxCode : string (11)
+  company : string (1, 140)
+  office : string (1, 140)
+  debtor : string (0, 1024)
+}
+
+Transaction ||.right.o{ Payment
+@enduml
