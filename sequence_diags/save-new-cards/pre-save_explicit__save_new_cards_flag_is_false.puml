@@ -24,10 +24,8 @@ group pre-save
 		rnote left
 		    __response body__
 		    {
-		        "violations": [
-		            {
-		                "message": "SAVE_NEW_CARDS_FLAG_IS_FALSE"
-		            }
+		        "errors": [
+		            "todo..."
 		        ]
 		    }
 		end note

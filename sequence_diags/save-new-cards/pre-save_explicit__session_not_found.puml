@@ -24,10 +24,8 @@ group pre-save
 		rnote left
 			__response body__
 			{
-			    "violations": [
-			        {
-			            "message": "SESSION_NOT_FOUND"
-			        }
+			    "errors": [
+			    	"todo..."
 			    ]
 			}
 		end note

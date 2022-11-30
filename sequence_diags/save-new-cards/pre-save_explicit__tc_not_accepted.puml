@@ -24,10 +24,8 @@ group pre-save
 		rnote left
 			__response body__
 			{
-			    "violations": [
-			        {
-			            "message": "TERMS_AND_CONDITIONS_NOT_YET_ACCEPTED"
-			        }
+			    "errors": [
+			        "todo..."
 			    ]
 			}
 		end note
