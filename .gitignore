@@ -32,3 +32,9 @@ hs_err_pid*
 # Generate by Maven plugin
 /target/
 
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
