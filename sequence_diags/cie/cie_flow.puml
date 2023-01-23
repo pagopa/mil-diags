@@ -1,0 +1,64 @@
+@startuml
+
+skinparam sequenceArrowThickness 1
+skinparam roundcorner 20
+
+
+skinparam ParticipantPadding 50
+skinparam BoxPadding 400
+skinparam SequenceBoxBackgroundColor AliceBlue
+skinparam ActorBorderColor    SaddleBrown
+
+
+actor User #SaddleBrown
+
+participant "POS" as pos #white
+participant "CIE card" as nfccard #white
+
+
+User -> pos: Present Card
+activate pos #008a00
+
+group Read NIS
+pos -> nfccard:Select Applet CIE Command
+activate nfccard #28beb9
+nfccard --> pos: Select Applet CIE result
+
+pos -> nfccard:Select DF CIE
+nfccard --> pos: Select DF CIE result
+
+pos -> nfccard:Read NIS Command
+nfccard --> pos: Read NIS result
+end
+
+group CIE Authenticity/Originality Verification - int auth
+pos -> nfccard:Read pub key modulus Command
+nfccard --> pos: Read pub key modulus result
+
+pos -> nfccard:Read pub key exponent Command
+nfccard --> pos: Read pub key exponent result
+
+pos -> nfccard:Select int-auth key Command
+nfccard --> pos: Select int-auth key result
+
+pos -> pos: Challenge generation ( 8 bytes )
+
+pos -> nfccard:Challenge Transmit Command
+nfccard --> pos: Challenge signed result
+
+pos -> pos: Challenge verification
+end
+group CIE Integrity Verification
+pos -> nfccard: Read SOD data record
+nfccard --> pos: Read SOD data result
+
+pos -> pos:Build IAS object and check NIS ID
+
+end
+
+deactivate
+
+pos --> User: End
+deactivate pos
+
+@enduml
