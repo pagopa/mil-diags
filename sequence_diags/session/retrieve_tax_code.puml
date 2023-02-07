@@ -14,7 +14,8 @@ group Retrieve tax code - <font color="red">Only for PagoBancomat PANs</font>
 		rnote left
 			__response body__
 			{
-				"taxCode": "//<tax code>//"
+				"taxCode": "//<tax code>//",
+				"source": "LOCAL_DB"
 			}
 		end note
 end

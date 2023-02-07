@@ -7,9 +7,11 @@ group#Gold accept
 	Client -> TCSrv : POST /acceptedTermsConds
 		rnote left
 			__header__
+			- RequestId: //<request id>//
 			- Version: //<api version>//
 			- AcquirerId: //<acquirer id>//
 			- Channel: //<channel>//
+			- MerchantId: //<merchant id>//
 			- TerminalId: //<terminal id>//
 			- SessionId: //<session id>//
 		end note
@@ -29,9 +31,11 @@ group#Gold accept
 		TCSrv -> SessionSrv : PATCH /sessions///<session id>//
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 			
 				__request body__

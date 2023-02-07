@@ -7,8 +7,10 @@ group#Gold navigate
 	Client -> FunctionSrv : GET /services
 		rnote left
 			__header__
+			- RequestId: //<request id>//
 			- Version: //<api version>//
 			- AcquirerId: //<acquirer id>//
+			- MerchantId: //<merchant id>//
 			- Channel: //<channel>//
 		end note
 	

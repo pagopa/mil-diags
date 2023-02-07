@@ -7,9 +7,11 @@ group#Gold confirm
 		Client -> NoticeSrv : POST /payments
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 
 				__request body__
@@ -54,9 +56,11 @@ group#Gold confirm
 		{wait_for_attempt_1_end} Client -> NoticeSrv : GET /payments///<transaction id>//
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 			end note
 		
@@ -131,9 +135,11 @@ group#Gold confirm
 		{wait_for_attempt_2_end} Client -> NoticeSrv : GET /payments///<transaction id>//
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 			end note
 		

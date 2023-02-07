@@ -53,7 +53,8 @@ group Retrieve tax code
 		rnote left
 			__response body__
 			{
-				"taxCode": "//<tax code>//"
+				"taxCode": "//<tax code>//",
+				"source": "EXTERNAL"
 			}
 		end note
 	end

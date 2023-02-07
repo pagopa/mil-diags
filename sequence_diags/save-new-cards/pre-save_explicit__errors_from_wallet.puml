@@ -6,9 +6,11 @@ group pre-save
 	Client -> WalletWrp : POST /cards
 		rnote left
 			__header__
+			- RequestId: //<request id>//
 			- Version: //<api version>//
 			- AcquirerId: //<acquirer id>//
 			- Channel: //<channel>//
+			- MerchantId: //<merchant id>//
 			- TerminalId: //<terminal id>//
 			- SessionId: //<session id>//
 			__request body__

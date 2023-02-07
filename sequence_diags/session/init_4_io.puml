@@ -7,9 +7,11 @@ group#Gold init
 		Client -> SessionSrv : POST /sessions
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 				
 				__request body__
@@ -43,9 +45,11 @@ group#Gold init
 		{wait_for_attempt_1_end} Client -> SessionSrv : GET /sessions?pairingToken=//<pairing token>//
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 			end note
 		
@@ -62,9 +66,11 @@ group#Gold init
 		IO -> SessionSrv : POST /pairings
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>// (*)
 				- Channel: //<channel>// (*)
+				- MerchantId: //<merchant id>// (*)
 				- TerminalId: //<terminal id>// (*)
 				
 				__request body__
@@ -89,9 +95,11 @@ group#Gold init
 		{wait_for_attempt_2_end} Client -> SessionSrv : GET /sessions?pairingToken=//<pairing token>//
 			rnote left
 				__header__
+				- RequestId: //<request id>//
 				- Version: //<api version>//
 				- AcquirerId: //<acquirer id>//
 				- Channel: //<channel>//
+				- MerchantId: //<merchant id>//
 				- TerminalId: //<terminal id>//
 			end note
 		

@@ -7,9 +7,11 @@ group#Gold activate
 	Client -> NoticeSrv : PATCH /paymentNotices///<qr code>//
 		rnote left
 			__header__
+			- RequestId: //<request id>//
 			- Version: //<api version>//
 			- AcquirerId: //<acquirer id>//
 			- Channel: //<channel>//
+			- MerchantId: //<merchant id>//
 			- TerminalId: //<terminal id>//
 
 			__request body__
@@ -24,9 +26,11 @@ group#Gold activate
         Client -> NoticeSrv : PATCH /paymentNotices///<pa tax code>/////<notice number>//
     		rnote left
     			__header__
+    			- RequestId: //<request id>//
     			- Version: //<api version>//
     			- AcquirerId: //<acquirer id>//
     			- Channel: //<channel>//
+    			- MerchantId: //<merchant id>//
     			- TerminalId: //<terminal id>//
 
     			__request body__

@@ -7,8 +7,10 @@ group#Gold getFee
 		rnote left
 			__header__
 			- Version: //<api version>//
+			- RequestId: //<request id>//
 			- AcquirerId: //<acquirer id>//
 			- Channel: //<channel>//
+			- MerchantId: //<merchant id>//
 			- TerminalId: //<terminal id>//
 
 			__request body__

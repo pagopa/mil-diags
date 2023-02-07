@@ -7,9 +7,11 @@ group#Gold verify
 	    Client -> NoticeSrv : GET /paymentNotices///<qr code>//
 		    rnote left
 			    __header__
+			    - RequestId: //<request id>//
 			    - Version: //<api version>//
 			    - AcquirerId: //<acquirer id>//
 			    - Channel: //<channel>//
+			    - MerchantId: //<merchant id>//
 			    - TerminalId: //<terminal id>//
 		    end note
 
@@ -18,9 +20,11 @@ group#Gold verify
         Client -> NoticeSrv : GET /paymentNotices///<pa tax code>/////<notice number>//
 		    rnote left
 			    __header__
+			    - RequestId: //<request id>//
 			    - Version: //<api version>//
 			    - AcquirerId: //<acquirer id>//
 			    - Channel: //<channel>//
+			    - MerchantId: //<merchant id>//
 			    - TerminalId: //<terminal id>//
 		    end note
 	end
