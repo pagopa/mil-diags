@@ -69,8 +69,6 @@ group#Gold confirm
 				Nodo --> NoticeSrv : HTTP 400 (bad request)
 			else 404
 				Nodo --> NoticeSrv : HTTP 404 (not found)
-			else 422
-				Nodo --> NoticeSrv : HTTP 422 (unprocessable entry)
 			end
 		end
 	
