@@ -29,7 +29,7 @@ group#Gold verify
     		end note
     end
 	
-	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<password>// by //<acquirer id>//
+	NoticeSrv -> NoticeSrv : Retrieve //<psp id>//, //<psp broker id>//, //<channel id>//, //<password>// by //<acquirer id>//
 	
 	NoticeSrv -> Nodo : POST /verifyPaymentNotice
 		rnote left
@@ -37,7 +37,7 @@ group#Gold verify
 			<verifyPaymentNoticeReq>
 			    <idPSP>//<psp id>//</idPSP>
 			    <idBrokerPSP>//<psp broker id>//</idBrokerPSP>
-			    <idChannel>//<terminal id>//</idChannel>
+			    <idChannel>//<channel id>//</idChannel>
 			    <password>//<password>//</password>
 			    <qrCode>
 			        <fiscalCode>//<pa tax code>//</fiscalCode>
