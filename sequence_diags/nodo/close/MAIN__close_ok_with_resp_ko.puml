@@ -1,0 +1,40 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold close
+	Client -> NoticeSrv : PATCH /payments///<transaction id>//
+		note left
+			!include_many ../request/close_ok.frag
+		end note
+	
+	
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+	
+	
+	!include_many ../nodo_interaction/close_payment_ok_with_resp_ko.puml
+	
+	
+	NoticeSrv -> NoticeDB : persist(//<value>//)
+		note left
+			!include_many ../stored_trx_data/close_ok_with_resp_ko.frag
+		end note
+	
+	
+	NoticeDB --> NoticeSrv : ack
+		note left #Orange
+			in case of error, retry
+		end note
+	
+	
+	NoticeSrv --> Client : HTTP 200 (ok)
+		note left
+			!include_many ../response/close_ok_with_resp_ko.frag
+		end note
+		
+		note across #Red
+			<font color="white">**retry and if the issuer persists the e-money transaction must be rolled back or the user must be charged back**</font>
+		end note
+end
+@enduml

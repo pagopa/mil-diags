@@ -1,0 +1,85 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold verify
+	alt QR-code
+	    Client -> NoticeSrv : GET /paymentNotices///<qr code>//
+		    rnote left
+			    __header__
+			    - RequestId: //<request id>//
+			    - Version: //<api version>//
+			    - AcquirerId: //<acquirer id>//
+			    - Channel: //<channel>//
+			    - MerchantId: //<merchant id>//
+			    - TerminalId: //<terminal id>//
+		    end note
+
+	    NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+	else w/o QR-code
+        Client -> NoticeSrv : GET /paymentNotices///<pa tax code>/////<notice number>//
+		    rnote left
+			    __header__
+			    - RequestId: //<request id>//
+			    - Version: //<api version>//
+			    - AcquirerId: //<acquirer id>//
+			    - Channel: //<channel>//
+			    - MerchantId: //<merchant id>//
+			    - TerminalId: //<terminal id>//
+		    end note
+	end
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.puml
+	
+	NoticeSrv -> Nodo : POST /verifyPaymentNotice
+		rnote left
+			__request body__
+			<verifyPaymentNoticeReq>
+			    <idPSP>//<psp id>//</idPSP>
+			    <idBrokerPSP>//<psp broker id>//</idBrokerPSP>
+			    <idChannel>//<channel id>//</idChannel>
+			    <password>//<password>//</password>
+			    <qrCode>
+			        <fiscalCode>//<pa tax code>//</fiscalCode>
+			        <noticeNumber>//<notice number>//</noticeNumber>
+			    </qrCode>
+			</verifyPaymentNoticeReq>
+		end note
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		rnote left
+			__response body__
+			<verifyPaymentNoticeRes>
+			    <outcome>OK</outcome>
+			    <paymentList>
+			        <paymentOptionDescription>
+			            <amount>//<amount>//</amount>
+			            <options>EQ</options>
+			            <dueDate>//<due date>//</dueDate>
+			            <paymentNote>//<payment note>//</paymentNote>
+			        </paymentOptionDescription>
+			    </paymentList>
+			    <paymentDescription>//<payment description>//</paymentDescription>
+			    <fiscalCodePA>//<pa tax code>//</fiscalCodePA>
+			    <companyName>//<institution name>//</companyName>
+			    <officeName>//<office name>//</officeName>
+			</verifyPaymentNoticeRes>
+		end note
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		rnote left
+			__response body__
+			{
+			    "outcome": "OK",
+			    "amount": //<amount>//,
+			    "dueDate": "//<due date>//",
+			    "note": "//<payment note>//",
+			    "description": "//<payment description>//",
+			    "company": "//<institution name>//",
+			    "office": "//<office name>//"
+			}
+		end note
+end
+@enduml
+ 

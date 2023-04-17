@@ -1,0 +1,47 @@
+@startuml
+!include_many ../../common/skin.puml
+
+== Verify ==
+loop for each payment notice
+	SWClient -> Nodo : verifyPaymentNoticeReq
+	return verifyPaymentNoticeRes
+end
+
+== Activate ==
+loop for each payment notice 
+	SWClient -> Nodo : activatePaymentNoticeReqV2
+	return activatePaymentNoticeResV2
+		note right
+			Contains //paymentToken//
+		end note
+end
+
+== Retrieve Fees ==
+SWClient -> GEC : GetFeesByPsp
+return
+
+== e-Money Transaction ==
+SWClient <-> TerminalHandler : e-Money Transaction
+
+== Close ==
+SWClient -> Nodo : closePaymentReqV2
+	note left
+		Contains //paymentToken// and //transactionId//
+	end note
+return closePaymentResV2
+
+== Notify ==
+Nodo -> PSP : pspNotifyPaymentReqV2
+	note left
+		Contains //paymentToken// and //transactionId//
+	end note
+return pspNotifyPaymentResV2
+
+== Payment Result ==
+Nodo -> SWClient : sendPaymentResultReq
+	note right
+		Contains //paymentToken// and //transactionId//
+	end note
+return sendPaymentResultRes
+
+@enduml

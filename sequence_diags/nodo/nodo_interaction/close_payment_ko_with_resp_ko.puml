@@ -1,0 +1,14 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group interaction with nodo
+	NoticeSrv -> Nodo : POST /closepayment
+		note left
+			!include_many ../nodo_request/close_payment_ko.frag
+		end note
+
+			
+	Nodo --> NoticeSrv : any response that isn't classified as ok (timeout included)
+end
+@enduml
