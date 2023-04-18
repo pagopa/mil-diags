@@ -13,6 +13,4 @@
 note across #Red
 	<font color="white">**transaction under reserve**</font>
 end note
-
-
 @enduml

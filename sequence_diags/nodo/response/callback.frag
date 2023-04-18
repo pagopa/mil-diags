@@ -1,4 +1,4 @@
 __body__
 {
-	"outcome": "OK"
+	"outcome": "<font color="red">**OK**</font>"
 }

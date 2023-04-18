@@ -8,7 +8,7 @@ group interaction with nodo
 			!include_many ../nodo_request/close_payment_ko.frag
 		end note
 
-			
+
 	Nodo --> NoticeSrv : don't care
 end
 @enduml

@@ -7,20 +7,20 @@ group#Gold 2nd polling cycle
 		note left
 			!include_many ../request/polling.frag
 		end note
-	
-	
+
+
 	{wait_for_attempt_2_begin} <-> {wait_for_attempt_2_end} : <font color="darkorange">2) Retry-After: //<retry after>//</font>
-	
-	
+
+
 	NoticeSrv -> NoticeDB : findByIdOptional(//<transaction id>//)
-	
-	
+
+
 	NoticeDB --> NoticeSrv : //<value>//
 		note right
 			!include_many ../stored_trx_data/callback_ok.frag
 		end note
-	
-	
+
+
 	NoticeSrv --> Client : HTTP 200 (ok)
 		note right
 			!include_many ../stored_trx_data/callback_ok.frag

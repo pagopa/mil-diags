@@ -7,27 +7,27 @@ group#Gold close
 		note left
 			!include_many ../request/close_ko.frag
 		end note
-	
-	
+
+
 	!$client = NoticeSrv
 	!include_many ../common/get_acquirer_conf.frag
-	
-	
+
+
 	NoticeSrv --> Client : HTTP 202 (accepted)
-	
-	
+
+
 	NoticeSrv -> NoticeDB : persist(//<value>//)
 		note left
 			!include_many ../stored_trx_data/close_ko.frag
 		end note
-	
-	
+
+
 	NoticeDB --> NoticeSrv : ack
 		note over NoticeSrv #Orange
 			in case of error, retry
 		end note
-	
-	
+
+
 	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml
 end
 @enduml

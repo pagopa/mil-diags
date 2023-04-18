@@ -10,5 +10,4 @@
 note across #Red
 	<font color="white">**the e-money transaction must be rolled back or the user must be charged back**</font>
 end note
-
 @enduml

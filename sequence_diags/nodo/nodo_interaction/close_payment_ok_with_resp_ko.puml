@@ -10,20 +10,20 @@ group interaction with nodo
 
 
 	alt ok
-		
+
 		Nodo --> NoticeSrv : HTTP 200 (ok)
 			note right
 				!include_many ../nodo_response/ko_for_close_payment.frag
 			end note
-	
+
 	else bad request
-		
+
 		Nodo --> NoticeSrv : HTTP 400 (bad request)
-	
+
 	else not found
-		
+
 		Nodo --> NoticeSrv : HTTP 404 (not found)
-	
+
 	end opt
 end
 @enduml
