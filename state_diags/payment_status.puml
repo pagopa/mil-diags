@@ -7,7 +7,7 @@ state PENDING          #Orange
 state CLOSED           #Green;text:White
 state ERROR_ON_CLOSE   #Red;text:White
 state ERROR_ON_RESULT  #Red;text:White
-state ABORTED          #Green;text:White
+state ABORTED          #Gray;text:White
 
 [*]              --> PRE_CLOSE        : 1
 PRE_CLOSE        --> ERROR_ON_PAYMENT : 2
