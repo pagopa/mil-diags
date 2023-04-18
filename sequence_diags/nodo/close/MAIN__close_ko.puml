@@ -9,6 +9,13 @@ group#Gold close
 		end note
 	
 	
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+	
+	
+	NoticeSrv --> Client : HTTP 202 (accepted)
+	
+	
 	NoticeSrv -> NoticeDB : persist(//<value>//)
 		note left
 			!include_many ../stored_trx_data/close_ko.frag
@@ -21,16 +28,6 @@ group#Gold close
 		end note
 	
 	
-	!$client = NoticeSrv
-	!include_many ../common/get_acquirer_conf.frag
-	
-	
-	!include_many ../nodo_interaction/close_payment_ko_with_resp_ok.puml
-	
-	
-	NoticeSrv --> Client : HTTP 200 (ok)
-		note right
-			!include_many ../response/close_ko_with_resp_ok.frag
-		end note
+	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml
 end
 @enduml

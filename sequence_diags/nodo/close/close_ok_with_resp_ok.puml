@@ -9,6 +9,20 @@ group#Gold close
 		end note
 	
 	
+	NoticeSrv -> NoticeDB : findByIdOptional(//<transaction id>//)
+	
+	
+	NoticeDB --> NoticeSrv : <value>
+		note right
+			!include_many ../stored_trx_data/pre_close.frag
+		end note
+		
+		note over NoticeSrv #Orange
+			in case of document not
+			found, return HTTP 404
+		end note
+		
+	
 	!$client = NoticeSrv
 	!include_many ../common/get_acquirer_conf.frag
 	

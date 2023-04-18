@@ -9,6 +9,6 @@ group interaction with nodo
 		end note
 
 			
-	Nodo --> NoticeSrv : any response that isn't classified as ok (timeout included)
+	Nodo --> NoticeSrv : don't care
 end
 @enduml

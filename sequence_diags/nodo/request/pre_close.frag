@@ -9,5 +9,6 @@ __body__
 		.
 	],
 	"transactionId": "//<transaction id>//",
+	"totalAmount": "//<total amount of notices>//",
 	"fee": "//<total fee>//"
 }
