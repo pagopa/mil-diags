@@ -1,20 +1,8 @@
 @startuml
-!include_many ../../common/skin.puml
-!include_many ../../common/actors.puml
-
 group#Gold callback
 	!include_many ../nodo_interaction/callback_ok.puml
 
 
-	NoticeSrv -> NoticeDB : persist(//<value>//)
-		note left
-			!include_many ../stored_trx_data/callback_ok.frag
-		end note
-
-
-	NoticeDB --> NoticeSrv : ack
-		note over NoticeSrv #Orange
-			in case of error, retry
-		end note
+	!include_many ../stored_trx_data/write_trx_with_callback_ok.puml
 end group
 @enduml

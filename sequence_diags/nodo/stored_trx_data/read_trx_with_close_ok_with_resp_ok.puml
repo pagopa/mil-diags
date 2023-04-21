@@ -1,0 +1,11 @@
+@startuml
+group read trx data from db
+	NoticeSrv -> NoticeDB : find(//<transaction id>//)
+
+
+	NoticeDB --> NoticeSrv : //<value>//
+		note right
+			!include_many ../stored_trx_data/close_ok_with_resp_ok.frag
+		end note
+end
+@enduml

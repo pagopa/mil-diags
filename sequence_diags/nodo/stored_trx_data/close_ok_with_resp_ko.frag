@@ -20,8 +20,8 @@ __value__
 		.
 		.
 	],
-	"totalAmount": "//<total amount of notices>//",
-	"fee": "//<total fee>//",
+	"totalAmount": //<total amount of notices>//,
+	"fee": //<total fee>//,
 	"status": "<font color="red">**ERROR_ON_CLOSE**</font>",
 	"paymentMethod": "//<payment method>//",
 	"paymentTimestamp": "//<payment timestamp>//",

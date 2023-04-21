@@ -1,7 +1,4 @@
 @startuml
-!include_many ../../common/skin.puml
-!include_many ../../common/actors.puml
-
 group interaction with nodo
 	NoticeSrv -> Nodo : POST /closepayment
 		note left

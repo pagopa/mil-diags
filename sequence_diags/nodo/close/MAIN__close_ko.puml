@@ -16,16 +16,7 @@ group#Gold close
 	NoticeSrv --> Client : HTTP 202 (accepted)
 
 
-	NoticeSrv -> NoticeDB : persist(//<value>//)
-		note left
-			!include_many ../stored_trx_data/close_ko.frag
-		end note
-
-
-	NoticeDB --> NoticeSrv : ack
-		note over NoticeSrv #Orange
-			in case of error, retry
-		end note
+	!include_many ../stored_trx_data/write_trx_with_close_ko.puml
 
 
 	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml

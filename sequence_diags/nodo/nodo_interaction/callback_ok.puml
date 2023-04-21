@@ -1,12 +1,12 @@
 @startuml
-!include_many ../../common/skin.puml
-!include_many ../../common/actors.puml
-
 group interaction with nodo
 	Nodo -> NoticeSrv : POST /payments///<transaction id>//
 		note right
 			!include_many ../request/callback_ok.frag
 		end note
+
+
+	!include_many ../stored_trx_data/read_trx_with_close_ok_with_resp_ok.puml
 
 
 	NoticeSrv --> Nodo : HTTP 200 (ok)

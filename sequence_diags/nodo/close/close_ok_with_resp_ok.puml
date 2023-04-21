@@ -1,7 +1,4 @@
 @startuml
-!include_many ../../common/skin.puml
-!include_many ../../common/actors.puml
-
 group#Gold close
 	Client -> NoticeSrv : PATCH /payments///<transaction id>//
 		note left
@@ -9,13 +6,8 @@ group#Gold close
 		end note
 
 
-	NoticeSrv -> NoticeDB : findByIdOptional(//<transaction id>//)
+	!include_many ../stored_trx_data/read_trx_with_pre_close.puml
 
-
-	NoticeDB --> NoticeSrv : <value>
-		note right
-			!include_many ../stored_trx_data/pre_close.frag
-		end note
 
 		note over NoticeSrv #Orange
 			in case of document not
@@ -30,13 +22,7 @@ group#Gold close
 	!include_many ../nodo_interaction/close_payment_ok_with_resp_ok.puml
 
 
-	NoticeSrv -> NoticeDB : persist(//<value>//)
-		note left
-			!include_many ../stored_trx_data/close_ok_with_resp_ok.frag
-		end note
-
-
-	NoticeDB --> NoticeSrv : don't care
+	!include_many ../stored_trx_data/write_trx_with_close_ok_with_resp_ok.puml
 
 
 	{wait_for_attempt_1_begin} NoticeSrv --> Client : HTTP 200 (ok)

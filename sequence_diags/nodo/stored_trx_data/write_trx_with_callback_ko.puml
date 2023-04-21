@@ -1,0 +1,14 @@
+@startuml
+group write trx data to db
+	NoticeSrv -> NoticeDB : save(//<value>//)
+		note left
+			!include_many ../stored_trx_data/callback_ko.frag
+		end note
+
+
+	NoticeDB --> NoticeSrv : ack
+		note over NoticeSrv #Orange
+			in case of error, retry
+		end note
+	end group
+@enduml

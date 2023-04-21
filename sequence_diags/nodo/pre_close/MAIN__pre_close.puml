@@ -18,33 +18,21 @@ group#Gold pre-close
 	end loop
 
 
-	NoticeSrv -> NoticeDB : persist(//<value>//)
-		note left
-			!include_many ../stored_trx_data/pre_close.frag
-		end note
+	!include_many ../stored_trx_data/write_trx_with_pre_close.puml
 
 
-	alt db ok
-
-		NoticeDB --> NoticeSrv : ok
-
+	alt //<result>// is ok
 
 		NoticeSrv --> Client : HTTP 201 (created)
 			note right
 				!include_many ../response/pre_close.frag
 			end note
 
-	else duplicate key
-
-		NoticeDB --> NoticeSrv : duplicate key
-
+	else //<result>// is duplicate key
 
 		NoticeSrv --> Client : HTTP 409 (conflict)
 
-	else db ko
-
-		NoticeDB --> NoticeSrv : ko
-
+	else //<result>// is ko
 
 		NoticeSrv --> Client : HTTP 500 (server error)
 			note left #Orange

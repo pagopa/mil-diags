@@ -20,7 +20,7 @@ __value__
 		.
 		.
 	],
-	"totalAmount": "//<total amount of notices>//",
-	"fee": "//<total fee>//",
+	"totalAmount": //<total amount of notices>//,
+	"fee": //<total fee>//,
 	"status": "<font color="red">**PRE_CLOSE**</font>"
 }
