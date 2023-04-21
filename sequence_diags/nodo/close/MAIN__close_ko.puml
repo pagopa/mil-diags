@@ -16,6 +16,7 @@ group#Gold close
 	NoticeSrv --> Client : HTTP 202 (accepted)
 
 
+	!include_many ../stored_trx_data/read_trx_with_pre_close.puml
 	!include_many ../stored_trx_data/write_trx_with_close_ko.puml
 
 
