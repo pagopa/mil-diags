@@ -42,6 +42,9 @@ group#Gold close
 		end note
 
 
+	!include_many ../preset_interaction/trx_with_close_ok_with_resp_ko.puml
+
+
 	NoticeSrv --> Client : HTTP 200 (ok)
 		note left
 			!include_many ../response/ko_for_close_ok.frag
