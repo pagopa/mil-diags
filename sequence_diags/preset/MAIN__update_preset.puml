@@ -1,0 +1,17 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold update preset
+	PresetTpc ->> PresetSrv : //<value>//
+		note left
+			!include_many ../nodo/preset_interaction/trx.frag
+		end note
+
+
+	!include_many stored_data/get_preset_to_execute_by_id.puml
+
+	
+	!include_many stored_data/update_preset.puml
+end
+@enduml

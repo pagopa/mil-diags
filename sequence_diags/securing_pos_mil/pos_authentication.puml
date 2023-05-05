@@ -1,0 +1,209 @@
+@startuml
+
+!pragma teoz true
+skinparam style strictuml
+'skinparam maxMessageSize 300
+skinparam sequenceMessageAlign left
+skinparam sequenceArrowColor #blue
+autonumber "<font color='red'><b><u>##</u></b></font>"
+
+
+
+actor "User" as USR
+
+box "POS"
+	participant "PagoPA App" as APP
+end box
+
+box "Poynt"
+	participant "Poynt API\nservices.poynt.net" as PNT
+end box
+
+box "PagoPA"
+	participant "Multi-channel\nIntegration Layer" as MIL
+	participant "Database" as DBS
+	participant "IDPay" as IDP
+end box
+
+box "NEXI"
+	participant "Merchant Portal" as NXI
+end box
+
+
+USR ->  APP: Start
+
+opt Terminal or MIL RSA-keys expired or POS rebooted
+	hnote over APP, PNT: Getting of //<refresh token>// and //<access token>//
+
+	APP ->  APP : Generate 4096-bits RSA key pair
+	note left
+		__//<terminal key pair>//__
+		{
+			"kid": "//<terminal key pair id>//",
+			"kty": "RSA",
+			"use": "sig",
+			"iat": //<terminal key pair issue time>//,
+			"exp": //<terminal key pair expiration time>//,
+			"p": "//<terminal prime number p>//",
+			"q": "//<terminal prime number q>//",
+			"e": "//<terminal public key exponent>//",
+			"n": "//<terminal public key modulus>//"
+		}
+	end note
+	
+	APP ->  APP : Store //<terminal rsa key pair>//
+	APP ->  MIL : PUT /terminalPublicKeys///<acquirer id>/////<merchant id>/////<terminal id>//
+	note left
+		__header__
+		- Authorization: Bearer //<access token>//
+		- RequestId: //<request id>//
+		- Version: //<api version>//
+		- Channel: POS
+		
+		__body__
+		{
+			"businessId": "//<business id>//",
+			"key" : {
+				"kid": "//<terminal key pair id>//",
+				"kty": "RSA",
+				"use": "sig",
+				"iat": //<terminal key pair issue time>//,
+				"exp": //<terminal key pair expiration time>//,
+				"e": "//<terminal public key exponent>//",
+				"n": "//<terminal public key modulus>//"
+			}
+		}
+	end note
+	
+	MIL ->  PNT : GET /businesses///<business id>//
+	note right
+		__header__
+		Api-Version: 1.2
+		Authorization: Bearer //<access token>//
+		Content-Type: application/json
+		POYNT-REQUEST-ID: //don't care//
+	end note
+
+	PNT --> MIL : HTTP 200 (ok)
+	note left
+		__body__
+		//<business object>//
+	end note
+	
+	MIL ->  DBS : Store
+	note left
+		//<business object>// for //<merchant id>//
+	end note
+	
+	DBS --> MIL : Ok
+	
+	MIL ->  MIL : Generate 4096-bits RSA key pair
+	note left
+		__//<mil key pair>//__
+		{
+			"kid": "//<mil key pair id>//",
+			"kty": "RSA",
+			"use": "enc",
+			"iat": //<mil key pair issue time>//,
+			"exp": //<mil key pair expiration time>//,
+			"p": "//<mil prime number p>//",
+			"q": "//<mil prime number q>//",
+			"e": "//<mil public key exponent>//",
+			"n": "//<mil public key modulus>//"
+		}
+	end note
+	
+	MIL ->  DBS : Store
+	note left
+		{
+			"acquirerId": "//<acquirer id>//",
+			"merchantId": "//<merchant id>//",
+			"terminalId": "//<terminal id>//",
+			"terminalPublicKey": {
+				"kid": "//<terminal key pair id>//",
+				"kty": "RSA",
+				"use": "sig",
+				"iat": //<terminal key pair issue time>//,
+				"exp": //<terminal key pair expiration time>//,
+				"e": "//<terminal public key exponent>//",
+				"n": "//<terminal public key modulus>//"
+			},
+			"milKeyPair": {
+				"kid": "//<mil key pair id>//",
+				"kty": "RSA",
+				"use": "enc",
+				"iat": //<mil key pair issue time>//,
+				"exp": //<mil key pair expiration time>//,
+				"p": "//<mil prime number p>//",
+				"q": "//<mil prime number q>//",
+				"e": "//<mil public key exponent>//",
+				"n": "//<mil public key modulus>//"
+			}
+		}
+	end note
+	
+	DBS --> MIL : Ok
+	MIL --> APP :
+	note right
+		__body__
+		{
+			"kid": "//<mil key pair id>//",
+			"kty": "RSA",
+			"use": "enc",
+			"iat": //<mil key pair issue time>//,
+			"exp": //<mil key pair expiration time>//,
+			"e": "//<mil public key exponent>//",
+			"n": "//<mil public key modulus>//"
+		}
+	end note
+	
+	APP ->  APP : Store //<mil public key>//
+	
+end opt
+
+
+USR ->  APP : Generic interation
+APP ->  APP : Build //<request body>//
+APP ->  APP : Build JWS header
+note left
+	__//<jws header>//__
+	{
+		"b64": false,
+		"crit": [ "b64" ],
+		"iat": //<issue time>//,
+		"alg": "RS256",
+		"kid": "//<terminal key pair id>//"
+	}
+end note
+	
+APP ->  APP : //<encoded header>// = base64url-encoding of //<header>//
+APP ->  APP : //<signature>// = Calculate RSA signature with SHA-256 of //<http method>// || //<path param #1>// || //<path param #2>// || ... || //<path param #2>// //<request body>// with //<terminal private key>//
+APP ->  APP : //<encoded signature>// = base64url-encoding of //<signature>//
+APP ->  APP : //<jws>// = //<encoded header>//..//<encoded signature>//
+
+APP ->  MIL : <http method> <http protocol>://<host>:<port>/<path part #1>/<path param #1>/<path part #2>/<path param #2>/.../<path part #n>/<path param #n>POST | PUT | PATCH | DELETE | GET //<uri>//
+note left
+	__header__
+	- Version: //<api version>//
+	- AcquirerId: //<acquirer id>//
+	- Channel: POS
+	- MerchantId: //<merchant id>//
+	- TerminalId: //<terminal id>//
+	- JwsSign: //<jws>//
+
+	__request body__
+	//<payload>//
+end note
+
+MIL ->  DBS : Retrieve //<terminal public key>// and //<mil key pair>// by //<acquirer id>//, //<merchant id>//, //<terminal id>// 
+DBS --> MIL : 
+
+hnote over MIL, IDP: <font color="red">**To be explored with the IDPay Team**</font>
+
+MIL --> APP : Ok
+
+...
+hnote across: Other message exchanges
+...
+
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+group delete subscriber
+	PresetSrv -> PresetDB : delete(//<query>//)
+		note left
+			__query__
+			{
+				"paTaxCode": "//<pa tax code>//",
+				"subscriberId": "//<subscriber id>//
+			}
+		end note
+	
+	
+	PresetDB --> PresetSrv : //<result>//
+end
+@enduml

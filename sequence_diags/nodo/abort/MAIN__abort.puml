@@ -1,0 +1,30 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold abort
+	Client -> NoticeSrv : POST /payments
+		note left
+			!include_many ../request/abort.frag
+		end note
+
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+
+
+	NoticeSrv --> Client : HTTP 202 (accepted)
+
+
+	loop for each //<payment token>//
+		NoticeSrv -> NoticeCache: get(//<payment token>//)
+		NoticeCache --> NoticeSrv: //<value>//
+		note right
+			!include_many ../common/stored_notice_data.frag
+		end note
+	end loop
+
+
+	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml
+end
+@enduml

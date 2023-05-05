@@ -1,0 +1,11 @@
+@startuml
+group insert subscriber
+	PresetSrv -> PresetDB : insert(//<value>//)
+		note left
+			!include_many update_subscriber.frag
+		end note
+
+
+	PresetDB --> PresetSrv : //<result>//
+end group
+@enduml

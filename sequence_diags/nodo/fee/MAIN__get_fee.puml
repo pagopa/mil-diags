@@ -1,0 +1,29 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold get fee
+	Client -> FeeSrv : POST /fees
+		note left
+			!include_many ../request/get_fee.frag
+		end note
+
+
+	FeeSrv -> GEC : POST /fees
+		note left
+			!include_many ../nodo_request/get_fee.frag
+		end note
+
+
+	GEC --> FeeSrv : HTTP 200 (ok)
+		note right
+			!include_many ../nodo_response/get_fee.frag
+		end note
+
+
+	FeeSrv --> Client : HTTP 200 (ok)
+		note right
+			!include_many ../response/get_fee.frag
+		end note
+end
+@enduml

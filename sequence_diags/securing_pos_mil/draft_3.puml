@@ -1,0 +1,17 @@
+@startuml
+!pragma teoz true
+skinparam style strictuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor user
+
+user  -> my   : GET \n https://my/page\n?action=login
+my    -> my   : //<state>// = random string
+my   --> user : HTTP 302 Found \n Location: https://auth/oauth/authorize\n?response_type=code\n&client_id=//<my client id>//\n&redirect_uri=https%3A%2F%2Fmy%2Fpage\n&scope=merchant_data\n&state=//<state>//
+user  -> auth : GET \n https://auth/oauth/authorize\n?response_type=code\n&client_id=//<my client id>//\n&redirect_uri=https%3A%2F%2Fmy%2Fpage\n&scope=merchant_data\n&state=//<state>//
+auth --> user : //Login page//
+user  -> auth : //Login credentials//
+auth --> user : HTTP 302 Found \n Location: https://my/page\n?code=//<authorization code>\n&state=//<state>//
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+!include_many close_ok_with_resp_ok.puml
+!include_many 1st_polling_cycle_with_pending_status.puml
+...
+...
+...
+...
+!include_many last_polling_cycle_with_pending_status.puml
+
+note across #Red
+	<font color="white">**transaction under reserve**</font>
+end note
+@enduml

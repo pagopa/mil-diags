@@ -1,0 +1,14 @@
+@startuml
+group interaction with nodo
+	NoticeSrv -> Nodo : POST /activatePaymentNotice
+		note left
+			!include_many ../nodo_request/activate.frag
+		end note
+
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		note right
+			!include_many ../nodo_response/activate_ko.frag
+		end note
+end
+@enduml

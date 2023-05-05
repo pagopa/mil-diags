@@ -1,0 +1,26 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold close
+	Client -> NoticeSrv : PATCH /payments///<transaction id>//
+		note left
+			!include_many ../request/close_ko.frag
+		end note
+
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+
+
+	NoticeSrv --> Client : HTTP 202 (accepted)
+
+
+	!include_many ../stored_trx_data/read_trx_with_pre_close.puml
+	!include_many ../stored_trx_data/write_trx_with_close_ko.puml
+	!include_many ../preset_interaction/trx_with_close_ko.puml
+
+
+	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml
+end
+@enduml

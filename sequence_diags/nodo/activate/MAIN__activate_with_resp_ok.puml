@@ -1,0 +1,50 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold activate
+	alt QR-code
+
+		Client -> NoticeSrv : PATCH /paymentNotices///<qr code>//
+			note left
+				!include_many ../request/activate.frag
+			end note
+
+
+		NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+
+	else w/o QR-code
+
+		Client -> NoticeSrv : PATCH /paymentNotices///<pa tax code>/////<notice number>//
+			note left
+				!include_many ../request/activate.frag
+			end note
+
+	end
+
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+
+
+	!include_many ../nodo_interaction/activate_ok.puml
+
+
+	group store data in the cache
+		NoticeSrv -> NoticeCache : set(//<payment token>//, //<value>//)
+			note left
+				!include_many ../common/stored_notice_data.frag
+			end note
+
+
+		NoticeCache --> NoticeSrv : OK
+	end group
+
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		note right
+			!include_many ../response/activate_ok.frag
+		end note
+end
+@enduml
+ 

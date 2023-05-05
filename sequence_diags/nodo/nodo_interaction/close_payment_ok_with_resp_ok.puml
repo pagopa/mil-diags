@@ -1,0 +1,41 @@
+@startuml
+group interaction with nodo
+	NoticeSrv -> Nodo : POST /closepayment
+		note left
+			!include_many ../nodo_request/close_payment_ok.frag
+		end note
+
+
+	alt ok
+
+		Nodo --> NoticeSrv : HTTP 200 (ok)
+			note right
+				!include_many ../nodo_response/ok_for_close_payment.frag
+			end note
+
+	else unparsable/unknown response
+
+		Nodo --> NoticeSrv : HTTP 200 (ok)
+			note right
+				unparsable or unknown response
+			end note
+
+	else no response
+
+		Nodo --> NoticeSrv : no response
+
+	else request timeout 
+
+		Nodo --> NoticeSrv : HTTP 408 (request timeout)
+
+	else unprocessable content
+
+		Nodo --> NoticeSrv : HTTP 422 (unprocessable content)
+
+	else not in (200, 400, 404, 408, 422) 
+
+		Nodo --> NoticeSrv : HTTP status code not in (200, 400, 404, 408, 422)
+
+	end
+end
+@enduml

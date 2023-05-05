@@ -1,0 +1,29 @@
+{
+	"transactionId": "517a4216840E461fB011036A0fd134E1",
+	"acquirerId": "4585625",
+	"channel": "POS",
+	"merchantId": "28405fHfk73x88D",
+	"terminalId": "0aB9wXyZ",
+	"insertTimestamp": "2023-04-19T10:00:00.000Z",
+	"notices": [
+		{
+			"paymentToken": "648fhg36s95jfg7DS",
+			"paTaxCode": "15376371009",
+			"noticeNumber": "485564829563528563",
+			"amount": 10000,
+			"description": "Health ticket for chest x-ray",
+			"company": "ASL Roma 4",
+			"office": "Ufficio di Roma",
+			"creditorReferenceId": "4839d50603fssfW5X",
+			"debtor": "Mario Rossi"
+		}
+	],
+	"totalAmount": 10000,
+	"fee": 10050,
+	"status": "CLOSED",
+	"paymentMethod": "PAGOBANCOMAT",
+	"paymentTimestamp": "2023-04-19T10:01:00.000Z",
+	"closeTimestamp": "2023-04-19T10:02:00.000Z",
+	"paymentDate": "2023-04-19",
+	"callbackTimestamp": "2023-04-19T10:03:00.000Z"
+}

@@ -1,21 +1,31 @@
 participant "Client" as Client
 
+participant "Institution or\nMerchant Portal" as Portal
+
 box Multichannel Integration Layer #GhostWhite
 	participant "Session Service" as SessionSrv
 	database "Cache\n(Redis)" as SessionCache
 	
 	participant "T&C Service" as TCSrv
-	database "DB\n(CosmosDB)" as TCDB
+	database "DB\n(MongoDB)" as TCDB
 	
 	participant "Functions Service" as FunctionSrv
-	database "DB\n(CosmosDB)" as FunctionDB
+	database "DB\n(MongoDB)" as FunctionDB
 	
 	participant "Payment Notice Service" as NoticeSrv
 	database "Cache\n(Redis)" as NoticeCache
+	database "DB\n(MongoDB)" as NoticeDB
 	
 	participant "Wallet Service" as WalletWrp
 
 	participant "Fee Calculator" as FeeSrv
+	
+	participant "Acquirer Config" as AcqConf
+	
+	participant "Preset Topic" as PresetTpc
+	
+	participant "Preset Operation" as PresetSrv
+	database "DB\n(MongoDB)" as PresetDB
 end box
 
 box CDE/PCI Environment #GhostWhite

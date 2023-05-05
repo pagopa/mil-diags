@@ -1,0 +1,21 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold get presets
+	Portal -> PresetSrv : GET /presets///<pa tax code>/////<subscriber id>//
+
+
+	!include_many stored_data/get_presets_by_subscriber_id.puml
+		note over PresetSrv #Orange
+			if nothing is found, return HTTP 200 with { "presets": [] } 
+			if an error is returned from db, return HTTP 500 (server error)
+		end note
+
+
+	PresetSrv --> Portal : HTTP 200 (found)
+		note right
+			!include_many response/presets.frag
+		end note
+end
+@enduml

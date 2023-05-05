@@ -1,0 +1,38 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold verify
+	alt qr-code
+
+		Client -> NoticeSrv : GET /paymentNotices///<qr code>//
+			note left
+				!include_many ../request/verify.frag
+			end note
+
+
+		NoticeSrv -> NoticeSrv : parse //<qr code>//: //<pa tax code>//, //<notice number>//
+
+	else w/o qr-code
+
+		Client -> NoticeSrv : GET /paymentNotices///<pa tax code>/////<notice number>//
+			note left
+				!include_many ../request/verify.frag
+			end note
+
+	end
+
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+
+
+	!include_many ../nodo_interaction/verify_ko.puml
+
+
+	NoticeSrv --> Client : HTTP 200 (ok)
+		note right
+			!include_many ../response/verify_ko.frag
+		end note
+end
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+group#Gold callback
+	!include_many ../nodo_interaction/callback_ok.puml
+
+
+	!include_many ../stored_trx_data/write_trx_with_callback_ok.puml
+	
+	
+	!include_many ../preset_interaction/trx_with_callback_ok.puml
+end group
+@enduml

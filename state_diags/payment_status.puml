@@ -1,0 +1,27 @@
+@startuml
+hide empty description
+
+state PRE_CLOSE        #Orange
+state ERROR_ON_PAYMENT #Green;text:White
+state PENDING          #Orange
+state CLOSED           #Green;text:White
+state ERROR_ON_CLOSE   #Red;text:White
+state ERROR_ON_RESULT  #Red;text:White
+state ABORTED          #Gray;text:White
+
+[*]              --> PRE_CLOSE        : 1
+PRE_CLOSE        --> ERROR_ON_PAYMENT : 2
+PRE_CLOSE        --> PENDING          : 3
+PENDING          --> CLOSED           : 4 
+PRE_CLOSE        --> ERROR_ON_CLOSE   : 5
+PENDING          --> ERROR_ON_RESULT  : 6
+PRE_CLOSE        --> CLOSED           : 7
+PRE_CLOSE        --> ERROR_ON_RESULT  : 8
+[*]              --> ABORTED          : 9
+ERROR_ON_PAYMENT --> [*] 
+CLOSED           --> [*]
+ERROR_ON_CLOSE   --> [*]
+ERROR_ON_RESULT  --> [*]
+ABORTED          --> [*]
+
+@enduml

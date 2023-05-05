@@ -1,0 +1,36 @@
+@startuml
+group#Gold close
+	Client -> NoticeSrv : PATCH /payments///<transaction id>//
+		note left
+			!include_many ../request/close_ok.frag
+		end note
+
+
+	!include_many ../stored_trx_data/read_trx_with_pre_close.puml
+
+
+		note over NoticeSrv #Orange
+			in case of document not
+			found, return HTTP 404
+		end note
+
+
+	!$client = NoticeSrv
+	!include_many ../common/get_acquirer_conf.frag
+
+
+	!include_many ../nodo_interaction/close_payment_ok_with_resp_ok.puml
+
+
+	!include_many ../stored_trx_data/write_trx_with_close_ok_with_resp_ok.puml
+
+
+	!include_many ../preset_interaction/trx_with_close_ok_with_resp_ok.puml
+	
+	
+	{wait_for_attempt_1_begin} NoticeSrv --> Client : HTTP 200 (ok)
+		note right
+			!include_many ../response/ok_for_close_ok.frag
+		end note
+end
+@enduml

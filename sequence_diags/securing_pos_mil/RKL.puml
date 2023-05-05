@@ -1,0 +1,60 @@
+@startuml
+!pragma teoz true
+skinparam style strictuml
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor "User" as user
+
+box POS #GhostWhite
+	participant "PagoPA App" as pago
+end box
+
+box PagoPA #GhostWhite
+	participant "Multi-channel Integration Layer" as mil
+    participant "Thales payShield 10k" as hsm
+    participant "Personal Data Vault" as PDV
+end box
+
+== init ==
+
+pago -> pago : Generate RSA key pair (P<sub>term</sub> + S<sub>term</sub>)
+
+pago -> mil : P<sub>term</sub>
+
+mil -> hsm : Generate TPK (__cmd__: A0)
+hsm --> mil : TPK|<sub>LMK</sub> (__cmd__: A1)
+
+mil -> mil : Store TPK|<sub>LMK</sub>
+
+mil -> hsm : Export key under RSA public key (__cmd__: GK; __in__: P<sub>term</sub>, TPK|<sub>LMK</sub>)
+hsm --> mil : TPK|<sub>Pterm</sub> (__cmd__: GL)
+
+mil --> pago : TPK|<sub>Pterm</sub>
+
+pago -> pago : Decrypt TPK|<sub>Pterm</sub> using S<sub>term</sub>
+pago -> pago : Store TPK
+
+
+== usage ==
+
+user -> pago : PIN
+
+pago -> pago : SynthPAN = 12 right-most digits of Decimalization[SHA-1(Tax Code)]
+pago -> pago : Generate ISO-0 PIN block using SynthPAN
+pago -> pago : Encrypt PIN block under TPK
+
+pago -> mil : PIN block|<sub>TPK</sub> + Tax Code
+
+mil -> PDV : Tokenize Tax Code
+PDV --> mil : Tax Code Token
+mil -> mil : Retrieve PIN|<sub>LMK</sub> by Tax Code Token
+mil -> mil : SynthPAN = 12 right-most digits of Decimalization[SHA-1(Tax Code)]
+
+mil -> hsm : Verify Terminal PIN (__cmd__: BC; __in__: PIN block|<sub>TPK</sub>, SynthPAN, PIN|<sub>LMK</sub>
+hsm --> mil : Response (__cmd__: BD)
+
+mil --> pago : Response
+
+pago --> user : Response
+@enduml

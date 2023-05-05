@@ -1,0 +1,40 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold create preset
+	Portal -> PresetSrv : POST /preset
+		note left
+			!include_many request/create_preset.frag
+		end note
+
+
+	!include_many stored_data/get_subscriber_by_id.puml
+
+
+	note over PresetSrv #Orange
+		if subscriber is not found, return HTTP 400 (bad request)
+		if an error is returned from db, return HTTP 500 (server error)
+	end note
+
+	
+	!include_many stored_data/update_subscriber.puml
+	note over PresetSrv #Orange
+		if an error is returned from db, ignore it
+	end note
+	
+	PresetSrv -> PresetSrv : //<preset id>// = random UUID
+	
+	
+	!include_many stored_data/create_preset.puml
+	note over PresetSrv #Orange
+		if an error is returned from db, return HTTP 500 (server error)
+	end note
+
+		
+	PresetSrv --> Portal : HTTP 201 (created)
+		note right
+			!include_many response/create_preset.frag
+		end note
+end
+@enduml

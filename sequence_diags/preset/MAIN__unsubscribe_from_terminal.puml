@@ -1,0 +1,20 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold unsubscribe
+	Client -> PresetSrv : DELETE /terminals///<pa tax code>/////<subscriber id>//
+		note left
+			!include request/unsubscribe_from_terminal.frag
+		end note
+
+	!include_many stored_data/delete_subscriber.puml
+		note over PresetSrv #Orange
+			if nothing is deleted, return HTTP 404 (not found) 
+			if an error is returned from db, return HTTP 500 (server error)
+		end note
+
+
+	PresetSrv --> Client : HTTP 204 (no content)
+end
+@enduml

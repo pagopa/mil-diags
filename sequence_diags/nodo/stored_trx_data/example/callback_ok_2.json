@@ -1,0 +1,29 @@
+{
+	"transactionId": "d4Dd3e86a8aE4dca885A625d15d26413",
+	"acquirerId": "4585625",
+	"channel": "POS",
+	"merchantId": "28405fHfk73x88D",
+	"terminalId": "0aB9wXyZ",
+	"insertTimestamp": "2023-04-19T11:00:00.000Z",
+	"notices": [
+		{
+			"paymentToken": "648fhg36s95jfg7DS",
+			"paTaxCode": "77777777777",
+			"noticeNumber": "175946694739610584",
+			"amount": 5000,
+			"description": "Health ticket for hands x-ray",
+			"company": "ASL Bari 1",
+			"office": "Ufficio di Bari",
+			"creditorReferenceId": "586935e6w3ts4fe5Q",
+			"debtor": "Francesco Rossi"
+		}
+	],
+	"totalAmount": 5000,
+	"fee": 5050,
+	"status": "CLOSED",
+	"paymentMethod": "PAGOBANCOMAT",
+	"paymentTimestamp": "2023-04-19T11:01:00.000Z",
+	"closeTimestamp": "2023-04-19T11:02:00.000Z",
+	"paymentDate": "2023-04-19",
+	"callbackTimestamp": "2023-04-19T11:03:00.000Z"
+}

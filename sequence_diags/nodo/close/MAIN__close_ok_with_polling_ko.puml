@@ -1,0 +1,13 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+!include_many close_ok_with_resp_ok.puml
+!include_many 1st_polling_cycle_with_pending_status.puml
+!include_many callback_ko.puml
+!include_many 2nd_polling_cycle_with_error_on_result_status.puml
+
+note across #Red
+	<font color="white">**the e-money transaction must be rolled back or the user must be charged back**</font>
+end note
+@enduml

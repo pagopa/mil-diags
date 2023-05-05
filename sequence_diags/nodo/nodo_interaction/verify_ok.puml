@@ -1,0 +1,14 @@
+@startuml
+group interaction with nodo
+	NoticeSrv -> Nodo : POST /verifyPaymentNotice
+		note left
+			!include_many ../nodo_request/verify.frag
+		end note
+
+
+	Nodo --> NoticeSrv : HTTP 200 (ok)
+		note right
+			!include_many ../nodo_response/verify_ok.frag
+		end note
+end
+@enduml

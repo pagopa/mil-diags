@@ -1,0 +1,47 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold pre-close
+	Client -> NoticeSrv : POST /payments
+		note left
+			!include_many ../request/pre_close.frag
+		end note
+
+
+	loop for each //<payment token>//
+		NoticeSrv -> NoticeCache: get(//<payment token>//)
+		NoticeCache --> NoticeSrv: //<value>//
+		note right
+			!include_many ../common/stored_notice_data.frag
+		end note
+	end loop
+
+
+	!include_many ../stored_trx_data/write_trx_with_pre_close.puml
+
+
+	alt //<result>// is ok
+
+		!include_many ../preset_interaction/trx_with_pre_close.puml
+		
+		
+		NoticeSrv --> Client : HTTP 201 (created)
+			note right
+				!include_many ../response/pre_close.frag
+			end note
+
+	else //<result>// is duplicate key
+
+		NoticeSrv --> Client : HTTP 409 (conflict)
+
+	else //<result>// is ko
+
+		NoticeSrv --> Client : HTTP 500 (server error)
+			note left #Orange
+				retry
+			end note
+
+	end alt
+end
+@enduml
