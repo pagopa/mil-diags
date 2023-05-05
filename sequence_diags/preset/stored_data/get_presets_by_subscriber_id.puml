@@ -1,0 +1,18 @@
+@startuml
+group find presets
+	PresetSrv -> PresetDB : find(//<query>//)
+		note left
+			__query__
+			{
+				"paTaxCode": "//<pa tax code>//",
+				"subscriberId": "//<subscriber id>//"
+			}
+		end note
+	
+	
+	PresetDB --> PresetSrv : //<value>//
+		note right
+			!include_many get_presets.frag
+		end note
+end
+@enduml

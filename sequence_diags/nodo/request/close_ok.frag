@@ -1,4 +1,4 @@
-!include_many ../common/request_header.frag
+!include_many ../../common/request_header_with_access_token.frag
 __body__
 {
 	"outcome": "<font color="red">**CLOSE**</font>",

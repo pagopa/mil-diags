@@ -21,6 +21,6 @@ group interaction with nodo
 
 		Nodo --> NoticeSrv : HTTP 404 (not found)
 
-	end opt
+	end alt
 end
 @enduml

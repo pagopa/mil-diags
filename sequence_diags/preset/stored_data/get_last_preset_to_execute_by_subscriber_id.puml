@@ -1,0 +1,19 @@
+@startuml
+group find presets
+	PresetSrv -> PresetDB : find(//<query>//, Sort.by("creationTimestamp", Descending)).firstResult()
+		note left
+			__query__
+			{
+				"paTaxCode": "//<pa tax code>//",
+				"subscriberId": "//<subscriber id>//",
+				"status": "TO_EXECUTE"
+			}
+		end note
+	
+	
+	PresetDB --> PresetSrv : //<value>//
+		note right
+			!include_many get_preset_to_execute.frag
+		end note
+end
+@enduml

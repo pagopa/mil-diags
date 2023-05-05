@@ -1,0 +1,11 @@
+@startuml
+group insert preset
+	PresetSrv -> PresetDB : insert(//<value>//)
+		note left
+			!include_many create_preset.frag
+		end note
+
+
+	PresetDB --> PresetSrv : //<result>//
+end group
+@enduml

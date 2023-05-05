@@ -4,5 +4,8 @@ group#Gold callback
 
 
 	!include_many ../stored_trx_data/write_trx_with_callback_ko.puml
+	
+	
+	!include_many ../preset_interaction/trx_with_callback_ko.puml
 end group
 @enduml

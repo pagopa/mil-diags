@@ -7,4 +7,5 @@ group write trx data to db
 
 
 	NoticeDB --> NoticeSrv : don't care
+end
 @enduml

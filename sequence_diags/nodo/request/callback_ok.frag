@@ -1,3 +1,5 @@
+__header__
+API-Key: //<api key>//
 __body__
 {
 	"outcome": "<font color="red">**OK**</font>",

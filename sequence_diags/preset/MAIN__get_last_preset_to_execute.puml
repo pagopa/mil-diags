@@ -1,0 +1,21 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold get last preset
+	Portal -> PresetSrv : GET /presets///<pa tax code>/////<subscriber id>//?criterion=last_to_execute
+
+
+	!include_many stored_data/get_last_preset_to_execute_by_subscriber_id.puml
+		note over PresetSrv #Orange
+			if nothing is found, return HTTP 404 (not found)
+			if an error is returned from db, return HTTP 500 (server error)
+		end note
+
+
+	PresetSrv --> Portal : HTTP 200 (found)
+		note right
+			!include_many response/get_last_preset_to_execute.frag
+		end note
+end
+@enduml

@@ -25,6 +25,9 @@ group#Gold close
 	!include_many ../stored_trx_data/write_trx_with_close_ok_with_resp_ok.puml
 
 
+	!include_many ../preset_interaction/trx_with_close_ok_with_resp_ok.puml
+	
+	
 	{wait_for_attempt_1_begin} NoticeSrv --> Client : HTTP 200 (ok)
 		note right
 			!include_many ../response/ok_for_close_ok.frag

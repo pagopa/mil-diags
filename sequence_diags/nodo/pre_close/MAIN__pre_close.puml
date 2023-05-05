@@ -23,6 +23,9 @@ group#Gold pre-close
 
 	alt //<result>// is ok
 
+		!include_many ../preset_interaction/trx_with_pre_close.puml
+		
+		
 		NoticeSrv --> Client : HTTP 201 (created)
 			note right
 				!include_many ../response/pre_close.frag

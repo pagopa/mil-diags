@@ -29,5 +29,10 @@ __value__
 	"paymentTimestamp": "//<payment timestamp>//",
 	"closeTimestamp": "//<close timestamp>//",
 	"paymentDate": "//<payment date>//",
-	"callbackTimestamp": "//<callback timestamp>//"
+	"callbackTimestamp": "//<callback timestamp>//",
+	<font color="blue">"preset": {</font>
+		<font color="blue">"paTaxCode": "//<pa tax code>//",</font>
+		<font color="blue">"subcriberId": "//<subscriber id>//",</font>
+		<font color="blue">"presetId": "//<preset id>//"</font>
+	<font color="blue">}</font>
 }

@@ -25,5 +25,10 @@ __value__
 	"status": "<font color="red">**ERROR_ON_PAYMENT**</font>",
 	"paymentMethod": "//<payment method>//",
 	"paymentTimestamp": "//<payment timestamp>//",
-	"closeTimestamp": "//<close timestamp>//"
+	"closeTimestamp": "//<close timestamp>//",
+	<font color="blue">"preset": {</font>
+		<font color="blue">"paTaxCode": "//<pa tax code>//",</font>
+		<font color="blue">"subcriberId": "//<subscriber id>//",</font>
+		<font color="blue">"presetId": "//<preset id>//"</font>
+	<font color="blue">}</font>
 }

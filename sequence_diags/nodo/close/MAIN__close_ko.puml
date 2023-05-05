@@ -18,6 +18,7 @@ group#Gold close
 
 	!include_many ../stored_trx_data/read_trx_with_pre_close.puml
 	!include_many ../stored_trx_data/write_trx_with_close_ko.puml
+	!include_many ../preset_interaction/trx_with_close_ko.puml
 
 
 	!include_many ../nodo_interaction/close_payment_ko_with_resp_dontcare.puml

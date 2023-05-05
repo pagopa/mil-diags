@@ -1,0 +1,18 @@
+@startuml
+group find subscriber
+	PresetSrv -> PresetDB : find(//<query>//)
+		note left
+			__query__
+			{
+				"acquirerId": "//<acquirer id>//",
+				"channel": "//<channel>//",
+				"merchantId": "//<merchant id>//",
+				"terminalId": "//<terminal id>//",
+				"paTaxCode": "//<pa tax code>//"
+			}
+		end note
+	
+	
+	PresetDB --> PresetSrv : //<result>//
+end
+@enduml

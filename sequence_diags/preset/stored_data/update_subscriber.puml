@@ -1,0 +1,11 @@
+@startuml
+group update subscriber
+	PresetSrv -> PresetDB : update(//<value>//)
+		note left
+			!include_many update_subscriber.frag
+		end note
+
+
+	PresetDB --> PresetSrv : //<result>//
+end group
+@enduml

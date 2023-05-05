@@ -1,0 +1,20 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold get subscribers
+	Portal -> PresetSrv : GET /terminals///<pa tax code>//
+
+
+	!include_many stored_data/get_subscribers_by_pa_tax_code.puml
+		note over PresetSrv #Orange
+			if nothing is found, return HTTP 200 with { "subscribers": [] } 
+			if an error is returned from db, return HTTP 500 (server error)
+		end note
+
+	PresetSrv --> Portal : HTTP 200 (found)
+		note right
+			!include_many response/get_subscribers.frag
+		end note
+end
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold subscribe
+	Client -> PresetSrv : POST /terminals
+		note left
+			!include_many request/subscribe.frag
+		end note
+
+
+	!include_many stored_data/get_subscriber_by_raw_id.puml
+		note over PresetSrv #Orange
+			if subscriber is found, return HTTP 409 (conflict) with
+			!include_many response/subscribe.frag
+		end note
+
+
+	PresetSrv -> PresetSrv : //<subscriber id>// = ^[0-9a-zA-Z]{6}$ random string	
+
+	
+	!include_many stored_data/create_subscriber.puml
+		note over PresetSrv #Orange
+			if an error is returned from db, return HTTP 500 (server error)
+		end note
+		
+		
+	PresetSrv --> Client : HTTP 201 (created)
+		note right
+			!include_many response/subscribe.frag
+		end note
+end
+@enduml
