@@ -3,7 +3,7 @@
 !include_many ../common/actors.puml
 
 group#Gold update preset
-	PresetTpc ->> PresetSrv : //<value>//
+	NoticeTpc ->> PresetSrv : //<value>//
 		note left
 			!include_many ../nodo/preset_interaction/trx.frag
 		end note

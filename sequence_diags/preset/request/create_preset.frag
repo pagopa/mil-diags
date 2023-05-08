@@ -1,6 +1,6 @@
 __body__
 {
-	"operationType": "PaymentNotice",
+	"operationType": "PAYMENT_NOTICE",
 	"paTaxCode": "//<pa tax code>//",
 	"subscriberId": "//<subscriber id>//",
 	"noticeTaxCode": "//<notice tax code>//",

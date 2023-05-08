@@ -2,6 +2,7 @@ __body__
 {
 	"presets": [
 		{
+			"operationType": "PAYMENT_NOTICE",
 			"presetId": "//<preset id>//",
 			"paTaxCode": "//<pa tax code>//",
 			"subscriberId": "//<subscriber id>//",
