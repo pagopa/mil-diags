@@ -4,6 +4,9 @@
 
 group#Gold unsubscribe
 	Portal -> PresetSrv : DELETE /terminals///<pa tax code>/////<subscriber id>//
+		note left
+			!include request/unsubscribe_from_portal.frag
+		end note
 
 
 	!include_many stored_data/delete_subscriber.puml

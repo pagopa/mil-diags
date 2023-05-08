@@ -22,7 +22,7 @@ box Multichannel Integration Layer #GhostWhite
 	
 	participant "Acquirer Config" as AcqConf
 	
-	participant "Preset Topic" as PresetTpc
+	queue "Preset Topic\nfor Payment Notice" as NoticeTpc
 	
 	participant "Preset Operation" as PresetSrv
 	database "DB\n(MongoDB)" as PresetDB

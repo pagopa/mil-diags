@@ -3,7 +3,10 @@
 !include_many ../common/actors.puml
 
 group#Gold get last preset
-	Portal -> PresetSrv : GET /presets///<pa tax code>/////<subscriber id>//?criterion=last_to_execute
+	Client -> PresetSrv : GET /presets///<pa tax code>/////<subscriber id>///last_to_execute
+	  note left
+	  	!include request/get_last_preset_to_execute.frag
+	  end note
 
 
 	!include_many stored_data/get_last_preset_to_execute_by_subscriber_id.puml
@@ -13,7 +16,7 @@ group#Gold get last preset
 		end note
 
 
-	PresetSrv --> Portal : HTTP 200 (found)
+	PresetSrv --> Client : HTTP 200 (found)
 		note right
 			!include_many response/get_last_preset_to_execute.frag
 		end note
