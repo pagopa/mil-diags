@@ -1,0 +1,11 @@
+@startuml
+group get key pair
+	IdpSrv -> IdpCache : get key pair with the given //<kid>//
+	
+	
+	IdpCache --> IdpSrv : //<key pair>//
+		note over IdpSrv #Orange
+			if nothing is found, return HTTP 401 (unauthorized)
+		end note
+end
+@enduml

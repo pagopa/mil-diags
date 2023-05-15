@@ -1,0 +1,15 @@
+@startuml
+group find valid key pairs
+	IdpSrv -> IdpCache : get key ids
+	IdpCache --> IdpSrv : list of //<kid>//
+	loop for each //<kid>//
+		IdpSrv -> IdpCache : get key pair
+		IdpCache --> IdpSrv : //<key pair>//
+		IdpSrv -> IdpSrv : if //<key pair>// is expired, discard it
+	end loop
+	
+	note over IdpSrv
+		list of //<key pair>// not yet expired
+	end note
+end
+@enduml

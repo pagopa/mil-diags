@@ -3,6 +3,12 @@ participant "Client" as Client
 participant "Institution or\nMerchant Portal" as Portal
 
 box Multichannel Integration Layer #GhostWhite
+    participant "Other Service" as Other
+    
+    participant "Auth Service" as IdpSrv
+    database "Cache\n(Redis)" as IdpCache
+    database "DB\n(MongoDB)" as IdpDB
+
 	participant "Session Service" as SessionSrv
 	database "Cache\n(Redis)" as SessionCache
 	
@@ -38,3 +44,4 @@ participant "Bancomat | Nexi | SIA |\nPoste Italiane |\nIntesa Sanpaolo | ICCREA
 participant "IO Back-end" as IO
 participant "Nodo" as Nodo
 participant "Gestione Evoluta\nCommissioni" as GEC
+participant "Poynt Services" as Poynt

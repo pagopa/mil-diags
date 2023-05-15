@@ -1,0 +1,28 @@
+@startuml
+group create access token proper
+	IdpSrv -> IdpSrv : generate //<access token payload>//
+		note left
+			{
+				"iat": "//<current timestamp>//",
+				"exp": "//<current timestamp + <access token duration>>//",
+				"scope": "//<grant #1>// //<grant #2>// ... //<grant #n>//",
+				"clientId": "//<client id>//"
+			}
+		end note
+
+
+	IdpSrv -> IdpSrv : generate //<access token header>//
+		note left
+			{
+				"alg": "RS256",
+				"kid": "//<kid of selected <key pair>>//"
+			}
+		end note
+
+
+	IdpSrv -> IdpSrv : sign access token by means of the selected //<key pair>//
+
+
+	IdpSrv -> IdpSrv : <access token> = base64UrlEncode(//<access token header>//) + "." + base64UrlEncode(//<access token payload>//) + "." + base64UrlEncode(//<access token signature>//)
+end
+@enduml

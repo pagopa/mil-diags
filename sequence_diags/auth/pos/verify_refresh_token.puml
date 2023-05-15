@@ -1,0 +1,36 @@
+@startuml
+group verify refresh token
+	IdpSrv -> IdpSrv : verify //<refresh token>// timestamps (//<iat>//, //<exp>//)
+		note over IdpSrv #Orange
+			if //<iat>// > //<current timestamp>// or //<exp>// < //<current timestamp>//, return HTTP 401 (unauthorized)
+		end note
+
+
+	IdpSrv -> IdpSrv : verify //<refresh token>// scope (scope = offline_access)
+		note over IdpSrv #Orange
+			if scope != offline_access, return HTTP 401 (unauthorized)
+		end note
+
+
+	IdpSrv -> IdpSrv : verify coherence between acquirer id, channel, merchant id, client id and terminal id from //<refresh token>// and the same data from request header (they must be equal)
+		note over IdpSrv #Orange
+			if coherence verification fails, return HTTP 401 (unauthorized)
+		end note
+
+	
+	IdpSrv -> IdpSrv : get //<kid>// from //<refresh token>//
+	!include_many ../common/get_key_pair.puml
+	
+	
+	IdpSrv -> IdpSrv : verify //<key pair>// expiration
+		note over IdpSrv #Orange
+			if //<key pair>// is expired, return HTTP 401 (unauthorized)
+		end note
+
+
+	IdpSrv -> IdpSrv : verify //<refresh token>// signature by means of found //<key pair>//
+		note over IdpSrv #Orange
+			if signature verification fails, return HTTP 401 (unauthorized)
+		end note
+end
+@enduml

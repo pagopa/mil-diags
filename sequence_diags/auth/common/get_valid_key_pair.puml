@@ -1,0 +1,22 @@
+@startuml
+group get valid key pair
+	!include_many find_valid_key_pairs.puml
+	
+	
+	opt if there are key pairs that have not yet expired
+	
+		IdpSrv -> IdpSrv : search for the key pair with the greatest expiration
+	
+	else if there isn't any valid key pair
+		IdpSrv -> IdpSrv : generate key pair
+		
+		IdpSrv -> IdpCache : store key pair
+		IdpCache --> IdpSrv : //<result>//
+	end
+
+
+	note over IdpSrv
+		//<key pair>// to use
+	end note
+end
+@enduml

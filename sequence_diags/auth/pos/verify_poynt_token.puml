@@ -1,0 +1,21 @@
+@startuml
+group verify poynt token
+	IdpSrv -> Poynt : /businesses///<business id>//
+		note left
+			__header__
+			Api-Version: 1.2
+			POYNT-REQUEST-ID: //<random uuid>//
+			Authorization: Bearer //<poynt token>//
+		end note
+
+	Poynt --> IdpSrv : HTTP 200 (ok)
+		note right
+			//<business object>//
+		end note
+
+	note over IdpSrv #Orange
+		if HTTP status = 401, return HTTP 401 (unauthorized)
+		if HTTP status != 200 and != 401, return HTTP 500 (server error)
+	end note
+end
+@enduml

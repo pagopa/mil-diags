@@ -1,0 +1,31 @@
+@startuml
+group find grants
+	IdpSrv -> IdpDB : find(//<query>//)
+		note left
+			__query__
+			{
+					"acquirerId": "NA",
+					"channel": "NA",
+					"merchantId": "NA",
+					"clientId": "//<client id>//",
+					"terminalId": "NA"
+			}
+		end note
+		
+	IdpDB --> IdpSrv : //<value>//
+		note right
+			__value__
+			{
+				"clientId": "//<client id>//",
+				"grants": [
+					"//<grant #1>//",
+					"//<grant #2>//",
+					.
+					.
+					.
+					"//<grant #n>//"
+				]
+			}
+		end note
+end
+@enduml

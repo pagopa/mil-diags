@@ -1,0 +1,17 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold get public keys
+	Client -> IdpSrv : GET /.well-known/jwks.json
+
+
+	!include_many get_valid_key_pair.puml
+
+
+	IdpSrv --> Client : HTTP 200 (found)
+		note right
+			!include_many response/get_public_keys.frag
+		end note
+end
+@enduml

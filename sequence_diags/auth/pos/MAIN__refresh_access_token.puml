@@ -1,0 +1,29 @@
+@startuml
+!include_many ../../common/skin.puml
+!include_many ../../common/actors.puml
+
+group#Gold refresh access token
+	Client -> IdpSrv : POST /token
+		note left
+			!include request/refresh_access_token.frag
+		end note
+
+
+	!include_many verify_refresh_token.puml
+
+
+	!include_many verify_client_id.puml
+
+
+	!include_many find_grants.puml
+
+
+	!include_many refresh_access_token.puml
+	
+	
+	IdpSrv --> Client :
+		note right
+			!include_many response/access_token.frag
+		end note
+end
+@enduml

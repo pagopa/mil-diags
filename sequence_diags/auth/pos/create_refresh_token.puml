@@ -1,0 +1,32 @@
+@startuml
+group create refresh token
+	IdpSrv -> IdpSrv : generate //<refresh token payload>//
+		note left
+			{
+				"iat": "//<current timestamp>//",
+				"exp": "//<current timestamp + <refresh token duration>>//",
+				"scope": "offline_access",
+				"acquirerId": "//<acquirer id>//",
+				"channel": "POS",
+				"merchantId": "//<merchant id>//",
+				"clientId": "//<client id>//",
+				"terminalId": "//<terminal id>//"
+			}
+		end note
+
+
+	IdpSrv -> IdpSrv : generate //<refresh token header>//
+		note left
+			{
+				"alg": "RS256",
+				"kid": "//<kid of selected <key pair>>//"
+			}
+		end note
+
+
+	IdpSrv ->IdpSrv : sign refresh token by means of the selected //<key pair>//
+
+
+	IdpSrv -> IdpSrv : <refresh token> = base64UrlEncode(//<refresh token header>//) + "." + base64UrlEncode(//<refresh token payload>//) + "." + base64UrlEncode(//<refresh token signature>//)
+end
+@enduml
