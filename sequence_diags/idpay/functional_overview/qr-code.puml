@@ -1,0 +1,72 @@
+@startuml
+!pragma teoz true
+hide unlinked
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+
+actor merchant as "Merchant"
+actor cittadino as "Cittadino"
+participant pos as "SmartPOS"
+participant io as "App IO\nEcosystem"
+participant mil as "mil-idpay\nµservice"
+participant idpay as "IDPay"
+
+group #LightGreen Avvio trx
+	merchant ->  pos      : apre app idpay
+	pos      ->  mil      : dammi l'elenco delle iniziative cui ha aderito il merchant
+	mil      ->  idpay    : dammi l'elenco delle iniziative cui ha aderito il merchant
+	idpay    ->  idpay    : //processing...//
+	idpay    --> mil      : elenco delle iniziative
+	mil      --> pos      : elenco delle iniziative
+	pos      --> merchant : elenco delle iniziative
+
+	merchant ->  pos      : selezione dell'inziativa
+	pos      --> merchant : inserisci l'importo
+
+	merchant ->  pos      : importo	
+	pos      --> merchant : qr-code o cie?
+end
+
+group #LightYellow Generazione QR-code
+	merchant ->  pos      : qr-code
+	pos      ->  mil      : genera qr-code per importo ed iniziativa
+	mil      ->  idpay    : crea transazione
+	idpay    ->  idpay    : //processing...//
+	idpay    --> mil      : trx code (da utilizzare come challenge), qr-code string (non adoperata per la CIE)
+	mil      --> pos      : qr-code string
+	pos      ->  pos      : rendering qr-code string
+end
+
+group #Pink Attesa completamento su IO
+	pos   ->  mil   : l'operazione è autorizzata?
+	mil   ->  idpay : l'operazione è autorizzata?
+	idpay ->  idpay : //processing...//
+	idpay --> mil   : no
+	mil   --> pos   : no
+end
+
+group #LightBlue IO
+	hnote across
+		//don't care...//
+	end note
+end
+
+group #Pink Attesa completamento su IO
+	pos   ->  mil      : l'operazione è autorizzata?
+	mil   ->  idpay    : l'operazione è autorizzata?
+	idpay ->  idpay    : //processing...//
+	idpay --> mil      : dati per ricevuta
+	mil   --> pos      : dati per ricevuta
+    pos   ->  pos      : stampa scontrino
+	pos   --> merchant : scontrino
+end
+
+opt #LightGreen bonus non copre intera spesa
+	pos      ->  merchant : avviare app CB2?
+	merchant --> pos : sì
+	pos      ->  pos : scambio importo (in: trx code, importo residuo)
+end
+@enduml

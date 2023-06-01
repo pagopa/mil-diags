@@ -1,0 +1,87 @@
+@startuml
+!pragma teoz true
+hide unlinked
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+
+actor merchant as "Merchant"
+actor cittadino as "Cittadino"
+participant cie as "CIE"
+participant pos as "SmartPOS"
+participant io as "App IO\nEcosystem"
+participant mil as "mil-idpay\nµservice"
+participant idpay as "IDPay"
+participant ipzs as "IPZS"
+
+group #LightGreen Avvio trx
+	merchant ->  pos      : apre app idpay
+	pos      ->  mil      : dammi l'elenco delle iniziative cui ha aderito il merchant
+	mil      ->  idpay    : dammi l'elenco delle iniziative cui ha aderito il merchant
+	idpay    ->  idpay    : //processing...//
+	idpay    --> mil      : elenco delle iniziative
+	mil      --> pos      : elenco delle iniziative
+	pos      --> merchant : elenco delle iniziative
+
+	merchant ->  pos      : selezione dell'inziativa
+	pos      --> merchant : inserisci l'importo
+
+	merchant ->  pos      : importo	
+	pos      --> merchant : qr-code o cie?
+end
+
+group #LightYellow Verifica CIE
+	merchant ->  pos      : cie
+	pos      ->  mil      : dammi il challenge
+	mil      ->  idpay    : crea transazione
+	idpay    --> mil      : trx code (da utilizzare come challenge), qr-code string (non adoperata per la CIE)
+	mil      --> pos      : trx code
+	pos      ->  cie      : calcola la firma del trx code
+	cie      --> pos      : firma
+	pos      ->  mil      : verifica la firma del challenge
+	mil      ->  ipzs     : verifica la firma del challenge (in: trx code, firma, sod, chiave pubblica)
+	ipzs     --> mil      : ok
+	mil      --> pos      : ok
+end
+
+group #Khaki Verifica PIN IDPay
+	pos       ->  cittadino   : inserisci PIN IDPay
+	cittadino --> pos         : PIN IDPay
+	pos       ->  mil         : richiesta pre-autorizzazione (in: PIN IDPay)
+	mil       ->  idpay       : richiesta pre-autorizzazione (in: PIN IDPay)
+	idpay     ->  idpay       : //processing...//
+	idpay     --> mil         : ok
+	mil       --> pos         : ok
+end
+
+alt #LightGreen bonus copre intera spesa
+	group #GreenYellow Conferma
+		pos   ->  mil      : autorizzazione
+		mil   ->  idpay    : autorizzazione
+		idpay ->  idpay    : //processing...//
+		idpay --> mil      : dati per ricevuta
+		mil   --> pos      : dati per ricevuta
+		pos   ->  pos      : stampa scontrino
+		pos   --> merchant : scontrino
+	end
+else bonus non copre intera spesa
+	pos     --> merchant : vuoi continuare?
+	merchant -> pos      : sì
+
+	group #GreenYellow Conferma
+		pos   ->  mil      : autorizzazione
+		mil   ->  idpay    : autorizzazione
+		idpay ->  idpay    : //processing...//
+		idpay --> mil      : dati per ricevuta
+		mil   --> pos      : dati per ricevuta
+		pos   ->  pos      : stampa scontrino
+		pos   --> merchant : scontrino
+	end
+
+	pos      ->  merchant : avviare app CB2?
+	merchant --> pos : sì
+	pos      ->  pos : scambio importo (in: trx code, importo residuo)
+end
+@enduml
