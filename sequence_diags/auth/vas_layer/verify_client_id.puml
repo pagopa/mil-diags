@@ -5,9 +5,10 @@ group verify client id
 		IdpDB --> IdpSrv : //<value>//
 		note right
 			{
-				"clientId": "//<client id>//",
-				"channel": "//<client channel>//",
-				"clientSecret": "//<client secret>//",
+				"id": "//<client id>//",
+				"channel": "POS",
+				"salt": "//<salt>//",
+				"secretHash": "//<secret hash>//",
 				"description": "//<description>//"
 			}
 		end note
@@ -15,8 +16,8 @@ group verify client id
 	note over IdpSrv #Orange
 		if nothing is found, return HTTP 401 (unauthorized)
 		if an error is returned from db, return HTTP 500 (server error)
-		if //<client channel>// != POS, return HTTP 401 (unauthorized)
-		if //<secret>// != //<client secret>//, return HTTP 401 (unauthorized)
+		if "channel" != POS, return HTTP 401 (unauthorized)
+		if "//<secret hash>//" is not correct, return HTTP 401 (unauthorized)
 	end note
 end
 @enduml

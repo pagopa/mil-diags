@@ -16,14 +16,18 @@ group find grants
 		note right
 			__value__
 			{
+				"acquirerId": "NA",
+				"channel": "NA",
 				"clientId": "//<client id>//",
-				"grants": [
-					"//<grant #1>//",
-					"//<grant #2>//",
+				"merchantId": "NA",
+				"terminalId": "NA",
+				"roles": [
+					"//<role #1>//",
+					"//<role #2>//",
 					.
 					.
 					.
-					"//<grant #n>//"
+					"//<role #n>//"
 				]
 			}
 		end note

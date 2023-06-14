@@ -3,10 +3,18 @@ group create access token proper
 	IdpSrv -> IdpSrv : generate //<access token payload>//
 		note left
 			{
+				"sub": "//<client id>//",
+				"clientId": "//<client id>//",
 				"iat": "//<current timestamp>//",
 				"exp": "//<current timestamp + <access token duration>>//",
-				"scope": "//<grant #1>// //<grant #2>// ... //<grant #n>//",
-				"clientId": "//<client id>//"
+				"groups": [
+					"//<role #1>//",
+					"//<role #2>//",
+					.
+					.
+					.
+					"//<role #n>//"
+				]
 			}
 		end note
 

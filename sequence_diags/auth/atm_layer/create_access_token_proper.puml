@@ -3,13 +3,21 @@ group create access token proper
 	IdpSrv -> IdpSrv : generate //<access token payload>//
 		note left
 			{
-				"iat": "//<current timestamp>//",
-				"exp": "//<current timestamp + <access token duration>>//",
-				"scope": "//<grant #1>// //<grant #2>// ... //<grant #n>//",
+				"sub": "//<client id>//",
+				"clientId": "//<client id>//",
 				"acquirerId": "//<acquirer id>//",
 				"channel": "ATM",
-				"clientId": "//<client id>//",
-				"terminalId": "//<terminal id>//" 
+				"terminalId": "//<terminal id>//",
+				"iat": "//<current timestamp>//",
+				"exp": "//<current timestamp + <access token duration>>//",
+				"groups": [
+					"//<role #1>//",
+					"//<role #2>//",
+					.
+					.
+					.
+					"//<role #n>//"
+				]
 			}
 		end note
 

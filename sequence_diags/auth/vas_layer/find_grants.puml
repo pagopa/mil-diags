@@ -21,13 +21,13 @@ group find grants
 				"merchantId": "//<merchant id>//",
 				"clientId": "//<client id>//",
 				"terminalId": "//<terminal id>//",
-				"grants": [
-					"//<grant #1>//",
-					"//<grant #2>//",
+				"roles": [
+					"//<role #1>//",
+					"//<role #2>//",
 					.
 					.
 					.
-					"//<grant #n>//"
+					"//<role #n>//"
 				]
 			}
 		end note
@@ -55,13 +55,13 @@ group find grants
 					"merchantId": "//<merchant id>//",
 					"clientId": "//<client id>//",
 					"terminalId": "NA",
-					"grants": [
-						"//<grant #1>//",
-						"//<grant #2>//",
+					"roles": [
+						"//<role #1>//",
+						"//<role #2>//",
 						.
 						.
 						.
-						"//<grant #n>//"
+						"//<role #n>//"
 					]
 				}
 			end note

@@ -6,21 +6,21 @@ box Multichannel Integration Layer #GhostWhite
     participant "Other Service" as Other
     
     participant "Auth Service" as IdpSrv
-    database "Cache\n(Redis)" as IdpCache
-    database "DB\n(MongoDB)" as IdpDB
+    database "Cache" as IdpCache
+    database "DB" as IdpDB
 
 	participant "Session Service" as SessionSrv
-	database "Cache\n(Redis)" as SessionCache
+	database "Cache" as SessionCache
 	
 	participant "T&C Service" as TCSrv
-	database "DB\n(MongoDB)" as TCDB
+	database "DB" as TCDB
 	
 	participant "Functions Service" as FunctionSrv
-	database "DB\n(MongoDB)" as FunctionDB
+	database "DB" as FunctionDB
 	
 	participant "Payment Notice Service" as NoticeSrv
-	database "Cache\n(Redis)" as NoticeCache
-	database "DB\n(MongoDB)" as NoticeDB
+	database "Cache" as NoticeCache
+	database "DB" as NoticeDB
 	
 	participant "Wallet Service" as WalletWrp
 
@@ -31,7 +31,9 @@ box Multichannel Integration Layer #GhostWhite
 	queue "Preset Topic\nfor Payment Notice" as NoticeTpc
 	
 	participant "Preset Operation" as PresetSrv
-	database "DB\n(MongoDB)" as PresetDB
+	database "DB" as PresetDB
+	
+	participant "IDPay Service" as IDPaySrv
 end box
 
 box CDE/PCI Environment #GhostWhite
@@ -44,4 +46,5 @@ participant "Bancomat | Nexi | SIA |\nPoste Italiane |\nIntesa Sanpaolo | ICCREA
 participant "IO Back-end" as IO
 participant "Nodo" as Nodo
 participant "Gestione Evoluta\nCommissioni" as GEC
+participant "IDPay" as IDPay
 participant "Poynt Services" as Poynt
