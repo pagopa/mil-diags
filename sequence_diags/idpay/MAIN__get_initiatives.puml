@@ -1,0 +1,56 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold get initiatives
+	Client -> IDPaySrv : GET /initiatives
+		note left
+			!include_many request/get_initiatives.frag
+		end note
+	
+	IDPaySrv -> IDPay : GET /idpay/mil/payment/qr-code/merchant/initiatives
+		note left
+			!include_many idpay_request/get_initiatives.frag
+		end note
+	
+	alt merchant found
+		IDPay --> IDPaySrv : HTTP 200 (ok)
+			note right
+				!include_many idpay_response/get_initiatives.frag
+			end note
+		
+		IDPaySrv -> IDPaySrv : filter(initiative => initiative.status == "PUBLISHED" && initiative.enabled == "true" && initiative.startDate <= "//<current timestamp>//" && initiative.endDate >= "//<current timestamp>//")
+		
+		IDPaySrv --> Client : HTTP 200 (ok)
+			note right
+				!include_many response/get_initiatives.frag
+			end note
+	else merchant not found
+		IDPay --> IDPaySrv : HTTP 404 (not found)
+			note right
+				!include_many idpay_response/error.frag
+			end note
+		
+		IDPaySrv --> Client : HTTP 404 (not found)
+			note right
+				!include_many response/error.frag
+			end note
+	else other http status codes
+		IDPay --> IDPaySrv : HTTP //other status codes//
+			note right
+				!include_many idpay_response/error.frag
+			end note
+		
+		IDPaySrv --> Client : HTTP 500 (server error)
+			note right
+				!include_many response/error.frag
+			end note
+	else unexpected responses
+		IDPay --> IDPaySrv : //unexpected response//
+		IDPaySrv --> Client : HTTP 500 (server error)
+			note right
+				!include_many response/error.frag
+			end note
+	end
+end
+@enduml

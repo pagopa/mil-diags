@@ -1,0 +1,61 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold cancel transaction
+	Client -> IDPaySrv : DELETE /transactions///<mil transaction id>//
+		note left
+			!include_many request/get_transaction.frag
+		end note
+	
+	group read trx data from db
+		IDPaySrv -> IDPayDB  : find(//<mil transaction id>//)
+		return //<result>// 
+	end
+	
+	opt //<result>// is found
+		note over IDPayDB
+			!include_many stored_trx_data/on_get__retrieve.frag
+		end note
+		
+		IDPaySrv -> IDPay : DELETE /idpay/mil/payment/qr-code/merchant///<idpayTransactionId>//
+			note left
+				!include_many idpay_request/get_transaction.frag
+			end note
+		
+		opt transaction found
+			IDPay --> IDPaySrv : HTTP 200 (found)
+				note right
+					!include_many idpay_response/get_transaction.frag
+				end note
+			
+			group write trx data to db
+				IDPaySrv -> IDPayDB : update(//<value>//)
+					note left
+						!include_many stored_trx_data/on_get__update.frag
+					end note
+				
+				return //don't care//
+			end
+			
+			IDPaySrv --> Client : HTTP 204 (no content)
+		else other
+			IDPay --> IDPaySrv : //any error (http status codes != 200, unparsable response, unexpeted response, ...)//
+			IDPaySrv --> Client   : HTTP 500 (server error)
+				note right
+					!include_many response/error.frag
+				end note
+		end
+	else //<result>// is not found
+		IDPaySrv --> Client : HTTP 404 (not found)
+			note right
+				!include_many response/error.frag
+			end note
+	else //<result>// is error
+		IDPaySrv --> Client : HTTP 500 (server error)
+			note right
+				!include_many response/error.frag
+			end note
+	end
+end
+@enduml
