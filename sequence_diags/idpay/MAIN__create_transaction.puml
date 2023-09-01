@@ -28,7 +28,7 @@ group#Gold create transaction
 			return //<result>//
 		end
 
-		opt //<result>// is ok
+		alt //<result>// is ok
 			IDPaySrv --> Client : HTTP 201 (created)
 				note right
 					!include_many response/create_transaction.frag

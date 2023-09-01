@@ -1,0 +1,81 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold verify cie
+	Client -> IDPaySrv : PATCH /transactions///<mil transaction id>//
+		note left
+			!include_many request/verify_cie.frag
+		end note
+	
+	group read trx data from db
+		IDPaySrv -> IDPayDB  : find(//<mil transaction id>//)
+		IDPayDB --> IDPaySrv : //<value>// 
+			note right
+				!include_many stored_trx_data/on_get__retrieve.frag
+			end note
+	end
+	
+	note over IDPaySrv #Orange
+		if trx data is not found, return HTTP 404 (not found)
+		if an error occurred, return HTTP 500 (server error)
+		if //<mil status>// is not CREATED, return 400 (bad request)
+	end note
+		
+	group ipzs interaction
+		IDPaySrv -> IPZS : POST /api/identitycards?transactionID=//<idpay transaction id>//
+			note left
+				!include_many ipzs_request/verify_cie.frag
+			end note
+			
+		IPZS --> IDPaySrv : HTTP 200 (ok)
+			note right
+				!include_many ipzs_response/verify_cie.frag
+			end note
+	end
+	
+	note over IDPaySrv #Orange
+		if ipzs interaction fails for any reason, return HTTP 500 (server error)
+	end note
+	
+	group retrieve public key
+		!include_many retrieve_azure_access_token.puml
+		
+		alt //<channel>// == POS
+			IDPaySrv -> IDPaySrv : //<key name>// = "idpay-wrap-key-" + //<acquirer id>// + "-" + //<merchant id>// + "-" + //<terminal id>//
+		else
+			IDPaySrv -> IDPaySrv : //<key name>// = "idpay-wrap-key-" + //<acquirer id>// + "-" + //<terminal id>//
+		end
+		
+		group azure key vault interaction
+			IDPaySrv -> AzureKV : GET /keys///<key name>//?api-version=7.4
+				note left
+					!include_many azurekv_request/get_key.frag
+				end note
+				
+			alt key found
+				AzureKV --> IDPaySrv : HTTP 200 (ok)
+					note right
+						!include_many azurekv_response/get_key.frag
+					end note
+					
+					opt //<expiration>// < current epoch time
+						!include_many create_new_key.puml
+					end
+			else key not found
+				AzureKV --> IDPaySrv : HTTP 404 (not found)
+				
+				!include_many create_new_key.puml
+			end
+		end
+		
+		note over IDPaySrv #Orange
+			if public key retrieval fails for any reason not specified above, return HTTP 500 (server error)
+		end note
+		
+		IDPaySrv --> Client : HTTP 200 (ok)
+			note right
+				!include_many response/verify_cie.frag
+			end note
+end
+@enduml

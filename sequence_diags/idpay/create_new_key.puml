@@ -1,0 +1,13 @@
+@startuml
+
+IDPaySrv -> AzureKV : POST /keys///<key name>//?api-version=7.4
+	note left
+		!include_many azurekv_request/create_new_key.frag
+	end note
+
+AzureKV --> IDPaySrv :
+	note right
+		!include_many azurekv_response/create_new_key.frag
+	end note
+
+@enduml

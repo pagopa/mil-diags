@@ -52,8 +52,8 @@ group #Khaki Verifica PIN IDPay
 	pos       ->  mil         : richiesta pre-autorizzazione (in: PIN IDPay)
 	mil       ->  idpay       : richiesta pre-autorizzazione (in: PIN IDPay)
 	idpay     ->  idpay       : //processing...//
-	idpay     --> mil         : ok
-	mil       --> pos         : ok
+	idpay     --> mil         : ok + importo rimborsato
+	mil       --> pos         : ok + importo rimborsato
 end
 
 alt #LightGreen bonus copre intera spesa

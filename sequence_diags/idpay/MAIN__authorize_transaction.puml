@@ -1,0 +1,88 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold authorize transaction
+	Client -> IDPaySrv : PATCH /transactions///<mil transaction id>//
+		note left
+			!include_many request/verify_idpay_auth_code.frag
+		end note
+	
+	group read trx data from db
+		IDPaySrv -> IDPayDB  : find(//<mil transaction id>//)
+		IDPayDB --> IDPaySrv : //<value>// 
+			note right
+				!include_many stored_trx_data/on_get__retrieve.frag
+			end note
+	end
+	
+	note over IDPaySrv #Orange
+		if trx data is not found, return HTTP 404 (not found)
+		if an error occurred, return HTTP 500 (server error) with error body
+		if //<mil status>// is not IDENTIFIED, return 400 (bad request) with error body
+	end note
+		
+	group unwrap session key
+		!include_many retrieve_azure_access_token.puml
+		
+		group azure key vault interaction
+			IDPaySrv -> AzureKV : POST /keys///<key name>/////<key version>///unwrapkey?api-version=7.4
+				note left
+					!include_many azurekv_request/unwrap_key.frag
+				end note
+				
+			AzureKV --> IDPaySrv : HTTP 200 (ok)
+				note right
+					!include_many azurekv_response/unwrap_key.frag
+				end note
+		end
+	end
+		
+	note over IDPaySrv #Orange
+		if session key unwrapping fails for any reason not specified
+		above, return HTTP 500 (server error) with error body
+	end note
+	
+	group retrieving idpay public key
+		IDPaySrv -> IDPay : GET /zonePublicKey
+		IDPay --> IDPaySrv : HTTP 200 (ok)
+			note right
+				!include_many idpay_response/get_zone_public_key.frag
+			end note
+	end group
+	
+	note over IDPaySrv #Orange
+		if idpay public key retrieval fails, return
+		HTTP 500 (server error) with error body
+	end note
+	
+	IDPaySrv -> IDPaySrv : <ecrypted session key for idpay> = Encrypt <session key> with RSA/ECB/OAEPwithSHA-256andMGF1Padding using IDPay public key
+	
+	group authorize transaction
+		IDPaySrv -> IDPay : POST /idpay/mil/payment/cie//<idpay transaction id>//authorize
+			note left
+				!include_many idpay_request/authorize_transaction.frag
+			end note
+		
+		alt all went ok
+			IDPay --> IDPaySrv : HTTP 200 (ok)
+			IDPaySrv --> Client : HTTP 200 (ok)
+		else wrong pin
+			IDPay --> IDPaySrv : HTTP 400 (bad request)
+				note right
+					!include_many idpay_response/wrong_pin.frag
+				end note
+			IDPaySrv --> Client : HTTP 400 (bad request)
+				note right
+					!include_many response/error.frag
+				end note
+		else any other error
+			IDPay --> IDPaySrv : //any other response//
+			IDPaySrv --> Client : HTTP 500 (server error)
+				note right
+					!include_many response/error.frag
+				end note
+		end
+	end group
+end
+@enduml

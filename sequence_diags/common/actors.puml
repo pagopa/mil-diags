@@ -35,6 +35,9 @@ box Multichannel Integration Layer #GhostWhite
 	
 	participant "IDPay Service" as IDPaySrv
 	database "DB" as IDPayDB
+	
+	participant "Azure AD" as AzureAD
+	participant "Azure Key Vault" as AzureKV
 end box
 
 box CDE/PCI Environment #GhostWhite
@@ -49,3 +52,4 @@ participant "Nodo" as Nodo
 participant "Gestione Evoluta\nCommissioni" as GEC
 participant "IDPay" as IDPay
 participant "Poynt Services" as Poynt
+participant "IPZS" as IPZS

@@ -1,0 +1,15 @@
+@startuml
+
+group retrieve azure access token
+	IDPaySrv -> AzureAD : POST ///<tenant id>///oauth2/v2.0/token
+		note left
+			!include_many azuread_request/get_access_token.frag
+		end note
+	
+	AzureAD --> IDPaySrv : HTTP 200 (ok)
+		note right
+			!include_many azuread_response/get_access_token.frag
+		end note
+end
+
+@enduml

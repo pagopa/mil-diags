@@ -1,5 +1,9 @@
-__body__
+__value__
 {
+	"acquirerId": "//<acquirer id>//",
+	"channel": "//<channel>//",
+	"merchantId": "//<merchant id>//",
+	"terminalId": "//<terminal id>//",
 	"idpayTransactionId": "//<idpay transaction id>//",
 	"milTransactionId": "//<mil transaction id>//",
 	"initiativeId": "//<initiative id>//",
@@ -9,6 +13,6 @@ __body__
 	"trxCode": "//<transaction code>//",
 	"qrCode": "//<string to be encoded>//",
 	"coveredAmount": //<covered amount>//,
-	"status": "//<idpay status>//",
-	"secondFactor": "//<second factor>//"
+	"status": "IDENTIFIED",
+	"lastUpdate": "//<current timestamp>//"
 }
