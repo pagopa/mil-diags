@@ -3,7 +3,7 @@
 !include_many ../common/actors.puml
 
 group#Gold verify cie
-	Client -> IDPaySrv : PATCH /transactions///<mil transaction id>//
+	Client -> IDPaySrv : POST /transactions///<mil transaction id>///verifyCie
 		note left
 			!include_many request/verify_cie.frag
 		end note
@@ -30,12 +30,14 @@ group#Gold verify cie
 			
 		IPZS --> IDPaySrv : HTTP 200 (ok)
 			note right
-				!include_many ipzs_response/verify_cie.frag
+				!include_many ipzs_response/verify_cie__ok.frag
 			end note
 	end
 	
 	note over IDPaySrv #Orange
-		if ipzs interaction fails for any reason, return HTTP 500 (server error)
+		if ipzs answers with HTTP 200 and outcome = LOST, STOLEN or EXPIRED, return HTTP 400 (bad request) with error body
+		if ipzs answers with HTTP 404, return 400 (bad request) with error body
+		if ipzs interaction fails for any other reason, return HTTP 500 (server error) with error body
 	end note
 	
 	group retrieve public key

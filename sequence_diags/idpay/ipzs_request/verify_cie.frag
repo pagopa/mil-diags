@@ -5,4 +5,4 @@ __body__
 	"kpubint": "//<cie public key>//",
 	"challenge": "//<transaction code>//,
 	"challengeSignature": "//<transaction code signature>//"
-} 
+}

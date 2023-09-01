@@ -7,7 +7,7 @@ __body__
 	"kid": "//<key name>/////<key version>//",
 	"kty": "RSA",
 	"use": "enc",
-	"key_ops": [
+	"keyOps": [
 		"wrapKey"
 	],
 	"iat": //<issued at>//,

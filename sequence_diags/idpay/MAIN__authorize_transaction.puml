@@ -3,7 +3,7 @@
 !include_many ../common/actors.puml
 
 group#Gold authorize transaction
-	Client -> IDPaySrv : PATCH /transactions///<mil transaction id>//
+	Client -> IDPaySrv : POST /transactions///<mil transaction id>///authorize
 		note left
 			!include_many request/verify_idpay_auth_code.frag
 		end note
