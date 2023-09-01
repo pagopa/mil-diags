@@ -10,5 +10,6 @@ __body__
 	"acquirerId": "//<acquirer id>//",
 	"merchantId": "//<merchant id>//",
 	"initiativeId": "//<selected initiative id>//",
-	"status": "//<idpay status>//"
+	"status": "//<idpay status>//",
+	"secondFactor": "//<second factor (if any)>//"
 }
