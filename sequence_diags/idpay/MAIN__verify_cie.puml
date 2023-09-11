@@ -19,7 +19,7 @@ group#Gold verify cie
 	note over IDPaySrv #Orange
 		if trx data is not found, return HTTP 404 (not found)
 		if an error occurred, return HTTP 500 (server error)
-		if //<mil status>// is not CREATED, return 400 (bad request)
+		if //<idpay status>// is not CREATED, return 400 (bad request)
 	end note
 		
 	group ipzs interaction

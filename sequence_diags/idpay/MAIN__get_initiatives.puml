@@ -8,6 +8,8 @@ group#Gold get initiatives
 			!include_many request/get_initiatives.frag
 		end note
 	
+	IDPaySrv -> IDPaySrv : Retrieve //<idpay merchant id>//
+	
 	IDPaySrv -> IDPay : GET /idpay/mil/payment/qr-code/merchant/initiatives
 		note left
 			!include_many idpay_request/get_initiatives.frag

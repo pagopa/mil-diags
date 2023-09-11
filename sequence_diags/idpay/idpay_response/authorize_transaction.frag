@@ -10,6 +10,6 @@ __body__
 	"acquirerId": "//<acquirer id>//",
 	"merchantId": "//<idpay merchant id>//",
 	"initiativeId": "//<selected initiative id>//",
-	"status": "//<idpay status>//",
-	"rewardCents": //<covered amount (if the status is IDENTIFIED or AUTHORIZED)>//,
+	"status": "AUTHORIZED",
+	"rewardCents": //<covered amount>//,
 }

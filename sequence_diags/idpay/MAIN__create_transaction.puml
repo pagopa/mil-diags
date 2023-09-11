@@ -9,6 +9,7 @@ group#Gold create transaction
 		end note
 	
 	IDPaySrv -> IDPaySrv : //<mil transaction id>// = random UUID
+	IDPaySrv -> IDPaySrv : Retrieve //<idpay merchant id>//
 	IDPaySrv -> IDPay : POST /idpay/mil/payment/qr-code/merchant/
 		note left
 			!include_many idpay_request/create_transaction.frag
@@ -49,7 +50,7 @@ group#Gold create transaction
 			note right
 				!include_many response/error.frag
 			end note
-	else unexpected responses
+	else unexpected responses (including inconsistent responses from idpay)
 		IDPay --> IDPaySrv : //unexpected response//
 		
 		IDPaySrv --> Client : HTTP 500 (server error)

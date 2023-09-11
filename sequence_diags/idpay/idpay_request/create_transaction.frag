@@ -1,5 +1,5 @@
 __header__
-x-merchant-id: //<merchant id>//
+x-merchant-id: //<idpay merchant id>//
 x-acquirer-id: //<acquirer id>//
 __body__
 {

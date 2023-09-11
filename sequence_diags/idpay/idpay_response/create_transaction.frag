@@ -4,6 +4,7 @@ __body__
 	"trxCode": "//<transaction code>//",
 	"initiativeId": "//<selected initiative id>//",
 	"merchantId": "//<merchant id>//",
+	"idTrxIssuer": "<font color="red">//don't care//</font>",
 	"idTrxAcquirer": "//<mil transaction id>//",
 	"trxDate": "//<transaction timestamp>//,
 	"amountCents": //<transaction amount in eurocents>//,
@@ -11,5 +12,10 @@ __body__
 	"acquirerId": "//<acquirer id>//",
 	"status": "CREATED",
 	"qrcodePngUrl": "<font color="red">//don't care//</font>",
-	"qrcodeTxtUrl": "<font color="red">//don't care//</font>"
+	"qrcodeTxtUrl": "//<string to be encoded with qr-code>//",
+	"merchantFiscalCode": "//<merchant tax code>//",
+	"vat": "//<merchant vat number>//",
+	"trxExpirationMinutes": //<transaction validity minutes>//,
+	"challenge": "//<challenge>//",
+	"secondFactor": "//<second factor>//"
 }

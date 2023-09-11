@@ -19,7 +19,7 @@ group#Gold authorize transaction
 	note over IDPaySrv #Orange
 		if trx data is not found, return HTTP 404 (not found)
 		if an error occurred, return HTTP 500 (server error) with error body
-		if //<mil status>// is not IDENTIFIED, return 400 (bad request) with error body
+		if //<idpay status>// is not IDENTIFIED, return 400 (bad request) with error body
 	end note
 		
 	group unwrap session key
@@ -59,13 +59,16 @@ group#Gold authorize transaction
 	IDPaySrv -> IDPaySrv : <ecrypted session key for idpay> = Encrypt <session key> with RSA/ECB/OAEPwithSHA-256andMGF1Padding using IDPay public key
 	
 	group authorize transaction
-		IDPaySrv -> IDPay : POST /idpay/mil/payment/cie//<idpay transaction id>//authorize
+		IDPaySrv -> IDPay : POST /idpay/mil/payment/cie///<idpay transaction id>///authorize
 			note left
 				!include_many idpay_request/authorize_transaction.frag
 			end note
 		
 		alt all went ok
 			IDPay --> IDPaySrv : HTTP 200 (ok)
+				note right
+					!include_many idpay_response/authorize_transaction.frag
+				end note
 			IDPaySrv --> Client : HTTP 200 (ok)
 		else wrong pin
 			IDPay --> IDPaySrv : HTTP 400 (bad request)
@@ -76,7 +79,7 @@ group#Gold authorize transaction
 				note right
 					!include_many response/error.frag
 				end note
-		else any other error
+		else any other error (including inconsistent responses from idpay)
 			IDPay --> IDPaySrv : //any other response//
 			IDPaySrv --> Client : HTTP 500 (server error)
 				note right

@@ -1,2 +1,2 @@
 __header__
-x-merchant-fiscalcode: //<merchant id>//
+x-merchant-id: //<idpay merchant id>//

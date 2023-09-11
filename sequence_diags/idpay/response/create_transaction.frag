@@ -9,9 +9,9 @@ __body__
 	"initiativeId": "//<initiative id>//",
 	"timestamp": "//<transaction timestamp>//",
 	"goodsCost": //<goods cost in eurocents>//,
-	"challenge": "//<challenge for cie auth>//",
+	"challenge": "//<challenge>//",
 	"trxCode": "//<transaction code>//",
-	"qrCode": "//<string to be encoded>//",
-	"coveredAmount": //<covered amount>//,
+	"qrCode": "//<string to be encoded with qr-code>//",
+	"secondFactor": "//<second factor>//",
 	"status": "CREATED"
 }

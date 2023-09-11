@@ -1,5 +1,5 @@
 __body__
 {
-	"code": "WRONG_PIN",
-	"message": "WRONG_PIN: Wrong PIN"
+	"code": "WRONG_AUTH_CODE",
+	"message": "Wrong Authorization Code"
 }
