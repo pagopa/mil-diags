@@ -71,7 +71,7 @@ group#Gold authorize transaction
 				end note
 			IDPaySrv --> Client : HTTP 200 (ok)
 		else wrong pin
-			IDPay --> IDPaySrv : HTTP 400 (bad request)
+			IDPay --> IDPaySrv : HTTP 200 (ok)
 				note right
 					!include_many idpay_response/wrong_pin.frag
 				end note
