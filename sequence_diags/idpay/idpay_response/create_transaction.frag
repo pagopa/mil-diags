@@ -3,7 +3,7 @@ __body__
 	"id": "//<idpay transaction id>//",
 	"trxCode": "//<transaction code>//",
 	"initiativeId": "//<selected initiative id>//",
-	"merchantId": "//<merchant id>//",
+	"merchantId": "//<idpay merchant id>//",
 	"idTrxIssuer": "<font color="red">//don't care//</font>",
 	"idTrxAcquirer": "//<mil transaction id>//",
 	"trxDate": "//<transaction timestamp>//,
