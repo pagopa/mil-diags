@@ -12,4 +12,5 @@ __body__
 	"initiativeId": "//<selected initiative id>//",
 	"status": "//<idpay status>//",
 	"rewardCents": //<covered amount (if the status is IDENTIFIED or AUTHORIZED)>//,
+	"secondFactor": "//<second factor (if the status is IDENTIFIED)>//"
 }

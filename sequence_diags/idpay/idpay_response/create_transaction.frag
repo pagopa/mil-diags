@@ -15,7 +15,5 @@ __body__
 	"qrcodeTxtUrl": "//<string to be encoded with qr-code>//",
 	"merchantFiscalCode": "//<merchant tax code>//",
 	"vat": "//<merchant vat number>//",
-	"trxExpirationMinutes": //<transaction validity minutes>//,
-	"challenge": "//<challenge>//",
-	"secondFactor": "//<second factor>//"
+	"trxExpirationMinutes": //<transaction validity minutes>//
 }

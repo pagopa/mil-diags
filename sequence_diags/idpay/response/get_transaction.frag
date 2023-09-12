@@ -8,4 +8,5 @@ __body__
 	"trxCode": "//<transaction code>//",
 	"status": "//<idpay status>//",
 	"coveredAmount": //<covered amount (if the status is IDENTIFIED or AUTHORIZED)>//,
+	"secondFactor": "//<base64url encoded second factor (if the status is IDENTIFIED)>//"
 }
