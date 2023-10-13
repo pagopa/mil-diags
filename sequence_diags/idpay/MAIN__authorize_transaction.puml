@@ -59,7 +59,7 @@ group#Gold authorize transaction
 	IDPaySrv -> IDPaySrv : <ecrypted session key for idpay> = Encrypt <session key> with RSA/ECB/OAEPwithSHA-256andMGF1Padding using IDPay public key
 	
 	group authorize transaction
-		IDPaySrv -> IDPay : POST /idpay/mil/payment/cie///<idpay transaction id>///authorize
+		IDPaySrv -> IDPay : PUT /idpay/mil/payment/idpay-code///<idpay transaction id>///authorize
 			note left
 				!include_many idpay_request/authorize_transaction.frag
 			end note

@@ -12,7 +12,7 @@ group#Gold verify cie
 		IDPaySrv -> IDPayDB  : find(//<mil transaction id>//)
 		IDPayDB --> IDPaySrv : //<value>// 
 			note right
-				!include_many stored_trx_data/on_get__retrieve.frag
+				!include_many stored_trx_data/on_create_ok.frag
 			end note
 	end
 	
@@ -39,6 +39,15 @@ group#Gold verify cie
 		if ipzs answers with HTTP 404, return 400 (bad request) with error body
 		if ipzs interaction fails for any other reason, return HTTP 500 (server error) with error body
 	end note
+	
+	group write trx data to db
+		IDPaySrv -> IDPayDB : insert(//<value>//)
+			note left
+				!include_many stored_trx_data/on_cie_verified.frag
+			end note
+		
+		return //<result>//
+	end
 	
 	group retrieve public key
 		!include_many retrieve_azure_access_token.puml

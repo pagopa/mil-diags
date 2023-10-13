@@ -9,8 +9,7 @@ group#Gold create transaction
 		end note
 	
 	IDPaySrv -> IDPaySrv : //<mil transaction id>// = random UUID
-	IDPaySrv -> IDPaySrv : Retrieve //<idpay merchant id>//
-	IDPaySrv -> IDPay : POST /idpay/mil/payment/qr-code/merchant/
+	IDPaySrv -> IDPay : POST /idpay/mil/payment/
 		note left
 			!include_many idpay_request/create_transaction.frag
 		end note

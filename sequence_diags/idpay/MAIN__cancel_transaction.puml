@@ -18,16 +18,13 @@ group#Gold cancel transaction
 			!include_many stored_trx_data/on_get__retrieve.frag
 		end note
 		
-		IDPaySrv -> IDPay : DELETE /idpay/mil/payment/qr-code/merchant///<idpayTransactionId>//
+		IDPaySrv -> IDPay : DELETE /idpay/mil/payment///<idpayTransactionId>//
 			note left
 				!include_many idpay_request/get_transaction.frag
 			end note
 		
 		opt transaction found
-			IDPay --> IDPaySrv : HTTP 200 (found)
-				note right
-					!include_many idpay_response/get_transaction.frag
-				end note
+			IDPay --> IDPaySrv : HTTP 200 (ok)
 			
 			group write trx data to db
 				IDPaySrv -> IDPayDB : update(//<value>//)

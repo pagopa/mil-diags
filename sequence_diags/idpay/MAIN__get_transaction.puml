@@ -18,7 +18,7 @@ group#Gold get transaction
 			!include_many stored_trx_data/on_get__retrieve.frag
 		end note
 		
-		IDPaySrv -> IDPay : GET /idpay/mil/payment/qr-code/merchant/status///<idpay transaction id>//
+		IDPaySrv -> IDPay : GET /idpay/mil/payment/status///<idpay transaction id>//
 			note left
 				!include_many idpay_request/get_transaction.frag
 			end note
@@ -36,6 +36,22 @@ group#Gold get transaction
 					end note
 				
 				return //don't care//
+			end
+			
+			opt //<by cie>// = true && //<idpay status>// = IDENTIFIED
+				IDPaySrv -> IDPay : PUT /idpay/mil/payment/idpay-code///<idpay transaction id>///preview
+					note right
+						!include_many idpay_request/get_second_factor.frag
+					end note
+				
+				IDPaySrv --> IDPay : HTTP 200 (ok)
+					note right
+						!include_many idpay_response/get_second_factor.frag
+					end note	
+					
+				note over IDPaySrv #Orange
+					if this interaction with IDPay went wrong, return HTTP 500 (server error) with error body
+				end note		
 			end
 			
 			IDPaySrv --> Client : HTTP 200 (found)

@@ -13,5 +13,6 @@ __value__
 	"trxCode": "//<transaction code>//",
 	"status": "//<idpay status>//",
 	"coveredAmount": //<covered amount (if status is IDENTIFIED or AUTHORIZED)>//,
-	"lastUpdate": "//<timestamp of the last update (if any)>//"
+	"lastUpdate": "//<timestamp of the last update (if any)>//",
+	"byCie": //<by cie>//
 }

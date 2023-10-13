@@ -2,7 +2,8 @@ __body__
 {
 	"id": "//<idpay transaction id>//",
 	"trxCode": "//<transaction code>//",
+	"amountCents": "//<transaction amount in eurocents>//",
 	"initiativeId": "//<selected initiative id>//",
-	"status": "AUTHORIZED",
-	"amountCents": "//<transaction amount in eurocents>//"
+	"status": "//<idpay status>//",
+	"secondFactor": //<second factor>//
 }

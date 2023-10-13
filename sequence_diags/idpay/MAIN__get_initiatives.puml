@@ -8,9 +8,7 @@ group#Gold get initiatives
 			!include_many request/get_initiatives.frag
 		end note
 	
-	IDPaySrv -> IDPaySrv : Retrieve //<idpay merchant id>//
-	
-	IDPaySrv -> IDPay : GET /idpay/mil/payment/qr-code/merchant/initiatives
+	IDPaySrv -> IDPay : GET /idpay/mil/merchant/initiatives
 		note left
 			!include_many idpay_request/get_initiatives.frag
 		end note
@@ -21,7 +19,7 @@ group#Gold get initiatives
 				!include_many idpay_response/get_initiatives.frag
 			end note
 		
-		IDPaySrv -> IDPaySrv : filter(initiative => initiative.status == "PUBLISHED" && initiative.enabled == "true" && initiative.startDate <= "//<current timestamp>//" && initiative.endDate >= "//<current timestamp>//")
+		IDPaySrv -> IDPaySrv : filter(initiative => initiative.status == "PUBLISHED" && initiative.startDate <= "//<current timestamp>//")
 		
 		IDPaySrv --> Client : HTTP 200 (ok)
 			note right
