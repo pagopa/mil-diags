@@ -18,7 +18,7 @@ group#Gold get transaction
 			!include_many stored_trx_data/on_get__retrieve.frag
 		end note
 		
-		IDPaySrv -> IDPay : GET /idpay/mil/payment/status///<idpay transaction id>//
+		IDPaySrv -> IDPay : GET /idpay/mil/payment///<idpay transaction id>///status
 			note left
 				!include_many idpay_request/get_transaction.frag
 			end note

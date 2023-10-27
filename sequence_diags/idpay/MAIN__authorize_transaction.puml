@@ -44,7 +44,10 @@ group#Gold authorize transaction
 	end note
 	
 	group retrieving idpay public key
-		IDPaySrv -> IDPay : GET /zonePublicKey
+		IDPaySrv -> IDPay : GET /idpay/mil/payment/publickey
+			note left
+				!include_many idpay_request/get_zone_public_key.frag
+			end note
 		IDPay --> IDPaySrv : HTTP 200 (ok)
 			note right
 				!include_many idpay_response/get_zone_public_key.frag
