@@ -1,5 +1,2 @@
-__body__
-client_id=//<client id>//&
-grant_type=client_credentials&
-client_secret=//<client secret>//&
-scope=https://vault.azure.net/.default
+__header__
+x-identity-header=${IDENTITY_HEADER}

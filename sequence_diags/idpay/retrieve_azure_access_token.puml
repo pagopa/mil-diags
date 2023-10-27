@@ -1,7 +1,7 @@
 @startuml
 
 group retrieve azure access token
-	IDPaySrv -> AzureAD : POST ///<tenant id>///oauth2/v2.0/token
+	IDPaySrv -> AzureAD : GET ${IDENTITY_ENDPOINT}?resource=https://vault.azure.net&api-version=2019-08-01
 		note left
 			!include_many azuread_request/get_access_token.frag
 		end note
