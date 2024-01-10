@@ -1,0 +1,40 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold create trx
+	Portal -> NoticeSrv : POST /transactions
+		note left
+			!include_many request/create_trx.frag
+		end note
+
+	!include_many get_company_conf.puml
+
+	NoticeSrv -> NoticeSrv : Verify that //<payee code>// is in //<array of payee codes>//
+		note over NoticeSrv #Orange
+			If verification fails, return HTTP status 400 with proper error code.
+		end note
+
+	!include_many nodo_interaction/activate_ok.puml
+	
+	NoticeSrv -> NoticeSrv : Generate //<transaction id>//
+	
+	!include_many stored_trx_data/store_trx_on_create.puml
+		note over NoticeSrv #Orange
+			If DB interaction fails for duplicate key (//<transaction id>//), return HTTP status 409 with proper error code.
+			If DB interaction fails for another reason, return HTTP status 500 with proper error code.
+		end note
+	
+	NoticeSrv --> Portal : HTTP 201 (created)
+		note right
+			'!include_many response/create_trx.frag
+		end note
+end
+
+group#Gold retrieve trx
+	Pos -> NoticeSrv : GET /transactions?slaveTerminalId=//<slave terminal id>//
+		note left
+			!include_many request/header_with_access_token_for_pos.frag
+		end note 
+end
+@enduml

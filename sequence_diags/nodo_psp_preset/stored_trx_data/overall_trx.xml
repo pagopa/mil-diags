@@ -1,0 +1,74 @@
+<transaction>
+	<creationTimestamp>//<creation timestamp>//</creationTimestamp>
+	<lastStatusUpdateTimestamp>//<last status updated timestamp>//</lastStatusUpdateTimestamp>
+	<status>CREATED|PRE_CLOSE|ERROR_ON_PAYMENT|CLOSED|ERROR_ON_CLOSE|ABORTED</status>
+	<client>
+		<channel>POS|ATM</channel>
+		<acquirerId>//<gt id for pos>//|//<bank id for atm>//</acquirerId>
+		<merchantId>//<merchant id for merchant's pos>//|//<company code for pa pos>//</merchantId>
+		<terminalId>//<terminal id>//</terminalId>
+		<slaveTerminalId>//<slave terminal id for pos>//</slaveTerminalId>
+	</client>
+	<idPSP>//<psp id>//</idPSP>
+	<idBrokerPSP>//<psp broker id>//</idBrokerPSP>
+	<idChannel>//<channel id>//</idChannel>
+	<transactionId>//<transaction id>//</transactionId>
+	<totalAmount>//<amount>// + //<fee charged to the payer>//</totalAmount>
+	<fee>//<fee charged to the payer>// + //<fee charged to the payee>//</fee>
+	<primaryCiIncurredFee>//<fee charged to the payee>//</primaryCiIncurredFee>
+	<idBundle>//<fee bundle id>//</idBundle>
+	<idCiBundle>//<fee ci bundle id>//</idCiBundle>
+	<timestampOperation>//<last updated timestamp>//</timestampOperation>
+	<paymentList>
+		<payment>
+			<paymentToken>//<payment token>//</paymentToken>
+			<paymentDescription>//<description>//</paymentDescription>
+			<fiscalCodePA>//<payee code>//</fiscalCodePA>
+			<companyName>//<payee name>//</companyName>
+			<officeName>//<payee office name>//</officeName>
+			<creditorReferenceId>//<iuv>//</creditorReferenceId>
+			<debtAmount>//<amount>//</debtAmount>
+			<transferList>
+				.
+				.
+				.
+				<transfer>
+					<idTransfer>//n//</idTransfer>
+					<transferAmount>//<amount #n>//</transferAmount>
+					<fiscalCodePA>//<payee code #n>//</fiscalCodePA>
+					<companyName>//<payee name #n>//</companyName>
+					<IBAN>//<iban #n>//</IBAN>
+					<remittanceInformation>//<remittance info #n>//</remittanceInformation>
+					<metadata>
+						.
+						.
+						.
+						<mapEntry>
+							<key>//<metadata key #n.m>//</key>
+							<value>//<metadata value #n.m>//</value>
+						</mapEntry>
+						.
+						.
+						.
+					</metadata>
+				</transfer>
+				.
+				.
+				.
+			</transferList>
+			<metadata>
+				.
+				.
+				.
+				<mapEntry>
+					<key>//<metadata key #k>//</key>
+					<value>//<metadata value #k>//</value>
+				</mapEntry>
+				.
+				.
+				.
+			</metadata>
+		</payment>
+	</paymentList>
+	<standin>//<stand id>//</standin>
+</transaction>

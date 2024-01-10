@@ -1,6 +1,8 @@
 participant "Client" as Client
 
-participant "Institution or\nMerchant Portal" as Portal
+participant "Company Portal" as Portal
+
+participant "POS" as Pos
 
 box Multichannel Integration Layer #GhostWhite
     participant "Other Service" as Other
@@ -8,27 +10,9 @@ box Multichannel Integration Layer #GhostWhite
     participant "Auth Service" as IdpSrv
     database "Cache" as IdpCache
     database "DB" as IdpDB
-
-	participant "Session Service" as SessionSrv
-	database "Cache" as SessionCache
-	
-	participant "T&C Service" as TCSrv
-	database "DB" as TCDB
-	
-	participant "Functions Service" as FunctionSrv
-	database "DB" as FunctionDB
 	
 	participant "Payment Notice Service" as NoticeSrv
-	database "Cache" as NoticeCache
 	database "DB" as NoticeDB
-	
-	participant "Wallet Service" as WalletWrp
-
-	participant "Fee Calculator" as FeeSrv
-	
-	participant "Acquirer Config" as AcqConf
-	
-	queue "Preset Topic\nfor Payment Notice" as NoticeTpc
 	
 	participant "Preset Operation" as PresetSrv
 	database "DB" as PresetDB
@@ -38,18 +22,10 @@ box Multichannel Integration Layer #GhostWhite
 	
 	participant "Azure AD" as AzureAD
 	participant "Azure Key Vault" as AzureKV
+	participant "Azure Storage Account" as AzureST
 end box
 
-box CDE/PCI Environment #GhostWhite
-	participant "PM-RTD" as PANTokenizer
-	participant "PM-Wallet" as Wallet
-end box
-
-participant "PDV-Tokenizer" as Tokenizer
-participant "Bancomat | Nexi | SIA |\nPoste Italiane |\nIntesa Sanpaolo | ICCREA" as ServiceCenter
-participant "IO Back-end" as IO
 participant "Nodo" as Nodo
-participant "Gestione Evoluta\nCommissioni" as GEC
 participant "IDPay" as IDPay
 participant "Poynt Services" as Poynt
 participant "IPZS" as IPZS

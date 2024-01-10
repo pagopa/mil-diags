@@ -1,0 +1,29 @@
+@startuml
+group get company configuration
+	!$client = NoticeSrv
+	!include_many ../common/azure/get_azure_access_token_for_storage_account.frag
+
+	group get configuration file
+		NoticeSrv -> AzureST : GET /companies///<company code>//.json
+			note left
+				__header__
+				x-ms-version: 2019-07-07
+				Authorization: Bearer //<azure access token for storage account>//
+			end note
+
+	AcqConf --> NoticeSrv : HTTP 200 (ok)
+		note right
+			__response body__
+			{
+				"payeeCodes": [ //<array of payee codes>// ],
+				"pspConfig": {
+					"psp": "//<psp id>//",
+					"broker": "//<psp broker id>//",
+					"channel": "//<channel id>//",
+					"password": "//<password>//"
+				}
+			}
+		end note
+	end
+end
+@enduml

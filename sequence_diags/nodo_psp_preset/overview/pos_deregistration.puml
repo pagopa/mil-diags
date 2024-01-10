@@ -1,0 +1,17 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "Portal Back-end" as Portal
+participant MIL
+
+Portal ->  MIL    : get terminals (access token + company code)
+MIL    ->  MIL    : retrieve list of terminals by company code
+MIL    --> Portal : list of terminals
+
+Portal ->  MIL    : deactivate terminal (company code + slave terminal id)
+    note over MIL
+        This will avoid access token refreshing.
+    end note
+MIL    ->  MIL    : update terminal status (status = DEACTIVATED)
+MIL    --> Portal 
+@enduml

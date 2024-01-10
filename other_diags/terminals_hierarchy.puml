@@ -1,0 +1,17 @@
+@startwbs
+* Terminal
+
+** ATM
+*** BankID = Codice ABI della Banca (5 cifre)
+**** BranchID = Codice Filiale (5 cifre)
+***** TerminalID = Codice Sportello (4 cifre)
+
+** POS
+*** GTID = 
+**** TerminalID = 
+
+** PAPOS
+*** CompanyCode = Codice Fiscale dell'Ente
+**** TerminalID = Codice Terminale assegnato dal MIL durante l'autenticazione
+
+@endwbs

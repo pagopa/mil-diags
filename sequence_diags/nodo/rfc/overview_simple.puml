@@ -2,46 +2,58 @@
 !include_many ../../common/skin.puml
 
 == Verify ==
-loop for each payment notice
-	SWClient -> Nodo : verifyPaymentNoticeReq
-	return verifyPaymentNoticeRes
-end
+POS  ->  MIL  : verify
+MIL  ->  Nodo : verifyPaymentNoticeReq
+Nodo --> MIL
+MIL  --> POS
 
 == Activate ==
-loop for each payment notice 
-	SWClient -> Nodo : activatePaymentNoticeReqV2
-	return activatePaymentNoticeResV2
-		note right
-			Contains //paymentToken//
-		end note
-end
+POS  ->  MIL  : activate
+MIL  ->  Nodo : activatePaymentNoticeReqV2
+Nodo --> MIL
+MIL  --> POS
 
 == Retrieve Fees ==
-SWClient -> GEC : GetFeesByPsp
-return
+POS ->  MIL : get fee
+MIL ->  GEC : GetFeesByPsp
+GEC --> MIL
+MIL --> POS
+
+== Pre-close ==
+POS ->  MIL : pre-close
+MIL --> POS
 
 == e-Money Transaction ==
-SWClient <-> TerminalHandler : e-Money Transaction
+POS <-> PSP : e-Money Transaction
 
 == Close ==
-SWClient -> Nodo : closePaymentReqV2
-	note left
-		Contains //paymentToken// and //transactionId//
-	end note
-return closePaymentResV2
+POS  ->  MIL  : close
+MIL  ->  Nodo : closePaymentReqV2
+Nodo --> MIL
+MIL  --> POS
+
+== Polling #1 (eg) ==
+POS  ->  MIL : get status
+MIL  --> POS
 
 == Notify ==
-Nodo -> PSP : pspNotifyPaymentReqV2
-	note left
-		Contains //paymentToken// and //transactionId//
-	end note
-return pspNotifyPaymentResV2
+Nodo ->  PSP  : pspNotifyPaymentReqV2
+PSP  --> Nodo
+
+== Payment Outcome ==
+PSP  ->  Nodo : sendPaymentOutcomeV2
+Nodo --> PSP
+
+== Polling #2 (eg) ==
+POS ->  MIL : get status
+MIL --> PSP
 
 == Payment Result ==
-Nodo -> SWClient : sendPaymentResultReq
-	note right
-		Contains //paymentToken// and //transactionId//
-	end note
-return sendPaymentResultRes
+Nodo ->  MIL : sendPaymentResultReq
+MIL  --> Nodo
+
+== Polling #3 (eg) ==
+POS ->  MIL : get status
+MIL --> POS
 
 @enduml

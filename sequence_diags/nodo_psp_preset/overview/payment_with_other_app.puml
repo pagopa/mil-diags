@@ -1,0 +1,36 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "Portal Back-end" as Portal
+participant "POS/POS Back-end" as POS
+participant MIL
+participant Nodo
+participant GT
+
+== Create ==
+Portal ->  MIL    : get terminals (portal be access token + company code)
+MIL    --> Portal : list of terminals
+
+Portal ->  MIL    : create trx (portal be access token + company code + slave terminal id + payee code + notice number + amount)
+MIL    ->  MIL    : store trx
+MIL    --> Portal : OK
+
+== Retrieve ==
+POS    ->  MIL    : get trx (pos access token + company code + slave terminal id)
+MIL    --> POS    : trx details (payee code + notice number + amount)
+
+== Activate ==
+POS    ->  Nodo   : activate (payee code + notice number + amount)
+Nodo   --> POS    : fees + list of transfers
+
+== e-Money Trx ==
+POS    <-> GT   : e-Money Trx
+
+== Send Payment Outcome ==
+POS    ->  Nodo   : send payment outcome
+Nodo   --> POS    : OK
+
+== Ack ==
+POS    ->  MIL    : ack (pos access token + company code + slave terminal id + trx id + e-money trx result)
+MIL    ->  MIL    : update trx
+MIL    --> POS    : OK

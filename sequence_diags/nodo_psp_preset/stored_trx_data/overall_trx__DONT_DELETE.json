@@ -1,0 +1,70 @@
+__document__
+{
+	"id": "//<transaction id>//",
+	"creationTimestamp": "//<creation timestamp>//",
+	"lastStatusUpdateTimestamp": "//<last status updated timestamp>//",
+	"status": "CREATED|PRE_CLOSE|ERROR_ON_PAYMENT|CLOSED|ERROR_ON_CLOSE|ABORTED",
+	"client": {
+		"channel": "POS|ATM",
+		"acquirerId": "//<gt id for pos>//|//<bank id for atm>//",
+		"merchantId": "//<merchant tax code for merchant's pos>//|//<company code for pa pos>//",
+		"terminalId": "//<terminal id>//",
+		"slaveTerminalId": "//<slave terminal id for pos>//"
+	},
+	"pspId": "//<psp id>//",
+	"pspBrokerId": "//<psp broker id>//",
+	"channelId": "//<channel id>//",
+	"noticesTotalAmount": //<total notices amount>//,
+	"payerFees": //<fee charged to the payer>//,
+	"payeeFees": //<fee charged to the payee>//,
+	"payerAmount": //<total notices amount>// + //<fee charged to the payer>//,
+	"idBundle": "//<fee bundle id>//",
+	"idCiBundle": "//<fee ci bundle id>//",
+	"paymentMethod": "//<payment method>//"
+	"notices": [
+		{
+			"paymentToken": "//<payment token>//",
+			"description": "//<description>//",
+			"payeeCode": "//<payee code>//",
+			"payeeName": "//<payee name>//",
+			"officeName": "//<payee office name>//",
+			"creditorReferenceId": "//<iuv>//",
+			"amount": //<notice amount>//,
+			"transfers": [
+				{
+					"id": "//<n>//",
+					"amount": "//<transfer amount #n>//",
+					"payeeCode": "//<payee code #n>//",
+					"payeeName": "//<payee name #n>//",
+					"iban": "//<payee iban #n>//",
+					"remittanceInformation": "//<remittance info #n>//",
+					"metadata": [
+						.
+						.
+						.
+						{
+							"key": "//<metadata key #n.m>//",
+							"value": "//<metadata value #n.m>//"
+						}
+						.
+						.
+						.
+					]
+				}
+			],
+			"metadata": [
+				.
+				.
+				.
+				{
+					"key": "//<metadata key #k>//",
+					"value": "//<metadata value #k>//"
+				}
+				.
+				.
+				.
+			]
+		}
+	],
+	"standin": "//<stand id>//"
+}

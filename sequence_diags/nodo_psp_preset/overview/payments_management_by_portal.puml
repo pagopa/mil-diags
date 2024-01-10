@@ -1,0 +1,25 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "Portal Back-end" as Portal
+participant MIL
+
+== Trxs Retrieval ==
+Portal ->  MIL    : get trxs (access token + company code)
+MIL    ->  MIL    : retrieve list of trx by company code
+MIL    --> Portal : list of trx
+
+
+== Trx Cancellation ==
+Portal ->  MIL    : cancel trx (access token + company code + trx id)
+MIL    ->  MIL    : retrieve trx
+MIL    ->  MIL    : verify that the trx is cancellable
+MIL    ->  MIL    : update trx status to CANCELLED
+MIL    --> Portal : ok
+
+== Trx Details ==
+Portal ->  MIL    : get trx details (access token + company code + trx id)
+MIL    ->  MIL    : retrieve trx
+MIL    --> Portal : trx details
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+!include_many ../../common/skin.puml
+
+Title Happy Path
+
+== Verify ==
+POS  ->  MIL  : verify
+MIL  ->  Nodo : verifyPaymentNoticeReq
+Nodo --> MIL  : OK
+MIL  --> POS  : OK
+
+== Activate ==
+POS  ->  MIL  : activate
+MIL  ->  Nodo : activatePaymentNoticeReqV2
+Nodo --> MIL  : OK
+MIL  ->  MIL  : create trx (status = PREPARING)
+MIL  --> POS  : OK
+
+== Pre-close ==
+POS  ->  MIL  : pre-close
+MIL  ->  MIL  : update trx (status = PRE_CLOSE)
+MIL  --> POS  : OK
+
+== e-Money Transaction ==
+POS <-> PSP : e-Money Transaction
+
+== Close ==
+POS  ->  MIL  : close (outcome = OK)
+MIL  ->  Nodo : sendPaymentOutcomeV2 (outcome = OK)
+Nodo --> MIL  : OK
+MIL  ->  MIL  : update trx (status = CLOSED)
+MIL  --> POS  : OK
+
+...
+...
+...
+...
+
+== Operations File Retrieval ==
+PSP ->  MIL : get file
+MIL --> PSP : file
+@enduml

@@ -1,8 +1,0 @@
-@startuml
-group create access token
-	!include_many ../common/get_valid_key_pair.puml
-
-
-	!include_many create_access_token_proper.puml
-end
-@enduml
