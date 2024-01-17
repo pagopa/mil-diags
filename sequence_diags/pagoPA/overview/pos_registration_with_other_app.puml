@@ -1,0 +1,12 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "PSP Portal Back-end" as Portal
+participant MIL
+
+Portal ->  MIL    : add terminal (access token + gt id + terminal id + payee code)
+MIL    ->  MIL    : slave terminal id = gt id || terminal id
+MIL    ->  MIL    : store terminal data (gt id, terminal id, payee code, slave terminal id)
+MIL    --> Portal : slave terminal id
+
+@enduml

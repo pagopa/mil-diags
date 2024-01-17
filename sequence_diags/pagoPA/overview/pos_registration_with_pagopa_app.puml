@@ -1,0 +1,50 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "Portal Back-end" as Portal
+participant POS
+participant MIL
+
+== Preparing ==
+POS    ->  MIL    : authorization request (gt id + terminal id)
+MIL    ->  MIL    : generate slave terminal id + user code
+MIL    ->  MIL    : store gt id + terminal id + slave terminal id + user code + status = TO_BE_AUTH
+MIL    --> POS    : slave terminal id + user code    
+
+...
+...
+
+== Polling #1 ==
+POS    ->  MIL    : have I been authorized (slave terminal id)?
+MIL    ->  MIL    : retrieve terminal data by slave terminal id
+MIL    --> POS    : no
+
+...
+...
+
+== Polling #2 ==
+POS    ->  MIL    : have I been authorized (slave terminal id)?
+MIL    ->  MIL    : retrieve terminal data by slave terminal id
+MIL    --> POS    : no
+
+...
+...
+
+== Authorizing ==
+Portal ->  MIL    : request terminal data (access token + company code + user code)
+MIL    ->  MIL    : retrieve terminal data by user code
+MIL    ->  Portal : terminal data
+Portal ->  MIL    : authorize (access token + company code + user code)
+MIL    ->  MIL    : add company code to terminal data + status = AUTH
+MIL    --> Portal : ok
+
+...
+...
+
+== Polling #n ==
+POS    ->  MIL    : have I been authorized (slave terminal id)?
+MIL    ->  MIL    : retrieve terminal data by slave terminal id
+MIL    ->  MIL    : generate access token + refresh token
+MIL    --> POS    : access token + refresh token
+
+@enduml

@@ -1,0 +1,512 @@
+@startuml
+!pragma teoz true
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+
+participant "POS" as pos
+participant "mil-auth" as mil
+database "cache\n(Redis)" as cache
+participant "Azure Active\nDirectory" as azure_ad
+participant "Azure Storage\nAccount" as azure_st
+database "pos-registry\n(MongoDB)" as registry
+participant "Azure Key\nVault" as azure_kv
+
+activate pos
+
+pos -> mil ++ : POST /token
+	note left
+		__header__
+		RequestId: //<request id>//
+		__body__
+		grant_type=device_code
+		&&client_id=//<client id>//
+		&&device_code=//<terminal uuid>//
+	end note
+
+mil -> cache ++ : get(//<terminal uuid>//)
+cache --> mil -- : true
+
+note over mil #Orange
+	On //<terminal uuid>// not found, return HTTP 403 (forbidden) with specific error body.
+	On any other failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+group verify //<client id>//
+	group get azure access token
+		mil -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://storage.azure.com
+			note left
+				__header__
+				x-identity-header: //${IDENTITY_HEADER}//
+			end note
+
+		azure_ad --> mil -- : HTTP 200 (ok) 
+			note right
+				__body__
+				{
+					"token_type": "Bearer",
+					"expires_on": //don't care//,
+					"client_id": "//don't care//",
+					"resource": "//don't care//"
+					"access_token": "//<access token for storage account>//"
+				}
+			end note
+	end
+
+	group get //<client id>// file
+		mil -> azure_st ++ : GET //<storage account base url>///clients///<client id>//.json
+			note left
+				__header__
+				x-ms-version: 2019-07-07
+				Authorization: Bearer //<access token for storage account>//
+			end note
+
+		azure_st --> mil -- : HTTP 200 (ok)
+			note right
+				__body__
+				{
+					"id": "//<client id>//",
+					"channel": "POS"
+				}
+			end note
+	end
+
+	note over mil #Orange
+		On //<client id>// file not found, return HTTP 401 (unauthorized) with specific error body.
+		On any other failure, return HTTP 500 (server error) with specific error body. 
+	end note
+
+	mil -> mil : verify channel
+
+	note over mil #Orange
+		On channel mismatch, return HTTP 401 (unauthorized) with specific error body.
+	end note
+end
+
+group get terminal data
+	mil -> registry ++ : findBy(//query document//)
+		note left
+			__//query document//__
+			{
+				"uuid": "//<terminal uuid>//"
+			}
+		end note
+
+	registry --> mil -- : //document//
+		note right
+			__//document//__
+			{
+				"uuid": "//<terminal uuid>//"
+				"gtId": "//<gt id>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payee code>//",
+				"slave": "//<slave>//",
+				"pagoPa": "//<pagopa>//",
+				"pspId": "//<psp id>//",
+				"brokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"idpay": "//<idpay>//"
+			}
+		end note
+end
+	
+note over mil #Orange
+	On terminal not found, return HTTP 401 (unauthorized) with specific error body.
+	On any other failure, return HTTP 500 (server error) with specific error body. 
+end note
+	
+group build tokens payload
+	mil -> mil : generate //<access token payload>//
+		note right
+			__//<access token payload>//__
+			{
+				"sub": "//<client id>//",
+				"aud": "mil.pagopa.it",
+				"iss": "https:////<host name>///mil-auth",
+				"iat": //<current unix epoch>//,
+				"exp": //<current unix epoch>// + 900, <&arrow-left> //This must be a conf. par.//
+				"channel": "POS",
+				"gtId": "//<gtId>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payeeCode>//",
+				"groups": [
+					"SlavePos", <&arrow-left> //Present if <slave> is **true**.//
+					"NoticePayer", <&arrow-left> //Present if <pagopa> is **true**.//
+					"PayWithIDPay" <&arrow-left> //Present if <idpay> is **true**.//
+				],
+				"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+				"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+				"channelId": "//<channel id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+			}
+		end note
+
+	mil -> mil : generate //<refresh token payload>//
+		note right
+			__//<refresh token payload>//__
+			{
+				"sub": "//<client id>//",
+				"aud": "mil.pagopa.it",
+				"iss": "https:////<host name>///mil-auth",
+				"iat": //<current unix epoch>//,
+				"exp": //<current unix epoch>// + 3600, <&arrow-left> //This must be a conf. par.//
+				"channel": "POS",
+				"gtId": "//<gtId>//",
+				"terminalId": "//<terminal id>//",
+				"scope": "offline_access"
+			}
+		end note
+end
+
+group retrieve key
+	group get azure access token
+		mil -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://vault.azure.net
+			note left
+				__header__
+				x-identity-header: //${IDENTITY_HEADER}//
+			end note
+
+		azure_ad --> mil -- : HTTP 200 (ok) 
+			note right
+				__body__
+				{
+					"token_type": "Bearer",
+					"expires_on": //don't care//,
+					"client_id": "//don't care//",
+					"resource": "//don't care//"
+					"access_token": "//<access token for key vault>//"
+				}
+			end note
+	end
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+
+	group get keys
+		mil -> azure_kv ++ : GET //<key vault base url>///keys?api-version=7.4
+			note left
+				__header__
+				Authorization: Bearer //<access token for key vault>//
+			end note
+
+		azure_kv --> mil -- : HTTP 200 (ok)
+			note right
+				__body__
+				{
+					"value": [
+						{
+							"kid": "//<key vault base url>///keys///<key name>//",
+							"attributes": {
+								"enabled": //<enabled>//,
+								"nbf": //<not before>//,
+								"exp": //<expiration>//,
+								"created": //<issued at>//
+							}
+						},
+						.
+						.
+						.
+					]
+				}
+			end note
+	end
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+
+	loop for each key
+		group get key versions
+			mil -> azure_kv ++ : GET //<key vault base url>///keys///<key name>///versions?api-version=7.4
+				note left
+					__header__
+					Authorization: Bearer //<access token for key vault>//
+				end note
+			
+			azure_kv --> mil -- : HTTP 200 (ok)
+				note right
+					__body__
+					{
+						"value": [
+							{
+								"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+								"attributes": {
+									"enabled": //<enabled>//,
+									"nbf": //<not before>//,
+									"exp": //<expiration>//,
+									"created": //<issued at>//
+								}
+							},
+							.
+							.
+							.
+						]
+					}
+				end note
+		end
+
+		note over mil #Orange
+			On any failure, return HTTP 500 (server error) with specific error body. 
+		end note
+
+		loop for each key version
+			mil -> mil : verify key version validity
+				note left
+					//<enabled>// == true &&
+					//<not before>// < //<current unix epoch>// &&
+					//<expiration>// > //<current unix epoch>// &&
+					//<issued at>// <= //<current unix epoch>//
+				end note
+
+			alt valid key version
+				group get key version details
+					mil -> azure_kv ++ : GET //<key vault base url>///keys///<key name>/////<key version>//?api-version=7.4
+						note left
+							__header__
+							Authorization: Bearer //<access token for key vault>//
+						end note
+
+					azure_kv --> mil -- : HTTP 200 (ok)
+						note right
+							__body__
+							{
+								"key": {
+									"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+									"kty": "//<key type>//",
+									"key_ops": [
+										//<key ops array>//
+									],
+									"n": "//<modulus>//", 
+									"e": "//<public exponent>//"
+								},
+								"attributes": {
+									"enabled": //<enabled>//,
+									"nbf": //<not before>//,
+									"exp": //<expiration>//,
+									"created": //<issued at>//
+								}
+							}
+						end note
+				end
+
+				note over mil #Orange
+					On any failure, return HTTP 500 (server error) with specific error body. 
+				end note
+				
+				mil -> mil : verify key version validity
+					note left
+						//<enabled>// == true &&
+						//<not before>// < //<current unix epoch>// &&
+						//<expiration>// > //<current unix epoch>// &&
+						//<issued at>// <= //<current unix epoch>// &&
+						//<key type>// == "RSA" &&
+						//<key ops array>// contains "sign" and "verify"
+					end note
+
+				alt valid key version
+					mil -> mil : add key version to valid key list
+				else not valid key version
+					mil -> mil : discard key version
+				end
+			else not valid key verion
+				mil -> mil : discard key version
+			end
+		end
+	end
+
+	note over mil #LightGreen
+		Here the list of valid keys.
+	end note
+
+	alt there are no valid key
+		group generate new key
+			mil -> mil : generate //<key name>//
+			
+			mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>///create?api-version=7.4
+				note left
+					__header__
+					Authorization: Bearer //<access token for key vault>//
+					__body__
+					{
+						"kty": "RSA",
+						"key_size": 4096, <&arrow-left> //This must be a conf. par.//
+						"key_ops": [
+							"sign",
+							"verify"
+						],
+						"attributes": {
+							"created": //<current unix epoch>//,
+							"exp": //<current unix epoch>// + 86400, <&arrow-left> //This must be a conf. par.//
+							"nbf": //<current unix epoch>//,
+							"updated": //<current unix epoch>//,
+							"enabled": true,
+							"recoveryLevel": "Purgeable",
+							"exportable": false
+						}
+					}
+				end note
+
+			azure_kv --> mil -- : HTTP 200 (ok)
+				note right
+					__body__
+					{
+						"key": {
+							"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+							"kty": "//<key type>//",
+							"key_ops": [
+								//<key ops array>//
+							],
+							"n": "//<modulus>//", 
+							"e": "//<public exponent>//"
+						},
+						"attributes": {
+							"enabled": //<enabled>//,
+							"nbf": //<not before>//,
+							"exp": //<expiration>//,
+							"created": //<issued at>//
+						}
+					}
+				end note
+
+			note over mil #Orange
+				On any failure, return HTTP 500 (server error) with specific error body. 
+			end note
+
+			mil -> mil : verify key version validity
+				note left
+					//<enabled>// == true &&
+					//<not before>// < //<current unix epoch>// &&
+					//<expiration>// > //<current unix epoch>// &&
+					//<issued at>// <= //<current unix epoch>// &&
+					//<key type>// == "RSA" &&
+					//<key ops array>// contains "sign" and "verify"
+				end note
+
+			note over mil #Orange
+				On verification failure, return HTTP 500 (server error) with specific error body. 
+			end note
+		end
+	else there are valid keys
+		mil -> mil : search the key with greatest expiration
+	end
+end
+
+note over mil #LightGreen
+	Here the //key// to use to sign the tokens.
+	__//key//__
+	{
+		"kid": "//<key name>/////<key version>//",
+		"iat": //<issued at>//,
+		"exp": //<expiration>//,
+		"use": "sig",
+		"kty": "RSA",
+		"n": "//<modulus>//",
+		"e": "//<public exponent>//"
+	}
+end note
+
+group build tokens header
+	mil -> mil : generate //<token header>//
+		note left
+			__//<token header>//__
+			{
+				"kid": "//<key name>/////<key version>//",
+				"alg": "RS256"
+			}
+		end note
+end
+
+group sign access token
+	mil -> mil : generate //<string to sign for access token>//
+		note left
+			__//<string to sign for access token>//__
+			base64url(
+				sha256(
+					utf8(
+						base64url(//<token header>//) +
+						"." +
+						base64url(//<access token payload>//)
+					)
+				)
+			)
+		end note
+
+	mil -> azure_kv ++ : POST POST //<key vault base url>///keys///<key name>/////<key version>///sign?api-version=7.4
+		note left
+			__body__
+			{
+				"alg": "RS256",
+				"value": "//<string to sign for access token>//"
+			}
+		end note
+
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+				"value": "//<base64url of access token signature>//"
+			}
+		end note
+end
+
+note over mil #Orange
+	On any failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+mil -> mil : //<access token>// = base64url(//<token header>//) + "." +  base64url(//<access token payload>//) + "." + //<base64url of access token signature>//
+
+group sign refresh token
+	mil -> mil : generate //<string to sign for refresh token>//
+		note left
+			__//<string to sign for refresh token>//__
+			base64url(
+				sha256(
+					utf8(
+						base64url(//<token header>//) +
+						"." +
+						base64url(//<refresh token payload>//)
+					)
+				)
+			)
+		end note
+
+	mil -> azure_kv ++ : POST POST //<key vault base url>///keys///<key name>/////<key version>///sign?api-version=7.4
+		note left
+			__body__
+			{
+				"alg": "RS256",
+				"value": "//<string to sign for refresh token>//"
+			}
+		end note
+
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+				"value": "//<base64url of refresh token signature>//"
+			}
+		end note
+end
+
+note over mil #Orange
+	On any failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+mil -> mil : //<refresh token>// = base64url(//<token header>//) + "." +  base64url(//<refresh token payload>//) + "." + //<base64url of refresh token signature>//
+
+mil --> pos -- : HTTP 200 (ok)
+	note right
+		{
+    		"access_token": "//<access token>//",
+    		"refresh_token": "//<refresh token>//",
+    		"token_type": "Bearer",
+    		"expires_in": 900 <&arrow-left> //This must be a conf. par.//
+		}
+	end note
+
+deactivate pos
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold create trx
+	Portal -> NoticeSrv : POST /transactions
+		note left
+			!include_many request/create_trx_from_portal.frag
+		end note
+
+	!include_many nodo_interaction/activate_ok.puml
+	
+	NoticeSrv -> NoticeSrv : Generate //<transaction id>//
+	
+	!include_many stored_trx_data/store_trx_on_create.puml
+		note over NoticeSrv #Orange
+			If DB interaction fails, return HTTP status 500 with proper error code.
+		end note
+	
+	NoticeSrv --> Portal : HTTP 201 (created)
+		note right
+			!include_many response/create_trx_from_portal.frag
+		end note
+end
+@enduml

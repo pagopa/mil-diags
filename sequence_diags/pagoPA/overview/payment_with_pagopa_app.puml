@@ -8,8 +8,8 @@ participant Nodo
 participant GT
 
 == Create ==
-Portal ->  MIL    : get terminals (access token + company code)
-MIL    ->  MIL    : retrieve list of terminals by company code
+Portal ->  MIL    : get terminals (access token + payee code)
+MIL    ->  MIL    : retrieve list of terminals by payee code
 MIL    --> Portal : list of terminals
 
 Portal ->  MIL    : create trx (access token + company code + slave terminal id + payee code + notice number + amount)

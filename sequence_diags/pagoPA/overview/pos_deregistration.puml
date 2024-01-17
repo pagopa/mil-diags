@@ -8,7 +8,7 @@ Portal ->  MIL    : get terminals (access token + company code)
 MIL    ->  MIL    : retrieve list of terminals by company code
 MIL    --> Portal : list of terminals
 
-Portal ->  MIL    : deactivate terminal (company code + slave terminal id)
+Portal ->  MIL    : deactivate terminal (access token + company code + slave terminal id)
     note over MIL
         This will avoid access token refreshing.
     end note

@@ -1,6 +1,6 @@
 participant "Client" as Client
 
-participant "Company Portal" as Portal
+participant "Payee Portal" as Portal
 
 participant "POS" as Pos
 

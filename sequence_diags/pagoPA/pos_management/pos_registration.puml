@@ -1,0 +1,74 @@
+@startuml
+!pragma teoz true
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+
+actor "Operator" as operator
+participant "Management Portal" as management
+participant "mil-auth" as mil
+database "pos-registry" as registry
+
+activate operator
+
+operator -> management ++ : register POS
+
+management -> mil ++ : POST /poses
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+		__body__
+		{
+			"gtId": "//<gt id>//",
+			"terminalId": "//<terminal id>//",
+			"payeeCode": "//<payee code>//", <&arrow-left> //Payee's Tax (Fiscal) Code for PA POS, Mechant's Tax (Fiscal) Code for other POS.//
+			"slave": "//<slave>//", <&arrow-left> //True for slave PA POS, otherwise false.//
+			"pagoPa": "//<pagopa>//", <&arrow-left> //True for POS enbled to pagoPA payments.//
+			"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is true. PSP ID to use to communicate with pagoPA platform.//
+			"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is true. PSP Broker ID to use to communicate with pagoPA platform.//
+			"channelId": "//<channel id>//", <&arrow-left> //Present if <pagopa> is true. Channel ID to use to communicate with pagoPA platform.//
+			"idpay": "//<idpay>//" <&arrow-left> //True for POS enabled to use IDPay bonus.//
+		}
+	end note
+
+mil -> mil : generate //<terminal uuid>//
+
+group store terminal data
+	mil -> registry ++ : insert(//document//)
+		note left
+			__//document//__
+			{
+				"uuid": "//<terminal uuid>//"
+				"gtId": "//<gt id>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payee code>//",
+				"slave": "//<slave>//",
+				"pagoPa": "//<pagopa>//",
+				"pspId": "//<psp id>//",
+				"brokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"idpay": "//<idpay>//"
+			}
+		end note
+
+	registry --> mil -- : ok
+end
+
+note over mil #Orange
+	On duplicate key (//<gt id>//, //<terminal id>//) error is returned, return HTTP 409 (conflict).
+	On any other failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+mil --> management -- : HTTP 201 (created)
+	note right
+		__header__
+		Location: /poses///<terminal uuid>//
+	end note
+
+management --> operator -- : ok
+
+deactivate operator
+@enduml

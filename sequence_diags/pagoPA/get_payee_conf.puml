@@ -1,5 +1,5 @@
 @startuml
-group get company configuration
+group get payee conf
 	!$client = NoticeSrv
 	!include_many ../common/azure/get_azure_access_token_for_storage_account.frag
 
@@ -11,11 +11,10 @@ group get company configuration
 				Authorization: Bearer //<azure access token for storage account>//
 			end note
 
-	AcqConf --> NoticeSrv : HTTP 200 (ok)
+	AzureST --> NoticeSrv : HTTP 200 (ok)
 		note right
-			__response body__
+			__body__
 			{
-				"payeeCodes": [ //<array of payee codes>// ],
 				"pspConfig": {
 					"psp": "//<psp id>//",
 					"broker": "//<psp broker id>//",

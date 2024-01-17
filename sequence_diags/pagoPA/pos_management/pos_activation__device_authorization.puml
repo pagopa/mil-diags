@@ -1,0 +1,45 @@
+@startuml
+!pragma teoz true
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+autoactivate on
+
+actor "POS Installer" as installer
+participant "Management Portal" as management
+participant "mil-auth" as mil
+database "cache\n(Redis)" as cache
+
+activate installer
+
+installer -> management : authorize device (in: //<user code>//)
+management -> mil : POST /activate
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+		__body__
+		user_code=//<user code>//
+	end note
+mil -> cache : get(//<user code>//)
+cache --> mil : //<terminal uuid>//
+
+note over mil #Orange
+	On //<user code>// not found, return HTTP 401 (unauthorized) with specific error body.
+	On any other failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+mil -> cache : put(//<terminal uuid>//, true) with expiration time equals to //<expires is>//
+cache --> mil : ok
+
+note over mil #Orange
+	On any failure, return HTTP 500 (server error) with specific error body. 
+end note
+
+mil --> management : ok
+management --> installer : ok
+
+deactivate installer
+@enduml

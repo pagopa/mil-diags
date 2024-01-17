@@ -1,0 +1,36 @@
+@startuml
+!include_many ../../common/skin.puml
+
+participant "EC Portal Back-end" as Portal
+participant "POS/POS Back-end" as POS
+participant MIL
+participant Nodo
+participant GT
+
+== Create ==
+Portal ->  MIL    : get terminals (access token + payee code)
+MIL    ->  MIL    : retrieve list of terminals by payee code
+MIL    --> Portal : list of terminals (slave terminal id)
+
+Portal ->  MIL    : update notice for a terminal (access token + slave terminal id + notice qr code)
+MIL    ->  MIL    : update notice data
+MIL    --> Portal : ok
+
+== Retrieve ==
+POS    ->  MIL    : get notice data (access token + gt id + terminal id)
+MIL    ->  MIL    : retrieve notice data by slave terminal id = gt id || terminal id
+MIL    ->  MIL    : switch notice status to "consumed"
+MIL    --> POS    : notice details (qr code)
+
+== Activate ==
+POS    ->  Nodo   : activate (payee code + notice number + amount)
+Nodo   --> POS    : fees + list of transfers
+
+== e-Money Trx ==
+POS    <-> GT     : e-Money Trx
+
+== Send Payment Outcome ==
+POS    ->  Nodo   : send payment outcome
+Nodo   --> POS    : ok
+
+@enduml

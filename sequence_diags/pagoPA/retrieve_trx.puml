@@ -1,0 +1,11 @@
+@startuml
+!include_many ../common/skin.puml
+!include_many ../common/actors.puml
+
+group#Gold retrieve trx
+	Pos -> NoticeSrv : GET /transactions?slaveTerminalId=//<slave terminal id>//
+		note left
+			!include_many request/header_with_access_token_for_pos.frag
+		end note 
+end
+@enduml
