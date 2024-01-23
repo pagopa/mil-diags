@@ -1,0 +1,10 @@
+group #FFF0F5 build tokens header
+	mil -> mil : generate //<token header>//
+		note left
+			__//<token header>//__
+			{
+				"kid": "//<key name>/////<key version>//",
+				"alg": "RS256"
+			}
+		end note
+end

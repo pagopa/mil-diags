@@ -1,0 +1,32 @@
+group #C5E1A5 get key versions
+	mil -> azure_kv ++ : GET //<key vault base url>///keys///<key name>///versions?api-version=7.4
+		note left
+			__header__
+			Authorization: Bearer //<access token for key vault>//
+		end note
+	
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"value": [
+					{
+						"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+						"attributes": {
+							"enabled": //<enabled>//,
+							"nbf": //<not before>//,
+							"exp": //<expiration>//,
+							"created": //<issued at>//
+						}
+					},
+					.
+					.
+					.
+				]
+			}
+		end note
+
+    note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

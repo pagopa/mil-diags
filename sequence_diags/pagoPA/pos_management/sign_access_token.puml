@@ -1,0 +1,37 @@
+group #E0E0E0 sign access token
+	mil -> mil : generate //<string to sign for access token>//
+		note left
+			__//<string to sign for access token>//__
+			base64url(
+				sha256(
+					utf8(
+						base64url(//<token header>//) +
+						"." +
+						base64url(//<access token payload>//)
+					)
+				)
+			)
+		end note
+
+	mil -> azure_kv ++ : POST POST //<key vault base url>///keys///<key name>/////<key version>///sign?api-version=7.4
+		note left
+			__body__
+			{
+				"alg": "RS256",
+				"value": "//<string to sign for access token>//"
+			}
+		end note
+
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+				"value": "//<base64url of access token signature>//"
+			}
+		end note
+	
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

@@ -1,18 +1,6 @@
 @startuml
-!pragma teoz true
-skinparam style strictuml
-skinparam maxMessageSize 200
-skinparam shadowing false
-skinparam sequenceMessageAlign center
-autonumber "<font color='blue'><b><u>##</u></b></font>"
-
-participant "POS" as pos
-participant "mil-auth" as mil
-database "cache\n(Redis)" as cache
-participant "Azure Active\nDirectory" as azure_ad
-participant "Azure Storage\nAccount" as azure_st
-database "pos-registry\n(MongoDB)" as registry
-participant "Azure Key\nVault" as azure_kv
+!include_many skin.puml
+!include_many actors.puml
 
 activate pos
 
@@ -21,9 +9,14 @@ pos -> mil ++ : POST /token
 		__header__
 		RequestId: //<request id>//
 		__body__
-		grant_type=device_code
+		grant_type=refresh_token
 		&&client_id=//<client id>//
-		&&device_code=//<terminal uuid>//
+		&&refresh_token=//<terminal uuid>//
+
+		__body__
+client_id=//<client id>//&
+grant_type=**refresh_token**&
+refresh_token=//<refresh token>//
 	end note
 
 mil -> cache ++ : get(//<terminal uuid>//)

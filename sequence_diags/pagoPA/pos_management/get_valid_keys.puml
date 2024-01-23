@@ -1,0 +1,45 @@
+group #AEEEEE get valid keys
+	!include_many get_azure_access_token_for_vault.puml
+
+	!include_many get_keys.puml
+
+	loop for each key
+		!include_many get_key_versions.puml
+
+		loop for each key version
+			mil -> mil : verify key version validity
+				note left
+					//<enabled>// == true &&
+					//<not before>// < //<current unix epoch>// &&
+					//<expiration>// > //<current unix epoch>// &&
+					//<issued at>// <= //<current unix epoch>//
+				end note
+
+			alt valid key version
+				!include_many get_key_version_details.puml
+				
+				mil -> mil : verify key version validity
+					note left
+						//<enabled>// == true &&
+						//<not before>// < //<current unix epoch>// &&
+						//<expiration>// > //<current unix epoch>// &&
+						//<issued at>// <= //<current unix epoch>// &&
+						//<key type>// == "RSA" &&
+						//<key ops array>// contains "sign" and "verify"
+					end note
+
+				alt valid key version
+					mil -> mil : add key version to valid key list
+				else not valid key version
+					mil -> mil : discard key version
+				end
+			else not valid key verion
+				mil -> mil : discard key version
+			end
+		end
+	end
+
+	note over mil #LightGreen
+		Here the list of valid keys.
+	end note
+end

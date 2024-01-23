@@ -1,0 +1,32 @@
+group #7FFFD4 get terminal data
+	mil -> registry ++ : findBy(//query document//)
+		note left
+			__//query document//__
+			{
+				"gtId": "//<gt id>//",
+				"terminalId": "//<terminal id>//"
+			}
+		end note
+
+	registry --> mil -- : //document//
+		note right
+			__//document//__
+			{
+				"uuid": "//<terminal uuid>//"
+				"gtId": "//<gt id>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payee code>//",
+				"slave": "//<slave>//",
+				"pagoPa": "//<pagopa>//",
+				"pspId": "//<psp id>//",
+				"brokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"idpay": "//<idpay>//"
+			}
+		end note
+	
+    note over mil #Orange
+	    On terminal not found, return HTTP 401 (unauthorized) with specific error body.
+	    On any other failure, return HTTP 500 (server error) with specific error body. 
+    end note
+end

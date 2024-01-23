@@ -1,0 +1,67 @@
+group #FFF5EE create new key
+	mil -> mil : generate //<key name>//
+		
+	mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>///create?api-version=7.4
+		note left
+			__header__
+			Authorization: Bearer //<access token for key vault>//
+			__body__
+			{
+				"kty": "RSA",
+				"key_size": 4096, <&arrow-left> //This must be a conf. par.//
+				"key_ops": [
+				    "sign",
+					"verify"
+				],
+				"attributes": {
+					"created": //<current unix epoch>//,
+					"exp": //<current unix epoch>// + 86400, <&arrow-left> //This must be a conf. par.//
+					"nbf": //<current unix epoch>//,
+					"updated": //<current unix epoch>//,
+					"enabled": true,
+					"recoveryLevel": "Purgeable",
+					"exportable": false
+				}
+			}
+		end note
+
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"key": {
+					"kid": "//<key vault base url>///keys///<key name>/////<key version>//",
+					"kty": "//<key type>//",
+					"key_ops": [
+						//<key ops array>//
+					],
+					"n": "//<modulus>//", 
+					"e": "//<public exponent>//"
+				},
+				"attributes": {
+					"enabled": //<enabled>//,
+					"nbf": //<not before>//,
+					"exp": //<expiration>//,
+					"created": //<issued at>//
+				}
+			}
+		end note
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+
+	mil -> mil : verify key version validity
+		note left
+			//<enabled>// == true &&
+			//<not before>// < //<current unix epoch>// &&
+			//<expiration>// > //<current unix epoch>// &&
+			//<issued at>// <= //<current unix epoch>// &&
+			//<key type>// == "RSA" &&
+			//<key ops array>// contains "sign" and "verify"
+		end note
+
+	note over mil #Orange
+		On verification failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

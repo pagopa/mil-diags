@@ -1,0 +1,9 @@
+group #AFEEEE get user code
+    mil -> cache ++ : get(//<user code>//)
+    cache --> mil -- : //<terminal uuid>//
+
+    note over mil #Orange
+	    On //<user code>// not found, return HTTP 401 (unauthorized) with specific error body.
+	    On any other failure, return HTTP 500 (server error) with specific error body. 
+    end note
+end

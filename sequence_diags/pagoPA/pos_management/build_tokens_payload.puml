@@ -1,0 +1,41 @@
+group #E1DCDC build tokens payload
+	mil -> mil : generate //<access token payload>//
+		note right
+			__//<access token payload>//__
+			{
+				"sub": "//<client id>//",
+				"aud": "mil.pagopa.it",
+				"iss": "https:////<host name>///mil-auth",
+				"iat": //<current unix epoch>//,
+				"exp": //<current unix epoch>// + 900, <&arrow-left> //This must be a conf. par.//
+				"channel": "POS",
+				"gtId": "//<gtId>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payeeCode>//",
+				"groups": [
+					"SlavePos", <&arrow-left> //Present if <slave> is **true**.//
+					"NoticePayer", <&arrow-left> //Present if <pagopa> is **true**.//
+					"PayWithIDPay" <&arrow-left> //Present if <idpay> is **true**.//
+				],
+				"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+				"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+				"channelId": "//<channel id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+			}
+		end note
+
+	mil -> mil : generate //<refresh token payload>//
+		note right
+			__//<refresh token payload>//__
+			{
+				"sub": "//<client id>//",
+				"aud": "mil.pagopa.it",
+				"iss": "https:////<host name>///mil-auth",
+				"iat": //<current unix epoch>//,
+				"exp": //<current unix epoch>// + 3600, <&arrow-left> //This must be a conf. par.//
+				"channel": "POS",
+				"gtId": "//<gtId>//",
+				"terminalId": "//<terminal id>//",
+				"scope": "offline_access"
+			}
+		end note
+end

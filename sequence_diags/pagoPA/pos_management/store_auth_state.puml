@@ -1,0 +1,8 @@
+group #C0C0C0 set auth state
+    mil -> cache ++ : put(//<terminal uuid>//, true) with expiration time equals to //<expires is>//
+    cache --> mil -- : ok
+
+    note over mil #Orange
+	    On any failure, return HTTP 500 (server error) with specific error body. 
+    end note
+end

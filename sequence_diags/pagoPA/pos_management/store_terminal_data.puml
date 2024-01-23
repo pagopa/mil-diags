@@ -1,0 +1,25 @@
+group #E2C49C store terminal data
+	mil -> registry ++ : insert(//document//)
+		note left
+			__//document//__
+			{
+				"uuid": "//<terminal uuid>//"
+				"gtId": "//<gt id>//",
+				"terminalId": "//<terminal id>//",
+				"payeeCode": "//<payee code>//",
+				"slave": "//<slave>//",
+				"pagoPa": "//<pagopa>//",
+				"pspId": "//<psp id>//",
+				"brokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"idpay": "//<idpay>//"
+			}
+		end note
+
+	registry --> mil -- : ok
+
+    note over mil #Orange
+		On duplicate key (//<gt id>//, //<terminal id>//) error is returned, return HTTP 409 (conflict).
+		On any other failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

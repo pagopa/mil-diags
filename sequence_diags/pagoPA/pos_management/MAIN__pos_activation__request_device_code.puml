@@ -1,0 +1,40 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate installer
+
+installer -> pos ++ : start app
+
+pos -> mil ++ : POST /device/code
+	note left
+		__header__
+		RequestId: //<request id>//
+		__body__
+		client_id=//<client id>//
+		&&gtId=//<gt id>//
+		&&terminalId=//<terminal id>//
+	end note
+
+!include_many verify_client_id.puml
+!include_many get_terminal_data.puml
+	
+mil -> mil : generate 8ch length base20 string as //<user code>//
+
+!include_many store_user_code.puml
+
+mil --> pos -- : HTTP 200 (ok)
+	note right
+		__body__
+		{
+			"device_code": "//<terminal uuid>//",
+			"user_code": "//<user code>//",
+			"expires_in": //<expires is>//,
+			"interval": //<interval>//
+		}
+		end note
+
+pos --> installer --: //<user code>//
+
+deactivate installer
+@enduml
