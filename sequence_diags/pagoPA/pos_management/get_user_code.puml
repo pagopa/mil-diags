@@ -1,4 +1,4 @@
-group #AFEEEE get user code
+group #FFEF8F get user code
     mil -> cache ++ : get(//<user code>//)
     cache --> mil -- : //<terminal uuid>//
 

@@ -1,4 +1,4 @@
-group #E1DCDC build tokens payload
+group #FFE0CC build tokens payload
 	mil -> mil : generate //<access token payload>//
 		note right
 			__//<access token payload>//__
@@ -27,9 +27,8 @@ group #E1DCDC build tokens payload
 		note right
 			__//<refresh token payload>//__
 			{
+				"jti": "//<refresh token id>//",
 				"sub": "//<client id>//",
-				"aud": "mil.pagopa.it",
-				"iss": "https:////<host name>///mil-auth",
 				"iat": //<current unix epoch>//,
 				"exp": //<current unix epoch>// + 3600, <&arrow-left> //This must be a conf. par.//
 				"channel": "POS",

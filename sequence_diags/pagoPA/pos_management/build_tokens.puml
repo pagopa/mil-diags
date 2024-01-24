@@ -1,0 +1,11 @@
+group #FFB6C1 common processing
+	!include_many verify_client_id.puml
+	!include_many get_terminal_data.puml
+	!include_many build_tokens_payload.puml
+	!include_many retrieve_key_to_sign_tokens.puml
+	!include_many build_tokens_header.puml
+	!include_many sign_access_token.puml
+	mil -> mil : //<access token>// = base64url(//<token header>//) + "." +  base64url(//<access token payload>//) + "." + //<base64url of access token signature>//
+	!include_many sign_refresh_token.puml
+	mil -> mil : //<refresh token>// = base64url(//<token header>//) + "." +  base64url(//<refresh token payload>//) + "." + //<base64url of refresh token signature>//
+end

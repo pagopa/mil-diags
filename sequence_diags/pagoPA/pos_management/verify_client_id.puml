@@ -1,7 +1,7 @@
-group #LavenderBlush verify //<client id>// 
+group #FFFACD verify client id 
 	!include_many get_azure_access_token_for_storage.puml
 
-	group #HoneyDew get //<client id>// file
+	group #90EE90 get client id file
 		mil -> azure_st ++ : GET //<storage account base url>///clients///<client id>//.json
 			note left
 				__header__

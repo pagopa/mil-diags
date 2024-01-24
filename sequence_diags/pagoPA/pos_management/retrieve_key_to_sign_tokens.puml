@@ -1,4 +1,4 @@
-group #F5F5DC retrieve key to sign tokens
+group #80FFDB retrieve key to sign tokens
 	!include_many get_valid_keys.puml
 	
 	alt there are no valid key

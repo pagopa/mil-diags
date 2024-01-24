@@ -1,9 +1,9 @@
-group #FFF7F5 get auth state
+group #CCFFCC get auth state
     mil -> cache ++ : get(//<terminal uuid>//)
     cache --> mil -- : true
 
     note over mil #Orange
-		On //<terminal uuid>// not found, return HTTP 403 (forbidden) with specific error body.
-		On any other failure, return HTTP 500 (server error) with specific error body. 
+			On //<terminal uuid>// not found, return HTTP 403 (forbidden) with specific error body.
+			On any other failure, return HTTP 500 (server error) with specific error body. 
     end note
 end

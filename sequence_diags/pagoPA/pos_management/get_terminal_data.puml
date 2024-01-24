@@ -1,4 +1,4 @@
-group #7FFFD4 get terminal data
+group #FF9A7A get terminal data
 	mil -> registry ++ : findBy(//query document//)
 		note left
 			__//query document//__
@@ -12,7 +12,8 @@ group #7FFFD4 get terminal data
 		note right
 			__//document//__
 			{
-				"uuid": "//<terminal uuid>//"
+				"uuid": "//<terminal uuid>//",
+				"manId": "//<client id of the subject who registered the POS>//",
 				"gtId": "//<gt id>//",
 				"terminalId": "//<terminal id>//",
 				"payeeCode": "//<payee code>//",

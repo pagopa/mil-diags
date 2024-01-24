@@ -1,4 +1,4 @@
-group #FFF5EE create new key
+group #FFFFCC create new key
 	mil -> mil : generate //<key name>//
 		
 	mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>///create?api-version=7.4

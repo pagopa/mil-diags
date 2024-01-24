@@ -1,4 +1,4 @@
-group #E6E6E6 get azure access token
+group #CCCCFF get azure access token
 	mil -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://vault.azure.net
 		note left
 			__header__

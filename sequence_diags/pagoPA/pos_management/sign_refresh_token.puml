@@ -1,4 +1,4 @@
-group #D3D3D3 sign refresh token
+group #DCCCFF sign refresh token
 	mil -> mil : generate //<string to sign for refresh token>//
 		note left
 			__//<string to sign for refresh token>//__
@@ -15,6 +15,8 @@ group #D3D3D3 sign refresh token
 
 	mil -> azure_kv ++ : POST POST //<key vault base url>///keys///<key name>/////<key version>///sign?api-version=7.4
 		note left
+			__header__
+			Authorization: Bearer //<access token for key vault>//
 			__body__
 			{
 				"alg": "RS256",

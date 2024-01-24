@@ -1,0 +1,48 @@
+group #87CEFA verify refresh token
+    note over mil #LightGreen
+		__//<refresh token>//__
+		base64url(//<token header>//) + "." +
+		base64url(//<refresh token payload>//) + "." +
+		//<base64url of refresh token signature>//
+		__//<token header>//__
+		{
+			"kid": "//<key name>/////<key version>//",
+			"alg": "RS256"
+		}
+		__//<refresh token payload>//__
+		{
+			"jti": "//<refresh token id>//",
+			"sub": "//<client id>//",
+			"iat": //<issue unix epoch>//,
+			"exp": //<expiration unix epoch>//,
+			"channel": "POS",
+			"gtId": "//<gtId>//",
+			"terminalId": "//<terminal id>//",
+			"scope": "offline_access"
+		}
+    end note
+
+    mil -> mil : verify header validity
+		note left
+			"alg" == "RS256"
+		end note
+
+    note over mil #Orange
+    	On verification failure, return HTTP 401 (unauthorized) with specific error body.
+	end note
+	
+	mil -> mil : verify payload validity
+		note left
+			//<issue unix epoch>// < //<current unix epoch>// &&
+			//<expiration unix epoch>// > //<current unix epoch>// &&
+			"scope" == "offline_access"
+		end note
+
+	note over mil #Orange
+    	On verification failure, return HTTP 401 (unauthorized) with specific error body.
+	end note
+
+	!include_many verify_refresh_token_blacklist.puml
+	!include_many get_azure_access_token_for_vault.puml
+	!include_many verify_refresh_token_signature.puml
+end

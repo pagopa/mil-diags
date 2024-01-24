@@ -1,9 +1,10 @@
-group #E2C49C store terminal data
+group #FFA0A0 store terminal data
 	mil -> registry ++ : insert(//document//)
 		note left
 			__//document//__
 			{
-				"uuid": "//<terminal uuid>//"
+				"uuid": "//<terminal uuid>//",
+				"manId": "//<client id>//",
 				"gtId": "//<gt id>//",
 				"terminalId": "//<terminal id>//",
 				"payeeCode": "//<payee code>//",

@@ -1,0 +1,105 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate operator
+
+operator -> management ++ : get POS list
+
+management -> mil ++ : GET /poses?page=//<page number>//
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+	end note
+
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"groups": [
+			.
+			.
+			.
+			"PosManagement",
+			.
+			.
+			.
+		],
+	}
+end note
+
+	mil -> registry : find(//query document//) with page = //<page number>//
+		note left
+			__//query document//__
+			{
+				"manId": "//<client id>//"
+			}
+		end note
+
+	>>> COME RICAVARE I METADATI PER POPOLARE L'ATTRIBUTO PAGE DELLA RISPOSTA???
+
+mil --> management -- : HTTP 200 (ok)
+	note right
+		__body__
+		{
+			"_embedded": {
+				"poses": [
+					{
+						"uuid": "//<terminal uuid>//",
+						"manId": "//<client id of the subject who registered the POS>//",
+						"gtId": "//<gt id>//",
+						"terminalId": "//<terminal id>//",
+						"payeeCode": "//<payee code>//",
+						"slave": "//<slave>//",
+						"pagoPa": "//<pagopa>//",
+						"pspId": "//<psp id>//",
+						"brokerId": "//<broker id>//",
+						"channelId": "//<channel id>//",
+						"idpay": "//<idpay>//",
+						"_links": {
+							"self": {
+								"href": "/poses///<terminal uuid>//"
+							}
+						}
+					},
+                    .
+                    .
+                    .
+				]
+			},
+			"_links": {
+				"first": {
+					"href": "/poses?page=0"
+				},
+				"self": {
+					"href": "/poses?page=//<page number>//"
+				},
+				"next": { <&arrow-left> //If any.//
+					"href": "/poses?page=//<page number>// +1"
+				},
+				"last": {
+					"href": "/poses?page=//<last page number>//"
+				}
+			},
+			"page": {
+				"size": //<page size>//,
+				"totalElements": //<number of elements>//,
+				"totalPages": //<number of pages>//,
+				"number": //<page number>//
+			}
+		}
+	end note
+
+management --> operator -- : POS list
+
+deactivate operator
+@enduml

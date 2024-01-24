@@ -1,0 +1,40 @@
+group #ADD8E6 verify refresh token signature
+    mil -> mil : generate //<string to verify refresh token>//
+		note left
+			__//<string to verify refresh token>//__
+			base64url(
+				sha256(
+					utf8(
+						base64url(//<token header>//) +
+						"." +
+						base64url(//<refresh token payload>//)
+					)
+				)
+			)
+		end note
+
+	mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>/////<key version>///verify?api-version=7.4
+		note left
+        	__header__
+			Authorization: Bearer //<access token for key vault>//
+			__body__
+			{
+				"alg": "RS256",
+				"value": "//<string to verify for refresh token>//",
+                "digest": "//<base64url of refresh token signature>//"
+			}
+		end note
+
+	azure_kv --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			{
+				"value": true
+			}
+		end note
+
+	note over mil #Orange
+		On "value" == false in the response body, return HTTP 401 (unauthorized) with specific error body.
+		On any other failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

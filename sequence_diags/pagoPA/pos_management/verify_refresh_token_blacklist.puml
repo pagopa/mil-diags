@@ -1,0 +1,9 @@
+group #E6E6FA verify refresh token blacklist
+    mil -> cache ++ : get(//<refresh token id>//)
+    cache --> mil -- : not found
+
+    note over mil #Orange
+	    On //<refresh token id>// found, return HTTP 401 (unauthorized) with specific error body.
+	    On any other failure, return HTTP 500 (server error) with specific error body. 
+    end note
+end

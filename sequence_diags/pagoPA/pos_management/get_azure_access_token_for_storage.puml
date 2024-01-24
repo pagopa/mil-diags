@@ -1,4 +1,4 @@
-group #F8F5E9 get azure access token
+group #CCFFFF get azure access token
 	mil -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://storage.azure.com
 		note left
 			__header__

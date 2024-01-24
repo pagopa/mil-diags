@@ -1,4 +1,4 @@
-group #C0C0C0 set auth state
+group #FFB6C1 set auth state
     mil -> cache ++ : put(//<terminal uuid>//, true) with expiration time equals to //<expires is>//
     cache --> mil -- : ok
 

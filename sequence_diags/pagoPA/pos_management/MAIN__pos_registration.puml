@@ -25,6 +25,30 @@ management -> mil ++ : POST /poses
 		}
 	end note
 
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"groups": [
+			.
+			.
+			.
+			"PosManagement",
+			.
+			.
+			.
+		],
+	}
+end note
+
 mil -> mil : generate //<terminal uuid>//
 
 !include_many store_terminal_data.puml

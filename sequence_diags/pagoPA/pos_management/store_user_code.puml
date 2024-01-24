@@ -1,4 +1,4 @@
-group store user code
+group #FFCCAA store user code
 	mil -> cache ++ : put(//<user code>//, //<terminal uuid>//) with expiration time equals to //<expires is>//
 	cache --> mil -- : ok
 

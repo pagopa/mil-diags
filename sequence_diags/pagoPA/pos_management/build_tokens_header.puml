@@ -1,4 +1,4 @@
-group #FFF0F5 build tokens header
+group #FFCCCC build tokens header
 	mil -> mil : generate //<token header>//
 		note left
 			__//<token header>//__

@@ -1,4 +1,4 @@
-group #AEEEEE get valid keys
+group #D1FF80 get valid keys
 	!include_many get_azure_access_token_for_vault.puml
 
 	!include_many get_keys.puml

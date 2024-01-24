@@ -1,4 +1,4 @@
-group #C5E1A5 get key versions
+group #FFCCFF get key versions
 	mil -> azure_kv ++ : GET //<key vault base url>///keys///<key name>///versions?api-version=7.4
 		note left
 			__header__
