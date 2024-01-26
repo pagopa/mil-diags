@@ -7,6 +7,7 @@ group #FFA0A0 store terminal data
 				"manId": "//<client id>//",
 				"gtId": "//<gt id>//",
 				"terminalId": "//<terminal id>//",
+				"enabled": //<enabled>//,
 				"payeeCode": "//<payee code>//",
 				"slave": "//<slave>//",
 				"pagoPa": "//<pagopa>//",

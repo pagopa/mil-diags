@@ -1,0 +1,64 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate operator
+
+operator -> management ++ : register POS
+
+management -> mil ++ : PUT /poses///<terminal uuid>//
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+		__body__
+		{
+			"gtId": "//<new gt id>//",
+			"terminalId": "//<new terminal id>//",
+			"enabled": //<new enabled>//,
+			"payeeCode": "//<new payee code>//", <&arrow-left> //Payee's Tax (Fiscal) Code for PA POS, Mechant's Tax (Fiscal) Code for other POS.//
+			"slave": "//<new slave>//", <&arrow-left> //True for slave PA POS, otherwise false.//
+			"pagoPa": "//<new pagopa>//", <&arrow-left> //True for POS enbled to pagoPA payments.//
+			"pspId": "//<new psp id>//", <&arrow-left> //Present if <pagopa> is true. PSP ID to use to communicate with pagoPA platform.//
+			"brokerId": "//<new broker id>//", <&arrow-left> //Present if <pagopa> is true. PSP Broker ID to use to communicate with pagoPA platform.//
+			"channelId": "//<new channel id>//", <&arrow-left> //Present if <pagopa> is true. Channel ID to use to communicate with pagoPA platform.//
+			"idpay": "//<new idpay>//" <&arrow-left> //True for POS enabled to use IDPay bonus.//
+		}
+	end note
+
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"groups": [
+			.
+			.
+			.
+			"PosManagement",
+			.
+			.
+			.
+		],
+	}
+end note
+
+!include_many get_terminal_data_by_id.puml
+
+mil -> mil : update retrieved document with new values
+
+!include_many update_terminal_data.puml
+
+mil --> management -- : HTTP 204 (no content)
+
+management --> operator -- : ok
+
+deactivate operator
+@enduml

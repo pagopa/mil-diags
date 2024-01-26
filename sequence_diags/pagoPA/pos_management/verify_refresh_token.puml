@@ -42,7 +42,6 @@ group #87CEFA verify refresh token
     	On verification failure, return HTTP 401 (unauthorized) with specific error body.
 	end note
 
-	!include_many verify_refresh_token_blacklist.puml
 	!include_many get_azure_access_token_for_vault.puml
 	!include_many verify_refresh_token_signature.puml
 end

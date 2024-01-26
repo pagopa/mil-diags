@@ -1,0 +1,26 @@
+group #ADD8E6 update terminal data
+	mil -> registry ++ : update(//document//)
+		note left
+			__//document//__
+			{
+				"uuid": "//<terminal uuid>//",
+				"manId": "//<client id>//",
+				"gtId": "//<new gt id>//",
+				"terminalId": "//<new terminal id>//",
+				"enabled": //<new enabled>//,
+				"payeeCode": "//<new payee code>//",
+				"slave": "//<new slave>//",
+				"pagoPa": "//<new pagopa>//",
+				"pspId": "//<new psp id>//",
+				"brokerId": "//<new broker id>//",
+				"channelId": "//<new channel id>//",
+				"idpay": "//<new idpay>//"
+			}
+		end note
+
+	registry --> mil -- : ok
+
+    note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

@@ -15,6 +15,7 @@ management -> mil ++ : POST /poses
 		{
 			"gtId": "//<gt id>//",
 			"terminalId": "//<terminal id>//",
+			"enabled": //<enabled>//,
 			"payeeCode": "//<payee code>//", <&arrow-left> //Payee's Tax (Fiscal) Code for PA POS, Mechant's Tax (Fiscal) Code for other POS.//
 			"slave": "//<slave>//", <&arrow-left> //True for slave PA POS, otherwise false.//
 			"pagoPa": "//<pagopa>//", <&arrow-left> //True for POS enbled to pagoPA payments.//

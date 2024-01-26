@@ -1,12 +1,5 @@
-group #FF9A7A get terminal data
-	mil -> registry ++ : find(//query document//)
-		note left
-			__//query document//__
-			{
-				"gtId": "//<gt id>//",
-				"terminalId": "//<terminal id>//"
-			}
-		end note
+group #7FE5CE get terminal data by id
+	mil -> registry ++ : findById(//<terminal uuid>//)
 
 	registry --> mil -- : //document//
 		note right
@@ -28,8 +21,7 @@ group #FF9A7A get terminal data
 		end note
 	
     note over mil #Orange
-	    On terminal not found, return HTTP 401 (unauthorized) with specific error body.
-		On //<enabled>// = false, return HTTP 401 (unauthorized) with specific error body.
+	    On terminal not found, return HTTP 404 (not found) with specific error body.
 	    On any other failure, return HTTP 500 (server error) with specific error body. 
     end note
 end

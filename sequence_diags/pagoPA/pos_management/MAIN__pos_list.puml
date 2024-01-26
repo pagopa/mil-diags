@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : get POS list
 
-management -> mil ++ : GET /poses?page=//<page number>//
+management -> mil ++ : GET /poses?page=//<page number>//&size=//<page size>//&payeeCode=//<payee code>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -37,64 +37,38 @@ note over mil #LightGreen
 	}
 end note
 
-	mil -> registry : find(//query document//) with page = //<page number>//
-		note left
-			__//query document//__
-			{
-				"manId": "//<client id>//"
-			}
-		end note
+!include_many get_number_of_terminals.puml
+!include_many get_terminals_data.puml
 
-	>>> COME RICAVARE I METADATI PER POPOLARE L'ATTRIBUTO PAGE DELLA RISPOSTA???
+mil -> mil : //<number of pages>//> = ceil( //<number of elements>// / //<page size>// )
 
 mil --> management -- : HTTP 200 (ok)
 	note right
 		__body__
 		{
-			"_embedded": {
-				"poses": [
-					{
-						"uuid": "//<terminal uuid>//",
-						"manId": "//<client id of the subject who registered the POS>//",
-						"gtId": "//<gt id>//",
-						"terminalId": "//<terminal id>//",
-						"payeeCode": "//<payee code>//",
-						"slave": "//<slave>//",
-						"pagoPa": "//<pagopa>//",
-						"pspId": "//<psp id>//",
-						"brokerId": "//<broker id>//",
-						"channelId": "//<channel id>//",
-						"idpay": "//<idpay>//",
-						"_links": {
-							"self": {
-								"href": "/poses///<terminal uuid>//"
-							}
-						}
-					},
-                    .
-                    .
-                    .
-				]
-			},
-			"_links": {
-				"first": {
-					"href": "/poses?page=0"
+			"poses": [
+				{
+					"uuid": "//<terminal uuid>//",
+					"manId": "//<client id of the subject who registered the POS>//",
+					"gtId": "//<gt id>//",
+					"terminalId": "//<terminal id>//",
+					"enabled": //<enabled>//,
+					"payeeCode": "//<payee code>//",
+					"slave": "//<slave>//",
+					"pagoPa": "//<pagopa>//",
+					"pspId": "//<psp id>//",
+					"brokerId": "//<broker id>//",
+					"channelId": "//<channel id>//",
+					"idpay": "//<idpay>//",
 				},
-				"self": {
-					"href": "/poses?page=//<page number>//"
-				},
-				"next": { <&arrow-left> //If any.//
-					"href": "/poses?page=//<page number>// +1"
-				},
-				"last": {
-					"href": "/poses?page=//<last page number>//"
-				}
-			},
+                .
+                .
+                .
+			],
 			"page": {
 				"size": //<page size>//,
 				"totalElements": //<number of elements>//,
-				"totalPages": //<number of pages>//,
-				"number": //<page number>//
+				"totalPages": //<number of pages>//
 			}
 		}
 	end note
