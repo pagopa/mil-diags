@@ -1,22 +1,53 @@
 @startuml
 hide empty description
 
-state CREATED          #Gray;text:White
-state PRE_CLOSE        #Orange
-state ERROR_ON_PAYMENT #Green;text:White
-state CLOSED           #Green;text:White
-state ERROR_ON_CLOSE   #Red;text:White
-state ABORTED          #Gray;text:White
+state CREATED             #Gray;text:White
+state ACTIVATED           #Red;text:White
+state CLOSED_OK           #Green;text:White
+state CLOSED_KO           #Red;text:White
+state ABORTED_OK          #Green;text:White
+state ABORTED_KO          #Orange;text:White
+state ERROR_ON_PAYMENT_OK #Green;text:White
+state ERROR_ON_PAYMENT_KO #Orange;text:White
 
-[*]              --> CREATED          : 1
-CREATED          --> ABORTED          : 2
-CREATED          --> PRE_CLOSE        : 3
-PRE_CLOSE        --> ERROR_ON_PAYMENT : 4
-PRE_CLOSE        --> ERROR_ON_CLOSE   : 5
-PRE_CLOSE        --> CLOSED           : 6
-ERROR_ON_PAYMENT --> [*] 
-CLOSED           --> [*]
-ERROR_ON_CLOSE   --> [*]
-ABORTED          --> [*]
+[*]                 --> CREATED             : 1
+CREATED             --> ACTIVATED           : 2
+ACTIVATED           --> CLOSED_OK           : 3
+ACTIVATED           --> CLOSED_KO           : 4
+CLOSED_KO           --> CLOSED_OK           : 5 (retry)
+ACTIVATED           --> ABORTED_OK          : 6
+ACTIVATED           --> ABORTED_KO          : 7
+ABORTED_KO          --> ABORTED_OK          : 8 (retry)
+ACTIVATED           --> ERROR_ON_PAYMENT_OK : 9
+ACTIVATED           --> ERROR_ON_PAYMENT_KO : 10
+ERROR_ON_PAYMENT_KO --> ERROR_ON_PAYMENT_OK : 11 (retry)
+
+ACTIVATED           : <font color="white">user could be debited</font>
+ACTIVATED           : <font color="white">notice not paid</font>
+ACTIVATED           : <font color="white">notice locked</font>
+
+CLOSED_KO           : <font color="white">user debited</font>
+CLOSED_KO           : <font color="white">notice not paid</font>
+CLOSED_KO           : <font color="white">notice could be locked</font>
+
+CLOSED_OK           : <font color="white">user debited</font>
+CLOSED_OK           : <font color="white">notice paid</font>
+
+ABORTED_KO          : <font color="white">user not debited</font>
+ABORTED_KO          : <font color="white">notice not paid</font>
+ABORTED_KO          : <font color="white">notice locked</font>
+
+ABORTED_OK          : <font color="white">user not debited</font>
+ABORTED_OK          : <font color="white">notice not paid</font>
+ABORTED_OK          : <font color="white">notice unlocked</font>
+
+ERROR_ON_PAYMENT_OK : <font color="white">user not debited</font>
+ERROR_ON_PAYMENT_OK : <font color="white">notice not paid</font>
+ERROR_ON_PAYMENT_OK : <font color="white">notice unlocked</font>
+
+ERROR_ON_PAYMENT_KO : <font color="white">user not debited</font>
+ERROR_ON_PAYMENT_KO : <font color="white">notice not paid</font>
+ERROR_ON_PAYMENT_KO : <font color="white">notice could be locked</font>
+
 
 @enduml

@@ -1,5 +1,5 @@
 group #FFA0A0 store terminal data
-	mil -> registry ++ : insert(//document//)
+	mil -> registry ++ : persist(//document//)
 		note left
 			__//document//__
 			{

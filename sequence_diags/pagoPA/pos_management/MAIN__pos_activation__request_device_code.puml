@@ -29,7 +29,7 @@ mil --> pos -- : HTTP 200 (ok)
 		{
 			"device_code": "//<terminal uuid>//",
 			"user_code": "//<user code>//",
-			"expires_in": //<expires is>//,
+			"expires_in": //<expires in>//,
 			"interval": //<interval>//
 		}
 		end note
