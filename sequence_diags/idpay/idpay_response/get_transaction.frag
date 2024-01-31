@@ -11,5 +11,5 @@ __body__
 	"merchantId": "//<idpay merchant id>//",
 	"initiativeId": "//<selected initiative id>//",
 	"status": "//<idpay status>//",
-	"rewardCents": //<covered amount (if the status is IDENTIFIED or AUTHORIZED)>//
+	"rewardCents": //<covered amount in eurocents>//
 }

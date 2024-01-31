@@ -7,6 +7,6 @@ __body__
 	"goodsCost": //<goods cost in eurocents>//,
 	"trxCode": "//<transaction code>//",
 	"status": "//<idpay status>//",
-	"coveredAmount": //<covered amount (if the status is IDENTIFIED or AUTHORIZED)>//,
-	"secondFactor": "//<base64url encoded second factor (if the status is IDENTIFIED)>//"
+	"coveredAmount": //<covered amount in eurocents>//, <&arrow-left> //With QR-code, trx status can be IDENTIFIED but this attribute could be null. Retry as status != IDENTIFIED//
+	"secondFactor": "//<second factor>//" <&arrow-left> //For CIE only//
 }

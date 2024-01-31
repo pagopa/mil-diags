@@ -5,5 +5,6 @@ __body__
 	"amountCents": "//<transaction amount in eurocents>//",
 	"initiativeId": "//<selected initiative id>//",
 	"status": "//<idpay status>//",
-	"secondFactor": //<second factor>//
+	"secondFactor": //<second factor>//,
+	"reward": //<covered amount in eurocents>//
 }

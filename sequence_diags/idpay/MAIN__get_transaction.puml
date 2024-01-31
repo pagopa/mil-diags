@@ -23,12 +23,28 @@ group#Gold get transaction
 				!include_many idpay_request/get_transaction.frag
 			end note
 		
-		opt transaction found
+		alt transaction found
 			IDPay --> IDPaySrv : HTTP 200 (found)
 				note right
 					!include_many idpay_response/get_transaction.frag
 				end note
 			
+			opt //<by cie>// = true && //<idpay status>// = IDENTIFIED
+				IDPaySrv -> IDPay : PUT /idpay/mil/payment/idpay-code///<idpay transaction id>///preview
+					note left
+						!include_many idpay_request/get_second_factor.frag
+					end note
+				
+				IDPay --> IDPaySrv : HTTP 200 (ok)
+					note right
+						!include_many idpay_response/get_second_factor.frag
+					end note	
+					
+				note over IDPaySrv #Orange
+					if this interaction with IDPay went wrong, return HTTP 500 (server error) with error body
+				end note
+			end
+
 			group write trx data to db
 				IDPaySrv -> IDPayDB : update(//<value>//)
 					note left
@@ -38,29 +54,13 @@ group#Gold get transaction
 				return //don't care//
 			end
 			
-			opt //<by cie>// = true && //<idpay status>// = IDENTIFIED
-				IDPaySrv -> IDPay : PUT /idpay/mil/payment/idpay-code///<idpay transaction id>///preview
-					note right
-						!include_many idpay_request/get_second_factor.frag
-					end note
-				
-				IDPaySrv --> IDPay : HTTP 200 (ok)
-					note right
-						!include_many idpay_response/get_second_factor.frag
-					end note	
-					
-				note over IDPaySrv #Orange
-					if this interaction with IDPay went wrong, return HTTP 500 (server error) with error body
-				end note		
-			end
-			
 			IDPaySrv --> Client : HTTP 200 (found)
 				note right
 					!include_many response/get_transaction.frag
 				end note
 		else other
 			IDPay --> IDPaySrv : //any error (http status codes != 200, unparsable response, unexpeted response, ...)//
-			IDPaySrv --> Client   : HTTP 500 (server error)
+			IDPaySrv --> Client : HTTP 500 (server error)
 				note right
 					!include_many response/error.frag
 				end note

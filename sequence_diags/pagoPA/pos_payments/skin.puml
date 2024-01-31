@@ -1,0 +1,9 @@
+!pragma teoz true
+skinparam style strictuml
+skinparam maxMessageSize 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam sequenceLifeLineBackgroundColor #DodgerBlue
+autonumber "<font color='blue'><b><u>##</u></b></font>"
+autoactivate off
+hide unlinked

@@ -1,0 +1,4 @@
+participant "POS" as pos
+participant "mil-payment-notice" as mil
+participant "pagoPA" as pagopa
+database "pagopa-trx\n(MongoDB)" as registry

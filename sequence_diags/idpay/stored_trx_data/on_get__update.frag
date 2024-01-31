@@ -12,7 +12,7 @@ __value__
 	"goodsCost": //<goods cost in eurocents>//,
 	"trxCode": "//<transaction code>//",
 	"status": "//<idpay status>//",
-	"coveredAmount": //<covered amount (if status is IDENTIFIED or AUTHORIZED)>//,
+	"coveredAmount": //<covered amount in eurocents>//,
 	"lastUpdate": "//<current timestamp>//",
 	"byCie": //<true if by means of CIE>//
 }

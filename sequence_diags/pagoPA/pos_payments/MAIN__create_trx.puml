@@ -1,0 +1,232 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate pos
+
+pos -> mil ++ : POST /transactions
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+		__body__
+		{
+			"payeeCode": "//<notice payee code>//",
+			"noticeNumber": "//<notice number>//",
+			"amount": "//<notice amount in eurocents>//",
+			"idempotencyKey": "//<idempotency key>//"
+		}
+	end note
+
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"channel": "POS",
+		"gtId": "//<gtId>//",
+		"terminalId": "//<terminal id>//",
+		"payeeCode": "//<payeeCode>//",
+		"groups": [
+			.
+			.
+			.
+			"NoticePayer",
+			.
+			.
+			.
+		],
+		"pspId": "//<psp id>//",
+		"brokerId": "//<broker id>//",
+		"channelId": "//<channel id>//"
+	}
+end note
+
+group interaction with pagoPA
+	mil -> pagopa ++ : POST /nodo-auth/node-for-psp/v1/?soapAction=activatePaymentNoticeV2
+		note left
+			__body__
+			<activatePaymentNoticeV2Request>
+				<idPSP>//<psp id>//</idPSP>
+				<idBrokerPSP>//<broker id>//</idBrokerPSP>
+				<idChannel>//<channel id>//</idChannel>
+				<password>//<password>//</password>
+				<idempotencyKey>//<idempotency key>//</idempotencyKey>
+				<qrCode>
+					<fiscalCode>//<notice payee code>//</fiscalCode>
+					<noticeNumber>//<notice number>//</noticeNumber>
+				</qrCode>
+				<expirationTime>//<expiration time>//</expirationTime>
+				<amount>//<notice amount>//</amount>
+			</activatePaymentNoticeV2Request>
+		end note
+
+	pagopa --> mil -- : HTTP 200 (ok)
+		note right
+			__body__
+			<activatePaymentNoticeV2Response>
+				<outcome>OK</outcome>
+				<totalAmount>//<notice amount>//</totalAmount>
+				<paymentDescription>//<description>//</paymentDescription>
+				<fiscalCodePA>//<notice payee code>//</fiscalCodePA>
+				<companyName>//<payee name>//</companyName>
+				<officeName>//<payee office name>//</officeName>
+				<paymentToken>//<payment token>//</paymentToken>
+				<transferList>
+					.
+					.
+					.
+					<transfer>
+						<idTransfer>//n//</idTransfer>
+						<transferAmount>//<transfer amount #n>//</transferAmount>
+						<fiscalCodePA>//<payee code #n>//</fiscalCodePA>
+						<companyName>//<payee name #n>//</companyName>
+						<IBAN>//<payee iban #n>//</IBAN>
+						<remittanceInformation>//<remittance info #n>//</remittanceInformation>
+						<transferCategory>//<category #n>//</transferCategory>
+						<metadata>
+							.
+							.
+							.
+							<mapEntry>
+								<key>//<metadata key #n.m>//</key>
+								<value>//<metadata value #n.m>//</value>
+							</mapEntry>
+							.
+							.
+							.
+						</metadata>
+					</transfer>
+					.
+					.
+					.
+				</transferList>
+				<metadata>
+					.
+					.
+					.
+					<mapEntry>
+						<key>//<metadata key #k>//</key>
+						<value>//<metadata value #k>//</value>
+					</mapEntry>
+					.
+					.
+					.
+				</metadata>
+				<creditorReferenceId>//<iuv>//</creditorReferenceId>
+				<suggestedUserFee>//<fee charged to the payer>//</suggestedUserFee>
+				<suggestedPaFee>//<fee charged to the payee>//</suggestedPaFee>
+				<suggestedIdBundle>//<fee bundle id>//</suggestedIdBundle>
+				<suggestedIdCiBundle>//<fee ci bundle id>//</suggestedIdCiBundle>
+				<allCCP>//don't care//</allCCP>
+				<standin>//<stand id>//</standin>
+			</activatePaymentNoticeV2Response>
+		end note
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
+
+mil -> mil : Generate //<transaction id>//
+	note left
+		new SecureRandom().ints(0, 16)
+			.limit(24)
+			.mapToObj(Integer::toHexString)
+			.collect(Collectors.joining());
+	end note
+
+group store trx data
+	mil -> registry ++ : persist(//document//)
+		note left
+			__//document//__
+			{
+				"id": "//<transaction id>//",
+				"creationTimestamp": "//<current timestamp>//",
+				"lastStatusUpdateTimestamp": "//<current timestamp>//",
+				"status": "CREATED",
+				"client": {
+					"channel": "POS",
+					"gtId": "//<gt id>//",
+					"terminalId": "//<terminal id>//"
+				},
+				"pspId": "//<psp id>//",
+				"pspBrokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"noticesTotalAmount": //<total notices amount>//,
+				"payerFees": //<fee charged to the payer>//,
+				"payeeFees": //<fee charged to the payee>//,
+				"payerAmount": //<total notices amount>// + //<fee charged to the payer>//,
+				"idBundle": "//<fee bundle id>//",
+				"idCiBundle": "//<fee ci bundle id>//",
+				"notices": [
+					{
+						"paymentToken": "//<payment token>//",
+						"description": "//<description>//",
+						"payeeCode": "//<notice payee code>//",
+						"payeeName": "//<payee name>//",
+						"officeName": "//<payee office name>//",
+						"creditorReferenceId": "//<iuv>//",
+						"amount": //<notice amount>//,
+						"transfers": [
+							{
+								"id": "//<n>//",
+								"amount": "//<transfer amount #n>//",
+								"payeeCode": "//<payee code #n>//",
+								"payeeName": "//<payee name #n>//",
+								"iban": "//<payee iban #n>//",
+								"remittanceInformation": "//<remittance info #n>//",
+								"metadata": [
+									.
+									.
+									.
+									{
+										"key": "//<metadata key #n.m>//",
+										"value": "//<metadata value #n.m>//"
+									},
+									.
+									.
+									.
+								]
+							}
+						],
+						"metadata": [
+							.
+							.
+							.
+							{
+								"key": "//<metadata key #k>//",
+								"value": "//<metadata value #k>//"
+							},
+							.
+							.
+							.
+						]
+					}
+				],
+				"standin": "//<stand id>//"
+			}
+		end note
+
+	registry --> mil -- : Ok
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
+
+mil --> pos -- : HTTP 201 (created)
+	note right
+		__header__
+		Location: /transactions///<transaction id>//
+	end note
+
+deactivate pos
+@enduml

@@ -51,6 +51,12 @@ note over mil #LightGreen
 end note
 
 mil -> mil : generate //<terminal uuid>//
+	note left
+		new SecureRandom().ints(0, 16)
+			.limit(24)
+			.mapToObj(Integer::toHexString)
+			.collect(Collectors.joining());
+	end note
 
 !include_many store_terminal_data.puml
 

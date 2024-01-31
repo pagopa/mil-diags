@@ -19,7 +19,7 @@ group #FFE0CC build tokens payload
 				],
 				"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is **true**.//
 				"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is **true**.//
-				"channelId": "//<channel id>//", <&arrow-left> //Present if <pagopa> is **true**.//
+				"channelId": "//<channel id>//" <&arrow-left> //Present if <pagopa> is **true**.//
 			}
 		end note
 
