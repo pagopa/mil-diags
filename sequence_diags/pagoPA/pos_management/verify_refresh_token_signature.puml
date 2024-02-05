@@ -1,5 +1,5 @@
-group #ADD8E6 verify refresh token signature
-    mil -> mil : generate //<string to verify refresh token>//
+group verify refresh token signature
+    mil_auth -> mil_auth : generate //<string to verify refresh token>//
 		note left
 			__//<string to verify refresh token>//__
 			base64url(
@@ -13,7 +13,7 @@ group #ADD8E6 verify refresh token signature
 			)
 		end note
 
-	mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>/////<key version>///verify?api-version=7.4
+	mil_auth -> azure_kv ++ : POST //<key vault base url>///keys///<key name>/////<key version>///verify?api-version=7.4
 		note left
         	__header__
 			Authorization: Bearer //<access token for key vault>//
@@ -25,7 +25,7 @@ group #ADD8E6 verify refresh token signature
 			}
 		end note
 
-	azure_kv --> mil -- : HTTP 200 (ok)
+	azure_kv --> mil_auth -- : HTTP 200 (ok)
 		note right
 			__body__
 			{
@@ -33,7 +33,7 @@ group #ADD8E6 verify refresh token signature
 			}
 		end note
 
-	note over mil #Orange
+	note over mil_auth #Orange
 		On "value" == false in the response body, return HTTP 401 (unauthorized) with specific error body.
 		On any other failure, return HTTP 500 (server error) with specific error body. 
 	end note

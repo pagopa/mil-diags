@@ -1,14 +1,13 @@
-group #98FB98 get terminals data
-	mil -> registry ++ : find(//query document//).page(//<page number>//, //<page size>//)
+group get terminals data
+	mil_registry -> registry ++ : find(//query document//).page(//<page number>//, //<page size>//)
 		note left
 			__//query document//__
 			{
-				"manId": "//<client id>//",
 				"payeeCode": "//<payee code>//"
 			}
 		end note
 
-	registry --> mil -- : //page//
+	registry --> mil_registry -- : //page//
 		note right
 			__//page//__
 			[
@@ -20,11 +19,20 @@ group #98FB98 get terminals data
 					"enabled": //<enabled>//,
 					"payeeCode": "//<payee code>//",
 					"slave": "//<slave>//",
+					"workstations": [
+						.
+						.
+						.
+						//<workstation #n>//,
+						.
+						.
+						.
+					],
 					"pagoPa": "//<pagopa>//",
 					"pspId": "//<psp id>//",
 					"brokerId": "//<broker id>//",
 					"channelId": "//<channel id>//",
-					"idpay": "//<idpay>//",
+					"idpay": "//<idpay>//"
 				},
 				.
 				.
@@ -32,7 +40,7 @@ group #98FB98 get terminals data
 			]
 		end note
 
-	note over mil #Orange
+	note over mil_registry #Orange
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

@@ -4,9 +4,9 @@
 
 activate operator
 
-operator -> management ++ : register POS
+operator -> management ++ : update POS
 
-management -> mil ++ : PUT /poses///<terminal uuid>//
+management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -26,7 +26,7 @@ management -> mil ++ : PUT /poses///<terminal uuid>//
 		}
 	end note
 
-note over mil #LightGreen
+note over mil_registry #LightGreen
 	__//<access token>//__
 	base64url(//<token header>//) + "." +
 	base64url(//<access token payload>//) + "." +
@@ -42,21 +42,27 @@ note over mil #LightGreen
 			.
 			.
 			.
-			"PosManagement",
+			"pos_register",
 			.
 			.
 			.
-		],
+		]
 	}
 end note
 
 !include_many get_terminal_data_by_id.puml
 
-mil -> mil : update retrieved document with new values
+mil_registry -> mil_registry : verify //<client id>// = //<client id of the subject who registered the POS>//
 
-!include_many update_terminal_data.puml
+note over mil_registry #Orange
+	On client id mismatch, return 403 (forbidden) with specific error body.
+end note
 
-mil --> management -- : HTTP 204 (no content)
+mil_registry -> mil_registry : update retrieved document with new values
+
+!include_many update_terminal_data_for_psp.puml
+
+mil_registry --> management -- : HTTP 204 (no content)
 
 management --> operator -- : ok
 

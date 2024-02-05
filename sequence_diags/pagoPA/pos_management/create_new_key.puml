@@ -1,7 +1,7 @@
-group #FFFFCC create new key
-	mil -> mil : generate //<key name>//
+group create new key
+	mil_auth -> mil_auth : generate //<key name>//
 		
-	mil -> azure_kv ++ : POST //<key vault base url>///keys///<key name>///create?api-version=7.4
+	mil_auth -> azure_kv ++ : POST //<key vault base url>///keys///<key name>///create?api-version=7.4
 		note left
 			__header__
 			Authorization: Bearer //<access token for key vault>//
@@ -25,7 +25,7 @@ group #FFFFCC create new key
 			}
 		end note
 
-	azure_kv --> mil -- : HTTP 200 (ok)
+	azure_kv --> mil_auth -- : HTTP 200 (ok)
 		note right
 			__body__
 			{
@@ -47,11 +47,11 @@ group #FFFFCC create new key
 			}
 		end note
 
-	note over mil #Orange
+	note over mil_auth #Orange
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 
-	mil -> mil : verify key version validity
+	mil_auth -> mil_auth : verify key version validity
 		note left
 			//<enabled>// == true &&
 			//<not before>// < //<current unix epoch>// &&
@@ -61,7 +61,7 @@ group #FFFFCC create new key
 			//<key ops array>// contains "sign" and "verify"
 		end note
 
-	note over mil #Orange
+	note over mil_auth #Orange
 		On verification failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

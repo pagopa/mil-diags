@@ -4,20 +4,20 @@
 
 activate pos
 
-pos -> mil ++ : POST /token
+pos -> mil_auth ++ : POST /token
 	note left
 		__header__
 		RequestId: //<request id>//
 		__body__
-		grant_type=device_code
-		&&client_id=//<client id>//
-		&&device_code=//<terminal uuid>//
+		grant_type=device_code&
+		client_id=//<client id>//&
+		device_code=//<terminal uuid>//
 	end note
 
 !include_many get_auth_state.puml
 !include_many build_tokens.puml
 
-mil --> pos -- : HTTP 200 (ok)
+mil_auth --> pos -- : HTTP 200 (ok)
 	note right
 		{
     		"access_token": "//<access token>//",

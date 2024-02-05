@@ -1,11 +1,11 @@
-group #FFB8B3 get keys
-	mil -> azure_kv ++ : GET //<key vault base url>///keys?api-version=7.4
+group get keys
+	mil_auth -> azure_kv ++ : GET //<key vault base url>///keys?api-version=7.4
 		note left
 			__header__
 			Authorization: Bearer //<access token for key vault>//
 		end note
 
-	azure_kv --> mil -- : HTTP 200 (ok)
+	azure_kv --> mil_auth -- : HTTP 200 (ok)
 		note right
 			__body__
 			{
@@ -26,7 +26,7 @@ group #FFB8B3 get keys
 			}
 		end note
 
-    note over mil #Orange
+    note over mil_auth #Orange
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

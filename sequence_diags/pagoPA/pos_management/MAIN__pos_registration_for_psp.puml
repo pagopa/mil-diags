@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : register POS
 
-management -> mil ++ : POST /poses
+management -> mil_registry ++ : POST /poses
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -26,7 +26,7 @@ management -> mil ++ : POST /poses
 		}
 	end note
 
-note over mil #LightGreen
+note over mil_registry #LightGreen
 	__//<access token>//__
 	base64url(//<token header>//) + "." +
 	base64url(//<access token payload>//) + "." +
@@ -42,15 +42,15 @@ note over mil #LightGreen
 			.
 			.
 			.
-			"PosManagement",
+			"pos_register",
 			.
 			.
 			.
-		],
+		]
 	}
 end note
 
-mil -> mil : generate //<terminal uuid>//
+mil_registry -> mil_registry : generate //<terminal uuid>//
 	note left
 		new SecureRandom().ints(0, 16)
 			.limit(24)
@@ -60,7 +60,7 @@ mil -> mil : generate //<terminal uuid>//
 
 !include_many store_terminal_data.puml
 
-mil --> management -- : HTTP 201 (created)
+mil_registry --> management -- : HTTP 201 (created)
 	note right
 		__header__
 		Location: /poses///<terminal uuid>//

@@ -1,5 +1,5 @@
-group #87CEFA verify refresh token
-    note over mil #LightGreen
+group verify refresh token
+    note over mil_auth #LightGreen
 		__//<refresh token>//__
 		base64url(//<token header>//) + "." +
 		base64url(//<refresh token payload>//) + "." +
@@ -22,23 +22,23 @@ group #87CEFA verify refresh token
 		}
     end note
 
-    mil -> mil : verify header validity
+    mil_auth -> mil_auth : verify header validity
 		note left
 			"alg" == "RS256"
 		end note
 
-    note over mil #Orange
+    note over mil_auth #Orange
     	On verification failure, return HTTP 401 (unauthorized) with specific error body.
 	end note
 	
-	mil -> mil : verify payload validity
+	mil_auth -> mil_auth : verify payload validity
 		note left
 			//<issue unix epoch>// < //<current unix epoch>// &&
 			//<expiration unix epoch>// > //<current unix epoch>// &&
 			"scope" == "offline_access"
 		end note
 
-	note over mil #Orange
+	note over mil_auth #Orange
     	On verification failure, return HTTP 401 (unauthorized) with specific error body.
 	end note
 

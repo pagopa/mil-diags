@@ -1,0 +1,15 @@
+group get number of terminals
+	mil_registry -> registry ++ :  count(//query document//)
+		note left
+			__//query document//__
+			{
+				"payeeCode": "//<payee code>//"
+			}
+		end note
+
+	registry --> mil_registry -- : //<number of elements>//
+
+	note over mil_registry #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end

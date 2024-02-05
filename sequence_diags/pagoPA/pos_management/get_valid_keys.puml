@@ -1,4 +1,4 @@
-group #D1FF80 get valid keys
+group get valid keys
 	!include_many get_azure_access_token_for_vault.puml
 
 	!include_many get_keys.puml
@@ -7,7 +7,7 @@ group #D1FF80 get valid keys
 		!include_many get_key_versions.puml
 
 		loop for each key version
-			mil -> mil : verify key version validity
+			mil_auth -> mil_auth : verify key version validity
 				note left
 					//<enabled>// == true &&
 					//<not before>// < //<current unix epoch>// &&
@@ -18,7 +18,7 @@ group #D1FF80 get valid keys
 			alt valid key version
 				!include_many get_key_version_details.puml
 				
-				mil -> mil : verify key version validity
+				mil_auth -> mil_auth : verify key version validity
 					note left
 						//<enabled>// == true &&
 						//<not before>// < //<current unix epoch>// &&
@@ -29,17 +29,17 @@ group #D1FF80 get valid keys
 					end note
 
 				alt valid key version
-					mil -> mil : add key version to valid key list
+					mil_auth -> mil_auth : add key version to valid key list
 				else not valid key version
-					mil -> mil : discard key version
+					mil_auth -> mil_auth : discard key version
 				end
 			else not valid key verion
-				mil -> mil : discard key version
+				mil_auth -> mil_auth : discard key version
 			end
 		end
 	end
 
-	note over mil #LightGreen
+	note over mil_auth #LightGreen
 		Here the list of valid keys.
 	end note
 end

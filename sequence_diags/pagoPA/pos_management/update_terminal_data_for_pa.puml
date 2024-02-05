@@ -1,12 +1,10 @@
-group get terminal data by id
-	mil_registry -> registry ++ : findById(//<terminal uuid>//)
-
-	registry --> mil_registry -- : //document//
-		note right
+group update terminal data
+	mil_registry -> registry ++ : update(//document//)
+		note left
 			__//document//__
 			{
 				"uuid": "//<terminal uuid>//",
-				"manId": "//<client id of the subject who registered the POS>//",
+				"manId": "//<client id>//",
 				"gtId": "//<gt id>//",
 				"terminalId": "//<terminal id>//",
 				"enabled": //<enabled>//,
@@ -16,11 +14,11 @@ group get terminal data by id
 					.
 					.
 					.
-					//<workstation #n>//,
+					//<new workstation #n>//,
 					.
 					.
 					.
-				]
+				],
 				"pagoPa": "//<pagopa>//",
 				"pspId": "//<psp id>//",
 				"brokerId": "//<broker id>//",
@@ -28,9 +26,10 @@ group get terminal data by id
 				"idpay": "//<idpay>//"
 			}
 		end note
-	
+
+	registry --> mil_registry -- : ok
+
     note over mil_registry #Orange
-	    On terminal not found, return HTTP 404 (not found) with specific error body.
-	    On any other failure, return HTTP 500 (server error) with specific error body. 
-    end note
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
 end

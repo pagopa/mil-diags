@@ -1,0 +1,71 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate operator
+
+operator -> management ++ : update POS
+
+management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+		__body__
+		{
+			"workstations": [
+				.
+				.
+				.
+				//<new workstation #n>//,
+				.
+				.
+				.
+
+			]
+		}
+	end note
+
+note over mil_registry #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"payeeCode": "//<payee code>//",
+		"groups": [
+			.
+			.
+			.
+			"pos_management_for_pa",
+			.
+			.
+			.
+		]
+	}
+end note
+
+!include_many get_terminal_data_by_id.puml
+
+mil_registry -> mil_registry : verify payee code (retrieved = access token)
+
+note over mil_registry #Orange
+	On payee code mismatch, return 403 (forbidden) with specific error body.
+end note
+
+mil_registry -> mil_registry : update retrieved document with new values
+
+!include_many update_terminal_data_for_pa.puml
+
+mil_registry --> management -- : HTTP 204 (no content)
+
+management --> operator -- : ok
+
+deactivate operator
+@enduml

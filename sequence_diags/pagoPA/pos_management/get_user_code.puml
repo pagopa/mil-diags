@@ -1,8 +1,8 @@
-group #FFEF8F get user code
-    mil -> cache ++ : get(//<user code>//)
-    cache --> mil -- : //<terminal uuid>//
+group get user code
+    mil_auth -> cache ++ : get(//<user code>//)
+    cache --> mil_auth -- : //<terminal uuid>//
 
-    note over mil #Orange
+    note over mil_auth #Orange
 	    On //<user code>// not found, return HTTP 401 (unauthorized) with specific error body.
 	    On any other failure, return HTTP 500 (server error) with specific error body. 
     end note

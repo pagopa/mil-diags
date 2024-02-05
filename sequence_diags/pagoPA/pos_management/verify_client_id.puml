@@ -1,15 +1,15 @@
-group #FFFACD verify client id 
+group verify client id 
 	!include_many get_azure_access_token_for_storage.puml
 
-	group #90EE90 get client id file
-		mil -> azure_st ++ : GET //<storage account base url>///clients///<client id>//.json
+	group get client id file
+		mil_auth -> azure_st ++ : GET //<storage account base url>///clients///<client id>//.json
 			note left
 				__header__
 				x-ms-version: 2019-07-07
 				Authorization: Bearer //<access token for storage account>//
 			end note
 
-		azure_st --> mil -- : HTTP 200 (ok)
+		azure_st --> mil_auth -- : HTTP 200 (ok)
 			note right
 				__body__
 				{
@@ -18,15 +18,15 @@ group #FFFACD verify client id
 				}
 			end note
 
-		note over mil #Orange
+		note over mil_auth #Orange
 			On //<client id>// file not found, return HTTP 401 (unauthorized) with specific error body.
 			On any other failure, return HTTP 500 (server error) with specific error body. 
 		end note
 	end
 
-	mil -> mil : verify channel
+	mil_auth -> mil_auth : verify channel
 
-	note over mil #Orange
+	note over mil_auth #Orange
 		On channel mismatch, return HTTP 401 (unauthorized) with specific error body.
 	end note
 end

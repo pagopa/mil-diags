@@ -1,13 +1,13 @@
-group #80FFDB retrieve key to sign tokens
+group retrieve key to sign tokens
 	!include_many get_valid_keys.puml
 	
 	alt there are no valid key
 		!include_many create_new_key.puml
 	else there are valid keys
-		mil -> mil : search the key with greatest expiration
+		mil_auth -> mil_auth : search the key with greatest expiration
 	end
 
-    note over mil #LightGreen
+    note over mil_auth #LightGreen
 		Here the //key// to use to sign the tokens.
 		__//key//__
 		{

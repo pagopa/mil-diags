@@ -1,5 +1,5 @@
-group #ADD8E6 update terminal data
-	mil -> registry ++ : update(//document//)
+group update terminal data
+	mil_registry -> registry ++ : update(//document//)
 		note left
 			__//document//__
 			{
@@ -10,6 +10,15 @@ group #ADD8E6 update terminal data
 				"enabled": //<new enabled>//,
 				"payeeCode": "//<new payee code>//",
 				"slave": "//<new slave>//",
+				"workstations": [
+					.
+					.
+					.
+					//<workstation #n>//,
+					.
+					.
+					.
+				],
 				"pagoPa": "//<new pagopa>//",
 				"pspId": "//<new psp id>//",
 				"brokerId": "//<new broker id>//",
@@ -18,9 +27,9 @@ group #ADD8E6 update terminal data
 			}
 		end note
 
-	registry --> mil -- : ok
+	registry --> mil_registry -- : ok
 
-    note over mil #Orange
+    note over mil_registry #Orange
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

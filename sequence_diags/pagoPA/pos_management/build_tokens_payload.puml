@@ -1,5 +1,5 @@
-group #FFE0CC build tokens payload
-	mil -> mil : generate //<access token payload>//
+group build tokens payload
+	mil_auth -> mil_auth : generate //<access token payload>//
 		note right
 			__//<access token payload>//__
 			{
@@ -23,7 +23,7 @@ group #FFE0CC build tokens payload
 			}
 		end note
 
-	mil -> mil : generate //<refresh token payload>//
+	mil_auth -> mil_auth : generate //<refresh token payload>//
 		note right
 			__//<refresh token payload>//__
 			{

@@ -1,11 +1,11 @@
-group #CCFFFF get azure access token
-	mil -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://storage.azure.com
+group get azure access token
+	mil_auth -> azure_ad ++ : GET //${IDENTITY_ENDPOINT}//?api-version=2019-08-01\n&resource=https://storage.azure.com
 		note left
 			__header__
 			x-identity-header: //${IDENTITY_HEADER}//
 		end note
 
-	azure_ad --> mil -- : HTTP 200 (ok) 
+	azure_ad --> mil_auth -- : HTTP 200 (ok) 
 		note right
 			__body__
 			{
@@ -17,7 +17,7 @@ group #CCFFFF get azure access token
 			}
 		end note
 
-    note over mil #Orange
+    note over mil_auth #Orange
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

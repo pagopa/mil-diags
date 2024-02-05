@@ -4,11 +4,12 @@ actor "POS Installer" as installer
 participant "Management\nPortal" as management
 participant "POS" as pos
 
-participant "mil-auth" as mil
+participant "mil-auth" as mil_auth
+participant "mil-terminal-registry" as mil_registry
 
 participant "Azure Active\nDirectory" as azure_ad
 participant "Azure Storage\nAccount" as azure_st
 participant "Azure Key\nVault" as azure_kv
 
-database "pos-registry\n(MongoDB)" as registry
+database "terminal-registry\n(MongoDB)" as registry
 database "cache\n(Redis)" as cache

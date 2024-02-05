@@ -1,5 +1,5 @@
-group #FFCCCC build tokens header
-	mil -> mil : generate //<token header>//
+group build tokens header
+	mil_auth -> mil_auth : generate //<token header>//
 		note left
 			__//<token header>//__
 			{

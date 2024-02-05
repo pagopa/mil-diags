@@ -1,5 +1,5 @@
-group #FFA0A0 store terminal data
-	mil -> registry ++ : persist(//document//)
+group store terminal data
+	mil_registry -> registry ++ : persist(//document//)
 		note left
 			__//document//__
 			{
@@ -18,9 +18,9 @@ group #FFA0A0 store terminal data
 			}
 		end note
 
-	registry --> mil -- : ok
+	registry --> mil_registry -- : ok
 
-    note over mil #Orange
+    note over mil_registry #Orange
 		On duplicate key (//<gt id>//, //<terminal id>//) error is returned, return HTTP 409 (conflict).
 		On any other failure, return HTTP 500 (server error) with specific error body. 
 	end note
