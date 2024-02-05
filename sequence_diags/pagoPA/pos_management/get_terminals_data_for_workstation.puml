@@ -1,15 +1,16 @@
 group get terminals data
-	mil_registry -> registry ++ : findAll(//query document//).page(//<page number>//, //<page size>//).list()
+	mil_registry -> registry ++ : stream(//query document//)
 		note left
 			__//query document//__
 			{
-				"payeeCode": "//<payee code>//"
+				"payeeCode": "//<payee code>//",
+				"workstations": "//<workstation>//"
 			}
 		end note
 
-	registry --> mil_registry -- : //page//
+	registry --> mil_registry -- : //result//
 		note right
-			__//page//__
+			__//result//__
 			[
 				{
 					"uuid": "//<terminal uuid>//",

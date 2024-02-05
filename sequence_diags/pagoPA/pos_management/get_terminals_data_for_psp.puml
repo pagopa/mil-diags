@@ -1,5 +1,5 @@
 group get terminals data
-	mil_registry -> registry ++ : find(//query document//).page(//<page number>//, //<page size>//)
+	mil_registry -> registry ++ : findAll(//query document//).page(//<page number>//, //<page size>//).list()
 		note left
 			__//query document//__
 			{

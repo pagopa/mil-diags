@@ -41,7 +41,7 @@ group get terminal data
 			Authorization: Bearer //<mil-auth access token>//
 		end note
 	
-	mil_registry -> registry ++ : find(//query document//)
+	mil_registry -> registry ++ : stream(//query document//)
 		note left
 			__//query document//__
 			{

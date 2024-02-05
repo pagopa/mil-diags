@@ -1,0 +1,81 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate operator
+
+operator -> management ++ : get POS list
+
+management -> mil_registry ++ : GET /poses?workstation=//<workstation>//
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+	end note
+
+note over mil_registry #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<client id>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"payeeCode": "//<payee code>//",
+		"groups": [
+			.
+			.
+			.
+			"pos_management_for_pa",
+			.
+			.
+			.
+		]
+	}
+end note
+
+!include_many get_terminals_data_for_workstation.puml
+
+mil_registry --> management -- : HTTP 200 (ok)
+	note right
+		__body__
+		{
+			"poses": [
+				{
+					"uuid": "//<terminal uuid>//",
+					"manId": "//<client id of the subject who registered the POS>//",
+					"gtId": "//<gt id>//",
+					"terminalId": "//<terminal id>//",
+					"enabled": //<enabled>//,
+					"payeeCode": "//<payee code>//",
+					"slave": "//<slave>//",
+					"workstations": [
+						.
+						.
+						.
+						//<workstation #n>//,
+						.
+						.
+						.
+					],
+					"pagoPa": "//<pagopa>//",
+					"pspId": "//<psp id>//",
+					"brokerId": "//<broker id>//",
+					"channelId": "//<channel id>//",
+					"idpay": "//<idpay>//"
+				},
+                .
+                .
+                .
+			]
+		}
+	end note
+
+management --> operator -- : POS list
+
+deactivate operator
+@enduml
