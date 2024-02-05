@@ -1,0 +1,9 @@
+group delete terminal
+	mil_registry -> registry ++ : deleteById(//<terminal uuid>//)
+
+	registry --> mil_registry -- : ok
+
+    note over mil_registry #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
