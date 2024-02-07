@@ -14,9 +14,11 @@ group update terminal data
 					//<array of workstations>//
 				],
 				"pagoPa": "//<new pagopa>//",
-				"pspId": "//<new psp id>//",
-				"brokerId": "//<new broker id>//",
-				"channelId": "//<new channel id>//",
+				"pagoPaConf": {
+					"pspId": "//<new psp id>//",
+					"brokerId": "//<new broker id>//",
+					"channelId": "//<new channel id>//"
+				},
 				"idpay": "//<new idpay>//"
 			}
 		end note

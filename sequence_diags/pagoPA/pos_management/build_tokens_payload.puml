@@ -17,9 +17,11 @@ group build tokens payload
 					"NoticePayer", <&arrow-left> //Present if <pagopa> is **true**.//
 					"PayWithIDPay" <&arrow-left> //Present if <idpay> is **true**.//
 				],
-				"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is **true**.//
-				"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is **true**.//
-				"channelId": "//<channel id>//" <&arrow-left> //Present if <pagopa> is **true**.//
+				"pagoPaConf": {
+					"pspId": "//<psp id>//",
+					"brokerId": "//<broker id>//",
+					"channelId": "//<channel id>//"
+				}
 			}
 		end note
 

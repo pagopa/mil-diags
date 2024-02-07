@@ -46,9 +46,11 @@ note over mil #LightGreen
 			.
 			.
 		],
-		"pspId": "//<psp id>//",
-		"brokerId": "//<broker id>//",
-		"channelId": "//<channel id>//"
+		"pagoPaConf": {
+			"pspId": "//<psp id>//",
+			"brokerId": "//<broker id>//",
+			"channelId": "//<channel id>//"
+		}
 	}
 end note
 

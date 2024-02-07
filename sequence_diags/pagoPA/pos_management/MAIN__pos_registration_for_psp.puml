@@ -19,9 +19,11 @@ management -> mil_registry ++ : POST /terminals
 			"payeeCode": "//<payee code>//",
 			"slave": "//<slave>//",
 			"pagoPa": "//<pagopa>//",
-			"pspId": "//<psp id>//",
-			"brokerId": "//<broker id>//",
-			"channelId": "//<channel id>//",
+			"pagoPaConf": {
+				"pspId": "//<psp id>//",
+				"brokerId": "//<broker id>//",
+				"channelId": "//<channel id>//"
+			},
 			"idpay": "//<idpay>//"
 		}
 	end note

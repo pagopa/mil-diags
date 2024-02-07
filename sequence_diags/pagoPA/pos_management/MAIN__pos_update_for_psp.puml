@@ -19,9 +19,11 @@ management -> mil_registry ++ : PATCH /terminals///<terminal uuid>//
 			"payeeCode": "//<new payee code>//",
 			"slave": "//<new slave>//",
 			"pagoPa": "//<new pagopa>//",
-			"pspId": "//<new psp id>//",
-			"brokerId": "//<new broker id>//",
-			"channelId": "//<new channel id>//",
+			"pagoPaConf": {
+				"pspId": "//<new psp id>//",
+				"brokerId": "//<new broker id>//",
+				"channelId": "//<new channel id>//"
+			},
 			"idpay": "//<new idpay>//"
 		}
 	end note

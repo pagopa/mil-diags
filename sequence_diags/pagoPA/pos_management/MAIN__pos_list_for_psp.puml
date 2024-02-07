@@ -53,9 +53,11 @@ mil_registry --> management -- : HTTP 200 (ok)
 						//<array of workstations>//
 					],
 					"pagoPa": "//<pagopa>//",
-					"pspId": "//<psp id>//",
-					"brokerId": "//<broker id>//",
-					"channelId": "//<channel id>//",
+					"pagoPaConf": {
+						"pspId": "//<psp id>//",
+						"brokerId": "//<broker id>//",
+						"channelId": "//<channel id>//"
+					},
 					"idpay": "//<idpay>//"
 				},
                 .
