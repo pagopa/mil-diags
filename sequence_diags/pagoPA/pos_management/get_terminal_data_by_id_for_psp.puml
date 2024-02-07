@@ -1,25 +1,27 @@
 group get terminal data by id
-	mil_registry -> registry ++ : findById(//<terminal uuid>//)
+	mil_registry -> registry ++ : findAll(//query document//)
+		note left
+			__//query document//__
+			{
+				"terminalUuid": "//<terminal uuid>//",
+				"serviceProviderId": "//<service provider id>//"
+			}
+		end note
+
 
 	registry --> mil_registry -- : //document//
 		note right
 			__//document//__
 			{
-				"uuid": "//<terminal uuid>//",
-				"manId": "//<client id of the subject who registered the POS>//",
-				"gtId": "//<gt id>//",
+				"terminalUuid": "//<terminal uuid>//",
+				"serviceProviderId": "//<service provider id>//",
+				"terminalHandlerId": "//<terminal handler id>//",
 				"terminalId": "//<terminal id>//",
 				"enabled": //<enabled>//,
 				"payeeCode": "//<payee code>//",
 				"slave": "//<slave>//",
 				"workstations": [
-					.
-					.
-					.
-					//<workstation #n>//,
-					.
-					.
-					.
+					//<array of workstations>//
 				]
 				"pagoPa": "//<pagopa>//",
 				"pspId": "//<psp id>//",

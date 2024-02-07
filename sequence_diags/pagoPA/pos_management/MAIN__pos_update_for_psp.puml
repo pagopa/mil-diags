@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : update POS
 
-management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
+management -> mil_registry ++ : PATCH /terminals///<terminal uuid>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -16,13 +16,13 @@ management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
 			"gtId": "//<new gt id>//",
 			"terminalId": "//<new terminal id>//",
 			"enabled": //<new enabled>//,
-			"payeeCode": "//<new payee code>//", <&arrow-left> //Payee's Tax (Fiscal) Code for PA POS, Mechant's Tax (Fiscal) Code for other POS.//
-			"slave": "//<new slave>//", <&arrow-left> //True for slave PA POS, otherwise false.//
-			"pagoPa": "//<new pagopa>//", <&arrow-left> //True for POS enbled to pagoPA payments.//
-			"pspId": "//<new psp id>//", <&arrow-left> //Present if <pagopa> is true. PSP ID to use to communicate with pagoPA platform.//
-			"brokerId": "//<new broker id>//", <&arrow-left> //Present if <pagopa> is true. PSP Broker ID to use to communicate with pagoPA platform.//
-			"channelId": "//<new channel id>//", <&arrow-left> //Present if <pagopa> is true. Channel ID to use to communicate with pagoPA platform.//
-			"idpay": "//<new idpay>//" <&arrow-left> //True for POS enabled to use IDPay bonus.//
+			"payeeCode": "//<new payee code>//",
+			"slave": "//<new slave>//",
+			"pagoPa": "//<new pagopa>//",
+			"pspId": "//<new psp id>//",
+			"brokerId": "//<new broker id>//",
+			"channelId": "//<new channel id>//",
+			"idpay": "//<new idpay>//"
 		}
 	end note
 
@@ -33,30 +33,18 @@ note over mil_registry #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<service provider id>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
 		"groups": [
-			.
-			.
-			.
-			"pos_register",
-			.
-			.
-			.
+			"pos_service_provider",
 		]
 	}
 end note
 
-!include_many get_terminal_data_by_id.puml
-
-mil_registry -> mil_registry : verify //<client id>// = //<client id of the subject who registered the POS>//
-
-note over mil_registry #Orange
-	On client id mismatch, return 403 (forbidden) with specific error body.
-end note
+!include_many get_terminal_data_by_id_for_psp.puml
 
 mil_registry -> mil_registry : update retrieved document with new values
 

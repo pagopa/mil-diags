@@ -13,21 +13,15 @@ group get terminals data
 			__//result//__
 			[
 				{
-					"uuid": "//<terminal uuid>//",
-					"manId": "//<client id of the subject who registered the POS>//",
-					"gtId": "//<gt id>//",
+					"terminalUuid": "//<terminal uuid>//",
+					"serviceProviderId": "//<service provider id>//",
+					"terminalHandlerId": "//<terminal handler id>//",
 					"terminalId": "//<terminal id>//",
 					"enabled": //<enabled>//,
 					"payeeCode": "//<payee code>//",
 					"slave": "//<slave>//",
 					"workstations": [
-						.
-						.
-						.
-						//<workstation #n>//,
-						.
-						.
-						.
+						//<array of workstations>//
 					],
 					"pagoPa": "//<pagopa>//",
 					"pspId": "//<psp id>//",

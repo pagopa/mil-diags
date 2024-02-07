@@ -151,10 +151,10 @@ group store trx data
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<current timestamp>//",
 				"lastStatusUpdateTimestamp": "//<current timestamp>//",
-				"status": "CREATED",
+				"status": "ACTIVATED",
 				"client": {
 					"channel": "POS",
-					"gtId": "//<gt id>//",
+					"terminalHandlerId": "//<terminal handler id>//",
 					"terminalId": "//<terminal id>//"
 				},
 				"pspId": "//<psp id>//",

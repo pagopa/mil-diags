@@ -34,7 +34,7 @@ group get terminal data
 			}
 		end note
 
-	mil_auth -> mil_registry ++ : GET /poses?gtId=//<gt id>//&terminalId=//<terminal id>//
+	mil_auth -> mil_registry ++ : GET /terminals?gtId=//<gt id>//&terminalId=//<terminal id>//
 		note left
 			__header__
 			RequestId: //<request id>//
@@ -45,7 +45,7 @@ group get terminal data
 		note left
 			__//query document//__
 			{
-				"gtId": "//<gt id>//",
+				"terminalHandlerId": "//<terminal handler id>//",
 				"terminalId": "//<terminal id>//"
 			}
 		end note
@@ -54,21 +54,15 @@ group get terminal data
 		note right
 			__//document//__
 			{
-				"uuid": "//<terminal uuid>//",
+				"terminalUuid": "//<terminal uuid>//",
 				"manId": "//<client id of the subject who registered the POS>//",
-				"gtId": "//<gt id>//",
+				"terminalHandlerId": "//<terminal handler id>//",
 				"terminalId": "//<terminal id>//",
 				"enabled": //<enabled>//,
 				"payeeCode": "//<payee code>//",
 				"slave": "//<slave>//",
 				"workstations": [
-					.
-					.
-					.
-					//<workstation #n>//,
-					.
-					.
-					.
+					//<array of workstations>//
 				],
 				"pagoPa": "//<pagopa>//",
 				"pspId": "//<psp id>//",

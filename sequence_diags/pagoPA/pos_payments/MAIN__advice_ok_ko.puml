@@ -64,7 +64,7 @@ group get trx data
 				"status": "CREATED",
 				"client": {
 					"channel": "POS",
-					"gtId": "//<gt id>//",
+					"terminalHandlerId": "//<terminal handler id>//",
 					"terminalId": "//<terminal id>//"
 				},
 				"pspId": "//<psp id>//",
@@ -202,7 +202,7 @@ group update trx data
 				"status": "ERROR_ON_CLOSE",
 				"client": {
 					"channel": "POS",
-					"gtId": "//<gt id>//",
+					"terminalHandlerId": "//<terminal handler id>//",
 					"terminalId": "//<terminal id>//"
 				},
 				"pspId": "//<psp id>//",

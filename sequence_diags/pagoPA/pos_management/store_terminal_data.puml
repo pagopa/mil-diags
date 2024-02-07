@@ -3,9 +3,9 @@ group store terminal data
 		note left
 			__//document//__
 			{
-				"uuid": "//<terminal uuid>//",
-				"manId": "//<client id>//",
-				"gtId": "//<gt id>//",
+				"terminalUuid": "//<terminal uuid>//",
+				"serviceProviderId": "//<service provider id>//",
+				"terminalHandlerId": "//<terminal handler id>//",
 				"terminalId": "//<terminal id>//",
 				"enabled": //<enabled>//,
 				"payeeCode": "//<payee code>//",
@@ -21,7 +21,7 @@ group store terminal data
 	registry --> mil_registry -- : ok
 
     note over mil_registry #Orange
-		On duplicate key (//<gt id>//, //<terminal id>//) error is returned, return HTTP 409 (conflict).
+		On duplicate key (//<terminal handler id>//, //<terminal id>//) error is returned, return HTTP 409 (conflict).
 		On any other failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end

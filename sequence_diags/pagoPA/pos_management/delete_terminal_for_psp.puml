@@ -1,9 +1,17 @@
 group delete terminal
-	mil_registry -> registry ++ : deleteById(//<terminal uuid>//)
+	mil_registry -> registry ++ : delete(//query document//)
+		note left
+			__//query document//__
+			{
+				"terminalUuid": "//<terminal uuid>//",
+				"serviceProviderId": "//<service provider id>//"
+			}
+		end note
 
 	registry --> mil_registry -- : ok
 
     note over mil_registry #Orange
-		On any failure, return HTTP 500 (server error) with specific error body. 
+		On terminal not found, return 404 (not found) with specific error body.
+		On any other failure, return HTTP 500 (server error) with specific error body.
 	end note
 end

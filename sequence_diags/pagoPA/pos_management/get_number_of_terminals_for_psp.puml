@@ -3,7 +3,7 @@ group get number of terminals
 		note left
 			__//query document//__
 			{
-				"manId": "//<client id>//"
+				"serviceProviderId": "//<service provider id>//"
 			}
 		end note
 

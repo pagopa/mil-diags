@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : update POS
 
-management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
+management -> mil_registry ++ : PATCH /terminals///<terminal uuid>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -14,14 +14,7 @@ management -> mil_registry ++ : PATCH /poses///<terminal uuid>//
 		__body__
 		{
 			"workstations": [
-				.
-				.
-				.
-				//<new workstation #n>//,
-				.
-				.
-				.
-
+				//<new array of workstations>//
 			]
 		}
 	end note
@@ -33,31 +26,18 @@ note over mil_registry #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<payee code>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
-		"payeeCode": "//<payee code>//",
 		"groups": [
-			.
-			.
-			.
-			"pos_management_for_pa",
-			.
-			.
-			.
+			"public_administration"
 		]
 	}
 end note
 
-!include_many get_terminal_data_by_id.puml
-
-mil_registry -> mil_registry : verify payee code (retrieved = access token)
-
-note over mil_registry #Orange
-	On payee code mismatch, return 403 (forbidden) with specific error body.
-end note
+!include_many get_terminal_data_by_id_for_pa.puml
 
 mil_registry -> mil_registry : update retrieved document with new values
 

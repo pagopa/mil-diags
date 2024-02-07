@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : update POS
 
-management -> mil_registry ++ : DELETE /poses///<terminal uuid>//
+management -> mil_registry ++ : DELETE /terminals///<terminal uuid>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -20,29 +20,15 @@ note over mil_registry #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<service provider id>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
 		"groups": [
-			.
-			.
-			.
-			"pos_register",
-			.
-			.
-			.
+			"pos_service_provider"
 		]
 	}
-end note
-
-!include_many get_terminal_data_by_id.puml
-
-mil_registry -> mil_registry : verify //<client id>// = //<client id of the subject who registered the POS>//
-
-note over mil_registry #Orange
-	On client id mismatch, return 403 (forbidden) with specific error body.
 end note
 
 !include_many delete_terminal_for_psp.puml

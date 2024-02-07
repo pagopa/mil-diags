@@ -6,7 +6,7 @@ activate operator
 
 operator -> management ++ : get POS list
 
-management -> mil_registry ++ : GET /poses?page=//<page number>//&size=//<page size>//
+management -> mil_registry ++ : GET /terminals?page=//<page number>//&size=//<page size>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -20,19 +20,13 @@ note over mil_registry #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<service provider id>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
 		"groups": [
-			.
-			.
-			.
-			"pos_register",
-			.
-			.
-			.
+			"pos_service_provider"
 		]
 	}
 end note
@@ -46,23 +40,17 @@ mil_registry --> management -- : HTTP 200 (ok)
 	note right
 		__body__
 		{
-			"poses": [
+			"terminals": [
 				{
-					"uuid": "//<terminal uuid>//",
-					"manId": "//<client id of the subject who registered the POS>//",
-					"gtId": "//<gt id>//",
+					"terminalUuid": "//<terminal uuid>//",
+					"serviceProviderId": "//<service provider id>//",
+					"terminalHandlerId": "//<terminal handler id>//",
 					"terminalId": "//<terminal id>//",
 					"enabled": //<enabled>//,
 					"payeeCode": "//<payee code>//",
 					"slave": "//<slave>//",
 					"workstations": [
-						.
-						.
-						.
-						//<workstation #n>//,
-						.
-						.
-						.
+						//<array of workstations>//
 					],
 					"pagoPa": "//<pagopa>//",
 					"pspId": "//<psp id>//",

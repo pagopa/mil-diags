@@ -6,23 +6,23 @@ activate operator
 
 operator -> management ++ : register POS
 
-management -> mil_registry ++ : POST /poses
+management -> mil_registry ++ : POST /terminals
 	note left
 		__header__
 		RequestId: //<request id>//
 		Authorization: Bearer //<access token>//
 		__body__
 		{
-			"gtId": "//<gt id>//",
+			"terminalHandlerId": "//<terminal handler id>//",
 			"terminalId": "//<terminal id>//",
 			"enabled": //<enabled>//,
-			"payeeCode": "//<payee code>//", <&arrow-left> //Payee's Tax (Fiscal) Code for PA POS, Mechant's Tax (Fiscal) Code for other POS.//
-			"slave": "//<slave>//", <&arrow-left> //True for slave PA POS, otherwise false.//
-			"pagoPa": "//<pagopa>//", <&arrow-left> //True for POS enbled to pagoPA payments.//
-			"pspId": "//<psp id>//", <&arrow-left> //Present if <pagopa> is true. PSP ID to use to communicate with pagoPA platform.//
-			"brokerId": "//<broker id>//", <&arrow-left> //Present if <pagopa> is true. PSP Broker ID to use to communicate with pagoPA platform.//
-			"channelId": "//<channel id>//", <&arrow-left> //Present if <pagopa> is true. Channel ID to use to communicate with pagoPA platform.//
-			"idpay": "//<idpay>//" <&arrow-left> //True for POS enabled to use IDPay bonus.//
+			"payeeCode": "//<payee code>//",
+			"slave": "//<slave>//",
+			"pagoPa": "//<pagopa>//",
+			"pspId": "//<psp id>//",
+			"brokerId": "//<broker id>//",
+			"channelId": "//<channel id>//",
+			"idpay": "//<idpay>//"
 		}
 	end note
 
@@ -33,19 +33,13 @@ note over mil_registry #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<service provider id>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
 		"groups": [
-			.
-			.
-			.
-			"pos_register",
-			.
-			.
-			.
+			"pos_service_provider"
 		]
 	}
 end note
@@ -63,7 +57,7 @@ mil_registry -> mil_registry : generate //<terminal uuid>//
 mil_registry --> management -- : HTTP 201 (created)
 	note right
 		__header__
-		Location: /poses///<terminal uuid>//
+		Location: /terminals///<terminal uuid>//
 	end note
 
 management --> operator -- : ok
