@@ -23,7 +23,7 @@ mil_auth --> pos -- : HTTP 200 (ok)
     		"access_token": "//<access token>//",
     		"refresh_token": "//<refresh token>//",
     		"token_type": "Bearer",
-    		"expires_in": 900 <&arrow-left> //This must be a conf. par.//
+    		"expires_in": //<access token duration>//
 		}
 	end note
 

@@ -12,12 +12,10 @@ group verify refresh token
 		__//<refresh token payload>//__
 		{
 			"jti": "//<refresh token id>//",
-			"sub": "//<client id>//",
+			"sub": "//<terminal uuid>//",
 			"iat": //<issue unix epoch>//,
 			"exp": //<expiration unix epoch>//,
 			"channel": "POS",
-			"gtId": "//<gtId>//",
-			"terminalId": "//<terminal id>//",
 			"scope": "offline_access"
 		}
     end note

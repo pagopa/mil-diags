@@ -13,8 +13,12 @@ group verify client id
 			note right
 				__body__
 				{
-					"id": "//<client id>//",
-					"channel": "POS"
+					"id": "<client id>",
+					"channel": "POS",
+					"grantTypes": [
+						"device_code",
+						"refresh_token"
+					]
 				}
 			end note
 
@@ -24,9 +28,9 @@ group verify client id
 		end note
 	end
 
-	mil_auth -> mil_auth : verify channel
+	mil_auth -> mil_auth : verify channel and grant types
 
 	note over mil_auth #Orange
-		On channel mismatch, return HTTP 401 (unauthorized) with specific error body.
+		On channel or grant type mismatch, return HTTP 401 (unauthorized) with specific error body.
 	end note
 end

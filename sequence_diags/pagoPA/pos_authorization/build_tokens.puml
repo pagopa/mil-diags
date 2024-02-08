@@ -1,6 +1,6 @@
 group common processing
 	!include_many verify_client_id.puml
-	!include_many get_terminal_data.puml
+	!include_many get_terminal_data_by_id.puml
 	!include_many build_tokens_payload.puml
 	!include_many retrieve_key_to_sign_tokens.puml
 	!include_many build_tokens_header.puml

@@ -3,21 +3,21 @@ group build tokens payload
 		note right
 			__//<access token payload>//__
 			{
-				"sub": "//<client id>//",
+				"sub": "//<terminal uuid>//",
 				"aud": "mil.pagopa.it",
 				"iss": "https:////<host name>///mil-auth",
 				"iat": //<current unix epoch>//,
-				"exp": //<current unix epoch>// + 900, <&arrow-left> //This must be a conf. par.//
-				"channel": "POS",
-				"gtId": "//<gtId>//",
-				"terminalId": "//<terminal id>//",
+				"exp": //<current unix epoch>// + //<access token duration>//,
 				"payeeCode": "//<payeeCode>//",
+				"channel": "POS",
+				"terminalHandlerId": "//<terminal handler id>//",
+				"terminalId": "//<terminal id>//",
 				"groups": [
-					"SlavePos", <&arrow-left> //Present if <slave> is **true**.//
-					"NoticePayer", <&arrow-left> //Present if <pagopa> is **true**.//
-					"PayWithIDPay" <&arrow-left> //Present if <idpay> is **true**.//
+					"SlavePos", <font color="red"><&arrow-left> //Present if <slave> is **true**.//</font>
+					"NoticePayer", <font color="red"><&arrow-left> //Present if <pagopa> is **true**.//</font>
+					"PayWithIDPay" <font color="red"><&arrow-left> //Present if <idpay> is **true**.//</font>
 				],
-				"pagoPaConf": {
+				"pagoPaConf": { <font color="red"><&arrow-left> //Present if <pagopa> is **true**.//</font>
 					"pspId": "//<psp id>//",
 					"brokerId": "//<broker id>//",
 					"channelId": "//<channel id>//"
@@ -30,12 +30,10 @@ group build tokens payload
 			__//<refresh token payload>//__
 			{
 				"jti": "//<refresh token id>//",
-				"sub": "//<client id>//",
+				"sub": "//<terminal uuid>//",
 				"iat": //<current unix epoch>//,
-				"exp": //<current unix epoch>// + 3600, <&arrow-left> //This must be a conf. par.//
+				"exp": //<current unix epoch>// + //<refresh token duration>//
 				"channel": "POS",
-				"gtId": "//<gtId>//",
-				"terminalId": "//<terminal id>//",
 				"scope": "offline_access"
 			}
 		end note
