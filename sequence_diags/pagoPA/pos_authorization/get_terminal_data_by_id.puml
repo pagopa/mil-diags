@@ -24,7 +24,7 @@ group get terminal data
 				"exp": //<expiration unix epoch>//,
 				"groups": [
 					"pos_finder",
-				],
+				]
 			}
 		end note
 

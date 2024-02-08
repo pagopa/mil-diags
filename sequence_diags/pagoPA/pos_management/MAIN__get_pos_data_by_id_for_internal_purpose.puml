@@ -4,7 +4,7 @@
 
 activate other
 
-other -> mil_registry ++ : GET /terminals?terminalUUid=//<terminal uuid>//
+other -> mil_registry ++ : GET /terminals?terminalUuid=//<terminal uuid>//
 	note left
 		__header__
 		RequestId: //<request id>//
@@ -25,7 +25,7 @@ note over mil_registry #LightGreen
 		"exp": //<expiration unix epoch>//,
 		"groups": [
 			"pos_finder"
-		],
+		]
 	}
 end note
 	
