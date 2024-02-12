@@ -1,0 +1,57 @@
+@startuml 
+
+participant "EC" as ec
+participant "NodoSPC" as pagopa 
+participant "MIL-FE" as mil_fe
+participant "MIL" as mil 
+
+participant "GPD" as gpd
+participant "Checkout" as checkout 
+
+
+
+ec -> pagopa : nodoInviaCarrelloRTP
+
+pagopa -> mil : fwd_nodoInviaCarrelloRPT
+mil -> mil : createNewRequest (milRequest)
+mil --> pagopa : milRequestUrl
+
+pagopa --> ec : 200 - (wispUrl=milRequestUrl)
+
+Create mil_fe
+ec -> mil_fe : redirectTo milRequestUrl(milRequestID)
+
+
+par MIL Creates PDs 
+    hnote over mil : MilRequestIdStatus = PENDIND
+    loop "#RPT"
+    mil -> gpd : new PD
+    gpd --> mil : 200 OK 
+    end  
+
+    mil -> checkout : postCards()
+    checkout --> mil : 302 checkoutUrl
+    hnote over mil : MilRequestIdStatus = READY
+
+ else "Mil-FE waiting READY"
+ loop 
+  mil_fe -> mil : GET milRequestID
+  alt PENDING
+  mil --> mil_fe : Status=PENDING
+  else READY
+  mil --> mil_fe : Status=READY (CheckoutUrl is not empty ) 
+  mil_fe -> checkout : redirectTo CheckOutUrl 
+  end
+  end 
+end
+
+
+
+
+
+
+
+
+
+
+@enduml 
