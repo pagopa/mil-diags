@@ -1,0 +1,25 @@
+@startuml 
+
+participant "EC" as ec  
+participant "MIL" as mil 
+participant "GPD" as gpd
+participant "Checkout" as checkout 
+participant "NodoSPC" as pagopa 
+
+
+ec -> pagopa : nodoInviaCarrelloRTP
+
+pagopa -> mil : fwd_nodoInviaCarrelloRPT
+
+loop "#RPT"
+mil -> gpd : new PD
+gpd --> mil : 200 OK 
+end  
+
+mil -> checkout : postCards()
+checkout --> mil : 302 checkoutUrl
+
+mil --> pagopa : 200 checkoutUrl
+
+
+@enduml 
