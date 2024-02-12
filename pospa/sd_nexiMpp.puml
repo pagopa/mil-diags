@@ -1,0 +1,36 @@
+@startuml 
+
+participant "Gestionale Enti" as ge  
+participant "MIL" as mil 
+participant "GPD" as gpd
+participant "MPP" as psp 
+
+=== la PA seleziona il POS da utilizzare =====
+ge -> mil : ListPOS(cassa)
+
+mil -> psp : check_config(cassa) 
+psp --> mil : 200 ([posPa details {id,iban,altro }])
+
+mil --> ge : 200-OK ([posPaId])
+
+note over mil : il MIL aggiorna tutte le informazioni relative al POS.
+
+=== la PA inizia il pagamento === 
+ge -> mil : startPayment(posPaId,iuv,fiscal_code,amount)
+mil --> ge : 200-OK (paymentId)
+
+create gpd 
+mil -> gpd : new 
+mil -> gpd : createPd(iuv,amount,iban)
+gpd --> mil : 200-OK (nav,fiscal_code,amount)
+note over gpd : La PD avrà lo iuv indicato dall'ente, con molti campi di default. Inseriamo un tag per identificarle in maniera puntuale
+
+mil -> psp : startPayment(nav,fiscal_code,amount,returnUrl)
+mpp -> mpp : pagoPAPaymentProcess()
+...
+=== Utente conclude il pagamento sul POS == 
+mpp -> mil : esitoPagamento
+ge -> mil : pollingPayment(paymentId)
+
+
+@enduml
