@@ -1,4 +1,20 @@
 @startuml 
+title Dismissione WISP (Async)
+
+legend top 
+  L'idea di base è lasciare inalterato il NodoSPC ( a meno della componente networking)
+  La richiesta proveniente dall'EC viene inoltrata al MIL
+  l'EC eseguirà il redirect su un FrontEnd del MIL che servirà solo a scopo di integrazione ( Sarà solo una pagina bianca con un logo e/o spinner ) 
+  il MIL : 
+  - trasforma le RPT in posizioni debitorie su GPD
+  - inizializza la sessione su check
+  - re-indirizza l'utente verso checkout
+
+  Il MIL si preoccuperà anche di generare la corrispondente RT a fine del pagamento
+
+  Nota: le RPT,RT non saranno presenti sul NODO. A livello di assistenza saranno preservati gli IUV (e CF)  
+end legend
+
 
 participant "EC" as ec
 participant "NodoSPC" as pagopa 
