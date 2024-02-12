@@ -20,6 +20,22 @@ mil -> checkout : postCards()
 checkout --> mil : 302 checkoutUrl
 
 mil --> pagopa : 200 checkoutUrl
+pagopa --> ec : checkoutUrl 
 
+== PAYMENT on CHECKOUT ==
+... 
+==END OF PAYMENT ==
+
+
+pagopa -> gpd : sendReceipt
+loop 
+mil -> gpd : getReceipt
+gpd --> mil : receipt 
+end 
+
+mil -> pagopa : fwd_NodoInviaRT
+pagopa -> ec : nodoInviaRT
+ec --> pagopa : ok
+pagopa --> mil  : ok 
 
 @enduml 

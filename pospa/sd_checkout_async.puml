@@ -2,8 +2,8 @@
 
 participant "EC" as ec
 participant "NodoSPC" as pagopa 
-participant "MIL-FE" as mil_fe
-participant "MIL" as mil 
+participant "MIL-FE" as mil_fe #99FF99
+participant "MIL" as mil #99FF99
 
 participant "GPD" as gpd
 participant "Checkout" as checkout 
@@ -11,7 +11,7 @@ participant "Checkout" as checkout
 
 
 ec -> pagopa : nodoInviaCarrelloRTP
-
+pagopa -> pagopa : redirectMod1Messages
 pagopa -> mil : fwd_nodoInviaCarrelloRPT
 mil -> mil : createNewRequest (milRequest)
 mil --> pagopa : milRequestUrl
@@ -31,6 +31,7 @@ par MIL Creates PDs
 
     mil -> checkout : postCards()
     checkout --> mil : 302 checkoutUrl
+    mil -> mil : updateStatus(checkOutUrl) 
     hnote over mil : MilRequestIdStatus = READY
 
  else "Mil-FE waiting READY"
@@ -44,6 +45,22 @@ par MIL Creates PDs
   end
   end 
 end
+
+== PAYMENT on CHECKOUT ==
+... 
+==END OF PAYMENT ==
+pagopa -> gpd : sendReceipt
+loop 
+mil -> gpd : getReceipt
+gpd --> mil : receipt 
+end 
+
+note over mil : Se la receipt non esiste dopo 30min \n si deve creare una RT-
+mil -> pagopa : fwd_NodoInviaRT
+pagopa -> pagopa : forwardMod1Messages
+pagopa -> ec : nodoInviaRT
+ec --> pagopa : ok
+pagopa --> mil  : ok 
 
 
 
