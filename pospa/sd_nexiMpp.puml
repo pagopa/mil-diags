@@ -5,7 +5,7 @@ participant "MIL" as mil
 participant "GPD" as gpd
 participant "MPP" as psp 
 
-=== la PA seleziona il POS da utilizzare =====
+=== la PA seleziona il POS da utilizzare ==
 ge -> mil : ListPOS(cassa)
 
 mil -> psp : check_config(cassa) 
@@ -15,7 +15,7 @@ mil --> ge : 200-OK ([posPaId])
 
 note over mil : il MIL aggiorna tutte le informazioni relative al POS.
 
-=== la PA inizia il pagamento === 
+=== la PA inizia il pagamento ==
 ge -> mil : startPayment(posPaId,iuv,fiscal_code,amount)
 mil --> ge : 200-OK (paymentId)
 
