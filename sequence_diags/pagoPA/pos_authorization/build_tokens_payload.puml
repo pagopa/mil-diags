@@ -10,6 +10,7 @@ group build tokens payload
 				"exp": //<current unix epoch>// + //<access token duration>//,
 				"payeeCode": "//<payeeCode>//",
 				"channel": "POS",
+				"serviceProviderId": "//<service provider id>//",
 				"terminalHandlerId": "//<terminal handler id>//",
 				"terminalId": "//<terminal id>//",
 				"groups": [

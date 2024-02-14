@@ -4,16 +4,13 @@
 
 activate pos
 
-pos -> mil ++ : POST /transactions
+pos -> mil ++ : PATCH /transactions///<transaction id>//
 	note left
 		__header__
 		RequestId: //<request id>//
 		Authorization: Bearer //<access token>//
 		__body__
 		{
-			"payeeCode": "//<notice payee code>//",
-			"noticeNumber": "//<notice number>//",
-			"amount": "//<notice amount in eurocents>//",
 			"idempotencyKey": "//<idempotency key>//"
 		}
 	end note
@@ -45,6 +42,52 @@ note over mil #LightGreen
 		}
 	}
 end note
+
+group get trx data
+	mil -> registry ++ : find(//query document//).firstResult()
+		note left
+			__//query document//__
+			{
+				"id": "//<transaction id>//",
+				"client" : {
+					"channel": "POS",
+					"terminalUuid": "//<terminal uuid>//"
+				}
+			}
+		end note
+
+	registry --> mil -- : //document//
+		note right
+			__//document//__
+			{
+				"id": "//<transaction id>//",
+				"creationTimestamp": "//<creation timestamp>//",
+				"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+				"status": "//<status>//",
+				"client": {
+					"serviceProviderId": "//<service provider id>//",
+					"channel": "POS",
+					"payeeCode": "//<payee code>//",
+					"terminalHandlerId": "//<terminal handler id>//",
+					"terminalId": "//<terminal id>//",
+					"terminalUuid": "//<terminal uuid>//"
+				},
+				"notices": [
+					{
+						"payeeCode": "//<notice payee code>//",
+						"noticeNumber": "//<notice number>//",
+						"amount": //<notice amount>//
+					}
+				]
+			}
+		end note
+
+	note over mil #Orange
+		On transaction not found, return 404 (not found) with specific error body.
+		On //<status>// != "CREATED", return 400 (bad request) with specific error body.
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
 
 group interaction with pagoPA
 	mil -> pagopa ++ : POST /nodo-auth/node-for-psp/v1/?soapAction=activatePaymentNoticeV2
@@ -132,16 +175,8 @@ group interaction with pagoPA
 	end note
 end
 
-mil -> mil : Generate //<transaction id>//
-	note left
-		new SecureRandom().ints(0, 16)
-			.limit(24)
-			.mapToObj(Integer::toHexString)
-			.collect(Collectors.joining());
-	end note
-
-group store trx data
-	mil -> registry ++ : persist(//document//)
+group update trx data
+	mil -> registry ++ : update(//document//)
 		note left
 			__//document//__
 			{
@@ -223,11 +258,7 @@ group store trx data
 	end note
 end
 
-mil --> pos -- : HTTP 201 (created)
-	note right
-		__header__
-		Location: /transactions///<transaction id>//
-	end note
+mil --> pos -- : HTTP 200 (ok)
 
 deactivate pos
 @enduml

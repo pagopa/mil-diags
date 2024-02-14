@@ -7,7 +7,7 @@ group get terminal data
 			client_secret=//<secret>//
 			__response body__
 			{
-				"access_token": "//<mil-auth ccess token>//",
+				"access_token": "//<mil-auth access token>//",
 				"token_type": "Bearer",
 				"expires_in": //<access token duration>//
 			}

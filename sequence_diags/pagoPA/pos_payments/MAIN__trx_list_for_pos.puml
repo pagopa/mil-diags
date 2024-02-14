@@ -1,0 +1,246 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate pos
+
+pos -> mil ++ : GET /transactions?startDate=//<start date>//&endDate=//<end date>//&sortStrategy=//<sort strategy>//&page=//<page>//&size=//<size>//
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+	end note
+
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<terminal uuid>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"serviceProviderId": "//<service provider id>//",
+		"payeeCode": "//<payeeCode>//",
+		"channel": "POS",
+		"terminalHandlerId": "//<terminal handler id>//",
+		"terminalId": "//<terminal id>//",
+		"groups": [
+			"NoticePayer"
+		],
+		"pagoPaConf": {
+			"pspId": "//<psp id>//",
+			"brokerId": "//<broker id>//",
+			"channelId": "//<channel id>//"
+		}
+	}
+end note
+
+group number of trxs
+	mil -> registry ++ : count(//query document//))
+		note left
+			__//query document//__
+			{
+				"creationTimestamp": {
+					"$ge": "//<start date>//",
+					"$le": "//<end date>//"
+				},
+				"client" : {
+					"channel": "POS",
+					"terminalUuid": "//<terminal uuid>//"
+				}
+			}
+		end note
+
+	registry --> mil -- : //<number of elements>//
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
+
+group get trxs data
+	alt //<sort strategy>// == desc
+		mil -> registry ++ : find(//query document//, Sort.descending("creationTimestamp")).page(//<page>//, //<size>//).list()
+	else //<sort strategy>// == asc
+		mil -> registry : find(//query document//, Sort.ascending("creationTimestamp")).page(//<page>//, //<size>//).list()
+	end
+
+	registry --> mil -- : //page//
+		note right
+			__//page//__
+			[
+				{
+					"id": "//<transaction id>//",
+					"creationTimestamp": "//<creation timestamp>//",
+					"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+					"status": "//<status>//",
+					"client": {
+						"serviceProviderId": "//<service provider id>//",
+						"channel": "POS",
+						"payeeCode": "//<payee code>//",
+						"terminalHandlerId": "//<terminal handler id>//",
+						"terminalId": "//<terminal id>//",
+						"terminalUuid": "//<terminal uuid>//"
+					},
+					"pspId": "//<psp id>//",
+					"pspBrokerId": "//<broker id>//",
+					"channelId": "//<channel id>//",
+					"noticesTotalAmount": //<total notices amount>//,
+					"payerFees": //<fee charged to the payer>//,
+					"payeeFees": //<fee charged to the payee>//,
+					"payerAmount": //<total notices amount>// + //<fee charged to the payer>//,
+					"idBundle": "//<fee bundle id>//",
+					"idCiBundle": "//<fee ci bundle id>//",
+					"notices": [
+						{
+							"paymentToken": "//<payment token>//",
+							"description": "//<description>//",
+							"payeeCode": "//<notice payee code>//",
+							"noticeNumber": "//<notice number>//",
+							"payeeName": "//<payee name>//",
+							"officeName": "//<payee office name>//",
+							"creditorReferenceId": "//<iuv>//",
+							"amount": //<notice amount>//,
+							"transfers": [
+								{
+									"id": "//<n>//",
+									"amount": "//<transfer amount #n>//",
+									"payeeCode": "//<payee code #n>//",
+									"payeeName": "//<payee name #n>//",
+									"iban": "//<payee iban #n>//",
+									"remittanceInformation": "//<remittance info #n>//",
+									"metadata": [
+										.
+										.
+										.
+										{
+											"key": "//<metadata key #n.m>//",
+											"value": "//<metadata value #n.m>//"
+										},
+										.
+										.
+										.
+									]
+								}
+							],
+							"metadata": [
+								.
+								.
+								.
+								{
+									"key": "//<metadata key #k>//",
+									"value": "//<metadata value #k>//"
+								},
+								.
+								.
+								.
+							]
+						}
+					],
+					"standin": "//<stand id>//"
+				},
+				.
+				.
+				.
+			]
+		end note
+
+	note over mil #Orange
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
+
+mil -> mil : //<number of pages>// = ceil( //<number of elements>// / //<size>// )
+
+mil --> pos -- : HTTP 200 (ok)
+	note right
+		__body__
+		{
+			"transactions": [
+				{
+					"id": "//<transaction id>//",
+					"creationTimestamp": "//<creation timestamp>//",
+					"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+					"status": "//<status>//",
+					"client": {
+						"serviceProviderId": "//<service provider id>//",
+						"channel": "POS",
+						"terminalHandlerId": "//<terminal handler id>//",
+						"terminalId": "//<terminal id>//",
+						"terminalUuid": "//<terminal uuid>//"
+					},
+					"pspId": "//<psp id>//",
+					"pspBrokerId": "//<broker id>//",
+					"channelId": "//<channel id>//",
+					"noticesTotalAmount": //<total notices amount>//,
+					"payerFees": //<fee charged to the payer>//,
+					"payeeFees": //<fee charged to the payee>//,
+					"payerAmount": //<total notices amount>// + //<fee charged to the payer>//,
+					"idBundle": "//<fee bundle id>//",
+					"idCiBundle": "//<fee ci bundle id>//",
+					"notices": [
+						{
+							"paymentToken": "//<payment token>//",
+							"description": "//<description>//",
+							"payeeCode": "//<notice payee code>//",
+							"noticeNumber": "//<notice number>//",
+							"payeeName": "//<payee name>//",
+							"officeName": "//<payee office name>//",
+							"creditorReferenceId": "//<iuv>//",
+							"amount": //<notice amount>//,
+							"transfers": [
+								{
+									"id": "//<n>//",
+									"amount": "//<transfer amount #n>//",
+									"payeeCode": "//<payee code #n>//",
+									"payeeName": "//<payee name #n>//",
+									"iban": "//<payee iban #n>//",
+									"remittanceInformation": "//<remittance info #n>//",
+									"metadata": [
+										.
+										.
+										.
+										{
+											"key": "//<metadata key #n.m>//",
+											"value": "//<metadata value #n.m>//"
+										},
+										.
+										.
+										.
+									]
+								}
+							],
+							"metadata": [
+								.
+								.
+								.
+								{
+									"key": "//<metadata key #k>//",
+									"value": "//<metadata value #k>//"
+								},
+								.
+								.
+								.
+							]
+						}
+					],
+					"standin": "//<stand id>//"
+				},
+				.
+				.
+				.
+			],
+			"page": {
+				"size": //<size>//,
+				"totalElements": //<number of elements>//,
+				"totalPages": //<number of pages>//
+			}
+		}
+	end note
+
+deactivate pos
+@enduml

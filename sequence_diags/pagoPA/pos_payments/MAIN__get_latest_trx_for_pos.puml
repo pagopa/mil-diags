@@ -1,0 +1,143 @@
+@startuml
+!include_many skin.puml
+!include_many actors.puml
+
+activate pos
+
+pos -> mil ++ : GET /transactions/latest?status=//<status>
+	note left
+		__header__
+		RequestId: //<request id>//
+		Authorization: Bearer //<access token>//
+	end note
+
+note over mil #LightGreen
+	__//<access token>//__
+	base64url(//<token header>//) + "." +
+	base64url(//<access token payload>//) + "." +
+	//<base64url of access token signature>//
+	__//<access token payload>//__
+	{
+		"sub": "//<terminal uuid>//",
+		"aud": "mil.pagopa.it",
+		"iss": "https:////<host name>///mil-auth",
+		"iat": //<issue unix epoch>//,
+		"exp": //<expiration unix epoch>//,
+		"serviceProviderId": "//<service provider id>//",
+		"payeeCode": "//<payeeCode>//",
+		"channel": "POS",
+		"terminalHandlerId": "//<terminal handler id>//",
+		"terminalId": "//<terminal id>//",
+		"groups": [
+			"NoticePayer"
+		],
+		"pagoPaConf": {
+			"pspId": "//<psp id>//",
+			"brokerId": "//<broker id>//",
+			"channelId": "//<channel id>//"
+		}
+	}
+end note
+
+group get trx data
+	mil -> registry ++ : find(//query document//, Sort.descending("creationTimestamp")).firstResult()
+		note left
+			__//query document//__
+			{
+				"status": "//<status>//",
+				"client" : {
+					"channel": "POS",
+					"terminalUuid": "//<terminal uuid>//"
+				}
+			}
+		end note
+
+	registry --> mil -- : //document//
+		note right
+			__//document//__
+			{
+				"id": "//<transaction id>//",
+				"creationTimestamp": "//<creation timestamp>//",
+				"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+				"status": "//<status>//",
+				"client": {
+					"serviceProviderId": "//<service provider id>//",
+					"channel": "POS",
+					"payeeCode": "//<payee code>//",
+					"terminalHandlerId": "//<terminal handler id>//",
+					"terminalId": "//<terminal id>//",
+					"terminalUuid": "//<terminal uuid>//"
+				},
+				"pspId": "//<psp id>//",
+				"pspBrokerId": "//<broker id>//",
+				"channelId": "//<channel id>//",
+				"noticesTotalAmount": //<total notices amount>//,
+				"payerFees": //<fee charged to the payer>//,
+				"payeeFees": //<fee charged to the payee>//,
+				"payerAmount": //<total notices amount>// + //<fee charged to the payer>//,
+				"idBundle": "//<fee bundle id>//",
+				"idCiBundle": "//<fee ci bundle id>//",
+				"notices": [
+					{
+						"paymentToken": "//<payment token>//",
+						"description": "//<description>//",
+						"payeeCode": "//<notice payee code>//",
+						"noticeNumber": "//<notice number>//",
+						"payeeName": "//<payee name>//",
+						"officeName": "//<payee office name>//",
+						"creditorReferenceId": "//<iuv>//",
+						"amount": //<notice amount>//,
+						"transfers": [
+							{
+								"id": "//<n>//",
+								"amount": "//<transfer amount #n>//",
+								"payeeCode": "//<payee code #n>//",
+								"payeeName": "//<payee name #n>//",
+								"iban": "//<payee iban #n>//",
+								"remittanceInformation": "//<remittance info #n>//",
+								"metadata": [
+									.
+									.
+									.
+									{
+										"key": "//<metadata key #n.m>//",
+										"value": "//<metadata value #n.m>//"
+									},
+									.
+									.
+									.
+								]
+							}
+						],
+						"metadata": [
+							.
+							.
+							.
+							{
+								"key": "//<metadata key #k>//",
+								"value": "//<metadata value #k>//"
+							},
+							.
+							.
+							.
+						]
+					}
+				],
+				"standin": "//<stand id>//"
+			}
+		end note
+
+	note over mil #Orange
+		On transaction not found, return 404 (not found) with specific error body.
+		On any failure, return HTTP 500 (server error) with specific error body. 
+	end note
+end
+
+mil --> pos -- : HTTP 200 (ok)
+	note right
+		__body__
+		//document//
+	end note
+
+deactivate pos
+@enduml
