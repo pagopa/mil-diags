@@ -147,7 +147,7 @@ group store trx data
 			{
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<current timestamp>//",
-				"lastStatusUpdateTimestamp": "//<current timestamp>//",
+				"lastUpdateTimestamp": "//<current timestamp>//",
 				"status": "ACTIVATED",
 				"client": {
 					"serviceProviderId": "//<service provider id>//",

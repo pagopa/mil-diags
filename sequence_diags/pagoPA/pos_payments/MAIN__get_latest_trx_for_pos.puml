@@ -58,7 +58,7 @@ group get trx data
 			{
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<creation timestamp>//",
-				"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+				"lastUpdateTimestamp": "//<last update timestamp>//",
 				"status": "//<status>//",
 				"client": {
 					"serviceProviderId": "//<service provider id>//",

@@ -62,7 +62,7 @@ group get trx data
 			{
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<creation timestamp>//",
-				"lastStatusUpdateTimestamp": "//<last update timestamp>//",
+				"lastUpdateTimestamp": "//<last update timestamp>//",
 				"status": "//<status>//",
 				"client": {
 					"serviceProviderId": "//<service provider id>//",
@@ -181,8 +181,8 @@ group update trx data
 			__//document//__
 			{
 				"id": "//<transaction id>//",
-				"creationTimestamp": "//<current timestamp>//",
-				"lastStatusUpdateTimestamp": "//<current timestamp>//",
+				"creationTimestamp": "//<creation timestamp>//",
+				"lastUpdateTimestamp": "//<current timestamp>//",
 				"status": "ACTIVATED",
 				"client": {
 					"serviceProviderId": "//<service provider id>//",

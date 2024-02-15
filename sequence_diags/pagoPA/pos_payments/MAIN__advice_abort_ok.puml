@@ -11,14 +11,8 @@ pos -> mil ++ : PATCH /transactions///<transaction id>//
 		Authorization: Bearer //<access token>//
 		__body__
 		{
-			"status": "CLOSED_OK",
-			"paymentMethod": "//<payment method>//"
+			"status": "ABORT"
 		}
-		__//<payment method>//__
-		- DOMESTIC_CARD
-		- INTERNATIONAL_CARD
-		- CASH
-		- OTHER
 	end note
 
 note over mil #LightGreen
@@ -139,30 +133,11 @@ group get trx data
 
 	note over mil #Orange
 		On transaction not found, return 404 (not found) with specific error body.
-		On //<status>// == "CLOSED_OK", return 200 (ok).
-		On //<status>// != "ACTIVATED" and //<status>// != "CLOSED_KO", return 400 (bad request) with specific error body.
+		On //<status>// == "ABORT_OK", return 200 (ok).
+		On //<status>// != "ACTIVATED" and //<status>// != "ABORT_KO", return 400 (bad request) with specific error body.
 		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end
-
-mil -> mil : Calculate //<application date>//
-	note left
-		| Condition                                               | //<application date>// |
-		| current date is holiday                                 | next working date      |
-		| current date is working day && current time is <= 13.00 | current date           |
-		| current date is working day && current time is > 13.00  | next working date      |
-	end note
-
-mil -> mil : //<transfer date>// = //<application date>// + 1 working day
-
-mil -> mil : Map //<payment method>// to //<pagopa payment method>//
-	note left
-		| //<payment method>// | //<pagopa payment method>// |
-		| DOMESTIC_CARD        | bancomat                    |
-		| INTERNATIONAL_CARD   | creditCard                  |
-		| CASH                 | cash                        |
-		| OTHER                | other                       |
-	end note
 
 group interaction with pagoPA
 	mil -> pagopa ++ : POST /nodo-auth/node-for-psp/v1/?soapAction=sendPaymentOutcomeV2
@@ -177,16 +152,7 @@ group interaction with pagoPA
 				<paymentTokens>
 					<paymentToken>//<payment token>//</paymentToken>
 				</paymentTokens>
-				<outcome>OK</outcome>
-				<details>
-					<paymentMethod>//<pagopa payment method>//</paymentMethod>
-					<fee>//<fee charged to the payer>// + //<fee charged to the payee>//</fee>
-					<primaryCiIncurredFee>//<fee charged to the payee>//</primaryCiIncurredFee>
-					<idBundle>//<fee bundle id>//</idBundle>
-					<idCiBundle>//<fee ci bundle id>//</idCiBundle>
-					<applicationDate>//<application date>//</applicationDate>
-					<transferDate>//<transfer date>//</transferDate>
-				</details>
+				<outcome>KO</outcome>
 			</sendPaymentOutcomeV2Request>
 		end note
 
@@ -207,7 +173,7 @@ group update trx data
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<creation timestamp>//",
 				"lastUpdateTimestamp": "//<current timestamp>//",
-				"status": "CLOSED_OK",
+				"status": "ABORT_OK",
 				"client": {
 					"serviceProviderId": "//<service provider id>//",
 					"channel": "POS",

@@ -22,23 +22,18 @@ note over mil #LightGreen
 	//<base64url of access token signature>//
 	__//<access token payload>//__
 	{
-		"sub": "//<client id>//",
+		"sub": "//<terminal uuid>//",
 		"aud": "mil.pagopa.it",
 		"iss": "https:////<host name>///mil-auth",
 		"iat": //<issue unix epoch>//,
 		"exp": //<expiration unix epoch>//,
-		"channel": "POS",
-		"gtId": "//<gtId>//",
-		"terminalId": "//<terminal id>//",
 		"payeeCode": "//<payeeCode>//",
+		"serviceProviderId": "//<service provider id>//",
+		"channel": "POS",
+		"terminalHandlerId": "//<terminal handler id>//",
+		"terminalId": "//<terminal id>//",
 		"groups": [
-			.
-			.
-			.
-			"NoticePayer",
-			.
-			.
-			.
+			"NoticePayer"
 		],
 		"pagoPaConf": {
 			"pspId": "//<psp id>//",
@@ -49,19 +44,33 @@ note over mil #LightGreen
 end note
 
 group get trx data
-	mil -> registry ++ : findById(//<transaction id>//)
+	mil -> registry ++ : find(//query document//).firstResult()
+		note left
+			__//query document//__
+			{
+				"id": "//<transaction id>//",
+				"client" : {
+					"channel": "POS",
+					"terminalUuid": "//<terminal uuid>//"
+				}
+			}
+		end note
+
 	registry --> mil -- : //document//
 		note right
 			__//document//__
 			{
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<creation timestamp>//",
-				"lastStatusUpdateTimestamp": "//<last update timestamp>//",
-				"status": "CREATED",
+				"lastUpdateTimestamp": "//<last update timestamp>//",
+				"status": "//<status>//",
 				"client": {
+					"serviceProviderId": "//<service provider id>//",
 					"channel": "POS",
+					"payeeCode": "//<payee code>//",
 					"terminalHandlerId": "//<terminal handler id>//",
-					"terminalId": "//<terminal id>//"
+					"terminalId": "//<terminal id>//",
+					"terminalUuid": "//<terminal uuid>//"
 				},
 				"pspId": "//<psp id>//",
 				"pspBrokerId": "//<broker id>//",
@@ -77,6 +86,7 @@ group get trx data
 						"paymentToken": "//<payment token>//",
 						"description": "//<description>//",
 						"payeeCode": "//<notice payee code>//",
+						"noticeNumber": "//<notice number>//",
 						"payeeName": "//<payee name>//",
 						"officeName": "//<payee office name>//",
 						"creditorReferenceId": "//<iuv>//",
@@ -122,8 +132,10 @@ group get trx data
 		end note
 
 	note over mil #Orange
-		On not found, return HTTP 404 (not found) with specific error body.
-		On any other failure, return HTTP 500 (server error) with specific error body. 
+		On transaction not found, return 404 (not found) with specific error body.
+		On //<status>// == "ERROR_ON_PAYMENT_OK", return 200 (ok).
+		On //<status>// != "ACTIVATED" and //<status>// != "ERROR_ON_PAYMENT_KO", return 400 (bad request) with specific error body.
+		On any failure, return HTTP 500 (server error) with specific error body. 
 	end note
 end
 
@@ -160,12 +172,15 @@ group update trx data
 			{
 				"id": "//<transaction id>//",
 				"creationTimestamp": "//<creation timestamp>//",
-				"lastStatusUpdateTimestamp": "//<current timestamp>//",
-				"status": "ERROR_ON_PAYMENT",
+				"lastUpdateTimestamp": "//<current timestamp>//",
+				"status": "ERROR_ON_PAYMENT_OK",
 				"client": {
+					"serviceProviderId": "//<service provider id>//",
 					"channel": "POS",
+					"payeeCode": "//<payee code>//",
 					"terminalHandlerId": "//<terminal handler id>//",
-					"terminalId": "//<terminal id>//"
+					"terminalId": "//<terminal id>//",
+					"terminalUuid": "//<terminal uuid>//"
 				},
 				"pspId": "//<psp id>//",
 				"pspBrokerId": "//<broker id>//",
@@ -181,6 +196,7 @@ group update trx data
 						"paymentToken": "//<payment token>//",
 						"description": "//<description>//",
 						"payeeCode": "//<notice payee code>//",
+						"noticeNumber": "//<notice number>//",
 						"payeeName": "//<payee name>//",
 						"officeName": "//<payee office name>//",
 						"creditorReferenceId": "//<iuv>//",
@@ -225,7 +241,7 @@ group update trx data
 			}
 		end note
 
-	registry --> mil -- : Ok
+	registry --> mil -- : ok
 
 	note over mil #Orange
 		On any failure, return HTTP 500 (server error) with specific error body.
