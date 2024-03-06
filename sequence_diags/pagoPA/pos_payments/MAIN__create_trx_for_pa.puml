@@ -71,7 +71,7 @@ group get terminal data
 			}
 		end note
 
-	mil -> mil_registry ++ : GET /terminals?terminalUuid=//<terminal uuid>//
+	mil -> mil_registry ++ : GET /terminals///<terminal uuid>//
 		note left
 			__header__
 			RequestId: //<request id>//
