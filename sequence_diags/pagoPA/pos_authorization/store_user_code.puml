@@ -1,8 +1,0 @@
-group store user code
-	mil_auth -> cache ++ : put(//<user code>//, //<terminal uuid>//) with expiration time equals to //<expires in>//
-	cache --> mil_auth -- : ok
-
-    note over mil_auth #Orange
-	    On any failure, return HTTP 500 (server error) with specific error body. 
-    end note
-end
