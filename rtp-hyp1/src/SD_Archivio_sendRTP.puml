@@ -1,0 +1,36 @@
+@startuml
+title : Send a Request to Pay from Payment Notice Archive (HYP1) 
+actor ec as "Archivio \n Centralizzato"
+participant rtp as "pagoPA-RTP"
+participant srtp_deb as "SRTP-DEB"
+participant pagopa as "pagoPA"
+actor deb as "Debtor"
+
+ec -> rtp : sendRTP(fiscalCode,NoticeNumber)
+== compose Request to Pay == 
+rtp -> pagopa : verifyPaymentNotice(fiscal_code,NoticeNumber)
+pagopa --> rtp : 200-OK (due_date, amount)
+note over pagopa: Verifying the notice payment on pagoPA,\n the client has no  responsability about payability
+rtp -> rtp : compileRTP
+note over rtp: the SUD will retriev SRTP deb address 
+rtp --> ec : 201 RTP in progress (messageID)
+== Send Request to Pay == 
+rtp -> srtp_deb : POST /sepa-request-to-pay-requests/
+srtp_deb --> rtp : 201
+== Notify to Debotr ==
+srtp_deb -> deb : notify RTP
+alt accept 
+deb -> srtp_deb : AcceptRTP
+else 
+deb -> srtp_deb: DenyRTP
+end
+== Acquire Final Response == 
+srtp_deb -> rtp : POST /{callbackUrl} embedding SepaRequestToPayResponse
+note over srtp_deb : This forwards the payer's decision (Acceptation/Refusal)
+...
+== Update Archive  == 
+loop 
+ec -> rtp : RTP status update
+rtp --> ec: status_update
+end
+@enduml
