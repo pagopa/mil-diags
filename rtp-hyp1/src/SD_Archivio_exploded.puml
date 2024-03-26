@@ -1,6 +1,7 @@
 @startuml
 title : Send a Request to Pay from Payment Notice Archive (HYP1) 
-actor ec as "Archivio \n Centralizzato"
+actor ec as "EC"
+actor archivio as "Archivio \n Centralizzato"
 
 !pragma teoz true
 box "PagoPA-RTP Solution" #LightBlue
@@ -19,7 +20,12 @@ participant srtp_deb as "SRTP-DEB"
 participant pagopa as "pagoPA"
 actor deb as "Debtor"
 
+alt 
+archivio -> rtp : sendRTP(fiscalCode,NoticeNumber)
+else 
 ec -> rtp : sendRTP(fiscalCode,NoticeNumber)
+end 
+
 rtp -> rtp : Identity&Authorize
 rtp -> us1 : new request
 
@@ -36,7 +42,7 @@ us2 --> us1 : 201-OK
 note over rtp: the SUD will retriev SRTP deb address 
 
 
-us1 --> ec : 201 RTP in progress (messageID)
+us1 --> archivio : 201 RTP in progress (messageID)
 == Send Request to Pay == 
 us2 -> srtp_deb : POST /sepa-request-to-pay-requests/
 srtp_deb --> us2 : 201
@@ -50,10 +56,11 @@ end
 == Acquire Final Response == 
 srtp_deb -> us2 : POST /{callbackUrl} embedding SepaRequestToPayResponse
 note over srtp_deb : This forwards the payer's decision (Acceptation/Refusal)
+us2 -> us1 : return
 ...
-== Update Archive  == 
+== Update Result  == 
 loop 
-ec -> rtp : RTP status update
-rtp --> ec: status_update
+archivio -> rtp : RTP status update
+rtp --> archivio: status_update
 end
 @enduml
