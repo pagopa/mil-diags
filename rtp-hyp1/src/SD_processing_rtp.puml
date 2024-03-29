@@ -2,23 +2,44 @@
 title : Send a Request to Pay from Payment Notice Archive (HYP1) 
 actor ec as "EC"
 actor archivio as "Archivio \n Centralizzato"
-participant rtp as "pagoPA-RTP"
+
+!pragma teoz true
+box "PagoPA-RTP Solution" #LightBlue
+participant rtp as "spRtpEC"
+participant us1 as "rtp-server" 
+participant data as "rtp_route"
+box "COTS"
+participant us2 as "rtp-proxy"
+end box 
+end box
+
+'rtp_route
+' pagopa_node
+'pagopa_repo
+
+
+
 participant srtp_deb as "SRTP-DEB"
+
 participant pagopa as "pagoPA"
 actor deb as "Debtor"
 
-alt 
-archivio -> rtp : sendRTP(fiscalCode,NoticeNumber)
-else 
 ec -> rtp : sendRTP(fiscalCode,NoticeNumber)
-end 
+
+
+rtp -> rtp : Identity&Authorize
+
+
 == compose Request to Pay == 
-rtp -> pagopa : verifyPaymentNotice(fiscal_code,NoticeNumber)
-pagopa --> rtp : 200-OK (due_date, amount)
-note over pagopa: Verifying the notice payment on pagoPA,\n the client has no  responsability about payability
-rtp -> rtp : compileRTP
-note over rtp: the SUD will retriev SRTP deb address 
-rtp --> archivio : 201 RTP in progress (messageID)
+rtp -> pagopa_node : verifyPaymentNotice(fiscal_code,NoticeNumber)
+pagopa_node --> rtp : 200-OK (due_date, amount)
+note over rtp: Verifying the notice payment on pagoPA,\n the client has no  responsability about payability
+rtp -> data : search(EC,Debtor)
+data -> data : retrive EC and Deb informations
+data --> rtp : 200 OK (EC_RTPData, Debotr_RTPData,IBAN?)
+rtp -> rtp 
+
+
 == Send Request to Pay == 
 rtp -> srtp_deb : POST /sepa-request-to-pay-requests/
 srtp_deb --> rtp : 201
@@ -32,10 +53,11 @@ end
 == Acquire Final Response == 
 srtp_deb -> rtp : POST /{callbackUrl} embedding SepaRequestToPayResponse
 note over srtp_deb : This forwards the payer's decision (Acceptation/Refusal)
+rtp -> srtp_deb : 200
 ...
 == Update Result  == 
 loop 
-ec -> rtp : RTP status update
-rtp --> ec: status_update
+archivio -> rtp : RTP status update
+rtp --> archivio: status_update
 end
 @enduml
