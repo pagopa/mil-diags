@@ -1,39 +1,91 @@
 # RTP - Hypotesis 1
 
-Tramite l'archivio dei pagamenti possono essere inviate richieste di pagamenti agli intestatari dell'avviso.
 
+
+```mermaid 
+C4Context
+      title RTP Context Analysis
+      
+      UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="3")
+
+
+      Boundary(b0, "Sepa RTP Scheme") {
+        Person(Payee, "Ente Creditore")
+        System(Payee SP, "Service Provider EC")
+        System(Payer SP, "Service Provider Debitore")
+        Person(Payer, "Debitore")
+
+        Enterprise_Boundary(repo, "PagoPA") {
+            Boundary(rtp_route, "RTP Route") {
+                System(route, "Route")
+                SystemDb(admin,"Participants","Service Provider Repo")
+            }
+
+            Boundary(node, "Nodo pagoPA") {
+                System(pagopa_node, "Nodo", "pagoPA Nodo")
+            }
+
+            Boundary(repomgr, "Repo Manager") {
+                SystemDb(pagopa_repo, "Repo", "Activation and Enrolment Repo")
+                
+            }
+            
+            
+            
+        }
+        
+      }
+
+      Rel(Payer, Payer SP, "Activation, Enrolment", "DSO-01, DSO-05")
+      UpdateRelStyle(Payer, Payer SP, $textColor="blue", $lineColor="black", $offsetX="-60", $offsetY="-30")
+
+      Rel(Payee, Payee SP, "Activation, Enrolment", "DSO-01, DSO-05")
+      UpdateRelStyle(Payee, Payee SP, $textColor="blue", $lineColor="black", $offsetX="-60", $offsetY="-30")
+
+
+      BiRel(Payer SP, Payee SP, "Activation", "DSO-05") 
+      UpdateRelStyle(Payer SP, Payee SP, $textColor="blue", $lineColor="black", $offsetX="-30", $offsetY="-30")
+
+
+      Rel(Payer SP, pagopa_repo, "DSO-05 Activation", "HTTP")
+      UpdateRelStyle(Payer SP, pagopa_repo, $textColor="blue", $lineColor="black", $offsetX="-100", $offsetY="-50")
+
+
+      Rel(Payee SP, pagopa_repo, "DSO-05 Activation", "HTTP")
+      UpdateRelStyle(Payee SP, pagopa_repo, $textColor="blue", $lineColor="black", $offsetX="-100", $offsetY="-50")
+
+      Rel(Payer SP, admin, "OnBoarding", "SelfCare")
+      Rel(Payee SP,admin,"OnBoarding,"SelfCare")
+
+%% Routing
+      Rel(Payee SP, route, "Exchange Route", "HTTP")
+      UpdateRelStyle(Payee SP, route, $textColor="blue", $lineColor="black", $offsetX="0", $offsetY="-30")
+
+%%Verify Payment Notice
+      Rel(Payee SP, pagopa_node, "Verifica PD", "HTTP")
+      UpdateRelStyle(Payee SP, pagopa_node, $textColor="blue", $lineColor="black", $offsetX="-40", $offsetY="-50")
+
+
+
+```
+
+## Components
+
+### rtp_route 
+
+### repomgr
+
+### nodo
 
 ## Requirements
 
-Come Soluzione voglio verificare che qualsiasi richiesta di pagaamento sia effettivamente associata ad un avviso di pagamento disponibile sul Nodo.
+Come Service Provider voglio verificare che qualsiasi richiesta di pagaamento sia effettivamente associata ad un avviso di pagamento disponibile sul Nodo.
 
+Ogni richiesta di attivazione deve essere collezionata nel repo_manager
 
 
 ## Assumptions
 
-- La responsabilità della pagabilità del tributo di cui si vuole inviare una richiesta di pagamento è del sistema pagoPA-RTP. le RTP inviate contengono avvisi di pagamento raggiungibili dal nodo dei pagamenti.
-
 
 - il sistema pagopa-RTP deve conoscere ogni messaggio ( e relativo avviso di pagamento ) inoltrato ai debitori per poter cancellare le richieste una volta che il pagamento viene eseguito.
 
-## Components
-ipotizziamo 4 componenti 
-
-### APIM 
-è l'API Management , a cui sono demandate fnzioni di identificazione ed autorizzazione 
-
-### Registry
-Contiene l'anagrafica dello schema con le informazioni relativi a: 
-- Anagrafica SRTPO
-- Relazione Debitori e l'indentificativo degli SRPT
-- Anagrafica EC 
-- Relazione EC ed SRPT
-- le attivazioni , ovvero l'autorizzazione di quale debitore può ricevere messaggi da quale ente.
-
-### RTP-PROXY
-Componente che colloquia per l'invio RTP secondo lo schema EPC. Questo è il componente che verrà messo presumibilmente a gara.
-
-### RTP-server
-Componente CORE della soluzione, il cui compito è 
-- collezionare tutte le informazioni per poter inviare RTP secondo le specifiche
-- verificare che la richiesta di pagamento sia "lecita" , ovvero che il tributo esista.
