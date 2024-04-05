@@ -35,7 +35,10 @@ group#Gold cancel transaction
 				return //don't care//
 			end
 			
-			IDPaySrv --> Client : HTTP 204 (no content)
+			IDPaySrv --> Client : HTTP 200 (ok)
+				note left
+					!include_many stored_trx_data/on_get__update.frag
+				end note
 		else other
 			IDPay --> IDPaySrv : //any error (http status codes != 200, unparsable response, unexpeted response, ...)//
 			IDPaySrv --> Client   : HTTP 500 (server error)
