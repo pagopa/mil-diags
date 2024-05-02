@@ -1,7 +1,6 @@
 
 
-'''mermaid 
-
+```mermaid 
  C4Context
       title System Context POSPA Hub WebApp
       
@@ -51,4 +50,6 @@ Rel(nodo,SystemAA,"pagopa")
       %%UpdateRelStyle(SystemC, customerA, $textColor="red", $lineColor="red", $offsetX="-50", $offsetY="20")
 
     UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="2")
+
+```
 
