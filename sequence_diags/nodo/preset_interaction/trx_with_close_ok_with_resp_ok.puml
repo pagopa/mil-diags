@@ -1,8 +1,0 @@
-@startuml
-opt#LightBlue if <font color="blue">preset</font> data is present
-	NoticeSrv ->> NoticeTpc : fire-n-forget(//<value>//)
-		note left
-			!include_many ../stored_trx_data/close_ok_with_resp_ok.frag
-		end note
-end group
-@enduml
