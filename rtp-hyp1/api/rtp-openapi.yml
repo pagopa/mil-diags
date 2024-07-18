@@ -1,0 +1,285 @@
+openapi: 3.1.0
+info:
+  title: PagoPA MultiChannel - OpenAPI 3.1
+  description: |-
+    This is a sample collection of API for RTP
+
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: cstar@pagopa.it
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+
+servers:
+- url: https://mil.pagopa.it/{basePath}
+  description: The production API server
+  variables:
+    basePath:
+      # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+      default: v1
+- url: https://uat.mil.pagopa.it/{basePath}
+  description: The UAT API server
+  variables:
+    basePath:
+      # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+      default: v1
+
+tags:
+  - name: activation
+    description: Everything about RTP Activation Process
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: registry
+    description: Everything about the Activation Registry 
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: PaymentInfo
+    description: S008 URL specification - Notice Payment Information
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: ec_sp
+    description : Everything to build up an RTP for a Creditor Service Prvider
+
+paths:
+  /userActivation:
+    post:
+      tags:
+        - activation
+      summary: Add a new user activation to the Service Provider
+      description: Add a new pet to the store
+      operationId: addUser
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserActivation'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActivation'
+        '400':
+          description: Invalid input
+      security:
+        - mil_sp_auth:
+            - write:activation
+            - read:activation
+    put:
+      tags:
+        - activation
+      summary: Update an existing user activation
+      description: Update an existing user activation
+      operationId: updateUser
+      requestBody:
+        description: Update an existent user activation 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserActivation'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActivation'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+      security:
+        - mil_sp_auth:
+            - write:activation
+            - read:activation
+  /userActivation/{userId}:
+    get:
+      tags:
+        - activation
+      summary: Find user activation by ID
+      description: Returns a single user activation
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: Identifier of the Payer (P009)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActivation'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+      security:
+        - mil_sp_auth:
+            - write:activation
+            - read:activation
+  /registry/findByFiscalCode:
+    get:
+      tags:
+        - registry
+      summary: Returns User Registry 
+      description: Returns a map of status codes to quantities
+      operationId: getUserRegistry
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserActivation'
+      security:
+        - mil_ec_auth:
+            - read:registry
+  /messages:
+    post:
+      tags:
+        - ec_sp
+      summary: initiate a new message 
+      operationId: createS008Url
+      requestBody:
+        description: Create a new a S008 Url 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/S008'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+  
+  /PaymentInfo/{msgId}:
+    get:
+      tags:
+        - PaymentInfo
+      summary: retrieve payment information
+      operationId: getPaymentNoticeInfos
+      parameters:
+        - name: msgId
+          in: path
+          description : unique id for the message
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentNoticeInfo'
+
+components:
+  schemas:
+    Debtor:
+      type: object
+      properties:
+        typeOf:
+          type: string
+          description : Person Natural | Person legal
+        identificationCode:
+          type: string
+          description : Vat Code or fiscal Code 
+    
+    UserActivation:
+      type: object
+      properties:
+        id:
+          type: string
+          description:  Identifier of the Payer (P009)
+        name:
+          type: string
+          description: P001 Name of the Payer
+        address:
+          type: string
+          description: P005 Address of the Payer
+        serviceProviderId:
+          type: string
+          description: N001 Identifier of the Payer’s RTP Service Provider 
+        debtor:
+          $ref: '#/components/schemas/Debtor'
+    Message:
+      type: object
+      properties:
+        noticeNumber:
+          type: string
+          description: numero avviso
+        ecFiscalCode:
+          type: string
+          description: codice fiscale ente creditore
+        due_date:
+          type: string 
+          description: data fine richiesta di pagamento 
+    S008:
+      type: object
+      properties:
+        noticeNumber:
+          type: string
+          description: numero avviso
+        ecFiscalCode:
+          type: string
+          description: codice fiscale ente creditore
+        s008Url: 
+          type: string
+          format: url
+
+    PaymentNoticeInfo:
+      type: object
+      properties:
+        noticeNumber:
+          type: string
+          description: numero avviso
+        ecFiscalCode:
+          type: string
+          description: codice fiscale ente creditore
+        description:
+          type: string
+          description: descrizione dell'avviso di pagamento
+        due_date:
+          type: string
+          fromat: date
+
+  securitySchemes:
+    mil_sp_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:activation: modify user activation in your account
+            read:activation: read user activation
+    mil_ec_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            read:registry: read your pets
