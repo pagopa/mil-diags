@@ -100,11 +100,32 @@ paths:
           description: Invalid ID supplied
         '404':
           description: User not found
+  /userActivation/{userId}:
+    parameters: 
+          - name: userId
+            in: path
+            description: identifier of the Payer (P009)
+            required: true
+            schema:
+              type: string
+    delete:
+      tags:
+          - activation
+      summary: delete an existing user activation
+      description: delete an existing user activation
+      operationId: deleteUser
+      
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActivation'
       security:
         - mil_sp_auth:
             - write:activation
             - read:activation
-  /userActivation/{userId}:
     get:
       tags:
         - activation
@@ -215,17 +236,21 @@ components:
         id:
           type: string
           description:  Identifier of the Payer (P009)
+        identificationCode:
+          type: string
+          descripition: fiscal code , Identifier of the Payer given by Payee (B028)
+        typeOf:
+          type: string
+          description: Person Natural or Person Legal (B005)
         name:
           type: string
-          description: P001 Name of the Payer
+          description: Name of the Payer (P001)
         address:
           type: string
-          description: P005 Address of the Payer
+          description: P005 Address of the Payer (P005)
         serviceProviderId:
           type: string
-          description: N001 Identifier of the Payer’s RTP Service Provider 
-        debtor:
-          $ref: '#/components/schemas/Debtor'
+          description: Identifier of the Payer’s RTP Service Provider (N001)
     Message:
       type: object
       properties:
