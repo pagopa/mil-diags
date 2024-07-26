@@ -17,7 +17,7 @@ user->>+srtp: Richiesta di disattivazione del servizio SRTP
 srtp->>+act: DELETE /UserActivation <>
 
 
-act ->> act : create new UserActivation
+act ->> act : delete UserActivation
 act -->>srtp : 200 OK 
 
 
