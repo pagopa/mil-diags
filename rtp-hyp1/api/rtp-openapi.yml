@@ -34,30 +34,90 @@ tags:
     description: Everything about RTP Activation Process
     externalDocs:
       description: Find out more
-      url: http://swagger.io
+      url: https://docs.google.com/document/d/1lLwGMYXt5BsboobTw2f5E9N0k5W27FosE_awx0NndgA/edit?pli=1#heading=h.c56sp56o9no0
   - name: registry
-    description: Everything about the Activation Registry 
+    description: Everything about the EC Enrollnment 
     externalDocs:
       description: Find out more about our store
-      url: http://swagger.io
-  - name: PaymentInfo
-    description: S008 URL specification - Notice Payment Information
-    externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
-  - name: ec_sp
-    description : Everything to build up an RTP for a Creditor Service Prvider
+      url: https://docs.google.com/document/d/1lLwGMYXt5BsboobTw2f5E9N0k5W27FosE_awx0NndgA/edit?pli=1#heading=h.2y81s09k5f6p
+  - name: message
+    description : Everything about Message Registry
 
 paths:
+  /registry/findByPayeeCode:
+    post:
+      tags:
+        - registry
+      summary: search a payee
+      description: search a payee
+      operationId: findByPayeeCode
+      requestBody:
+        description: Search Payee
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayeeFilter'
+      responses:
+        '200':
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payee'
+  
+  /registry/enrollPayee:
+    post:
+      tags:
+        - registry
+      summary: manage EC enroll data 
+      description: manage EC enroll data 
+      operationId: enrollPayee
+      requestBody:
+        description: Enroll data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollDataModel'
+      responses:
+        '200':
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollDataModelResponse'
+      security:
+        - mil_auth:
+          - service_provider
+          - mil_papos_admin
+          
+  /registry/{enrollId}:
+    delete:
+      tags: 
+        - registry
+      summary: delete an enrollnment 
+      description: delte an enrollnment
+      operationId: deleteEnroll
+      parameters: 
+        - name: enrollId
+          in: path
+          description : unique id for the enroll, same as returned by /reigstry/enroll
+          required: true
+          schema:
+            type: string
+      responses: 
+        '200':
+          description: succesfull operation
+        
+
   /userActivation:
     post:
       tags:
         - activation
       summary: Add a new user activation to the Service Provider
-      description: Add a new pet to the store
+      description: Add a new user to the store
       operationId: addUser
       requestBody:
-        description: Create a new pet in the store
+        description: Create a new user in the store
         content:
           application/json:
             schema:
@@ -73,9 +133,9 @@ paths:
         '400':
           description: Invalid input
       security:
-        - mil_sp_auth:
-            - write:activation
-            - read:activation
+        - mil_auth:
+          - service_provider
+          - mil_papos_admin
     put:
       tags:
         - activation
@@ -123,9 +183,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserActivation'
       security:
-        - mil_sp_auth:
-            - write:activation
-            - read:activation
+        - mil_auth:
+            - service_provider
+            - mil_papos_admin
     get:
       tags:
         - activation
@@ -151,16 +211,17 @@ paths:
         '404':
           description: Pet not found
       security:
-        - mil_sp_auth:
-            - write:activation
-            - read:activation
-  /registry/findByFiscalCode:
-    get:
+        - mil_auth:
+          - service_provider
+          - mil_papos_admin
+            
+  /userActivation/findByFiscalCode:
+    post:
       tags:
-        - registry
+        - activation
       summary: Returns User Registry 
       description: Returns a map of status codes to quantities
-      operationId: getUserRegistry
+      operationId: searchUserRegistry
       responses:
         '200':
           description: successful operation
@@ -170,13 +231,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserActivation'
-      security:
-        - mil_ec_auth:
-            - read:registry
+      security: 
+        - mil_auth:
+          - service_provider
+          - mil_papos_admin
+          
+  
   /messages:
-    post:
+    put:
       tags:
-        - ec_sp
+        - message
       summary: initiate a new message 
       operationId: createS008Url
       requestBody:
@@ -197,14 +261,30 @@ paths:
         '404':
           description: Pet not found
   
-  /PaymentInfo/{msgId}:
+  /messages/{messageId}:
+    post:
+      tags:
+        - message
+      summary: functional positive confirmation callback
+      parameters:
+        - in: path
+          name: messageId   # Note the name is the same as in the path
+          required: true
+          schema:
+            type: string
+          description: unique id for the message, same as returned by /messages
+      responses:
+        '200':
+          description: Succesful operation
+  
+  /messages/{messageId}/paymentInfo:
     get:
       tags:
-        - PaymentInfo
+        - message
       summary: retrieve payment information
       operationId: getPaymentNoticeInfos
       parameters:
-        - name: msgId
+        - name: messageId
           in: path
           description : unique id for the message
           required: true
@@ -238,7 +318,7 @@ components:
           description:  Identifier of the Payer (P009)
         identificationCode:
           type: string
-          descripition: fiscal code , Identifier of the Payer given by Payee (B028)
+          description: fiscal code , Identifier of the Payer given by Payee (B028)
         typeOf:
           type: string
           description: Person Natural or Person Legal (B005)
@@ -291,20 +371,54 @@ components:
         due_date:
           type: string
           format: date
+    
+    PayeeFilter:
+      type: object
+      properties:
+        fiscalCode:
+          type: string
+          description : EC fiscal code
+          
+    Payee:
+      type: object 
+      properties: 
+        fiscalCode:
+          type: string
+          description : EC fiscal code
+        name:
+          type: string
+          description : name of the Payee
+    
+    EnrollDataModel:
+      type: object
+      properties:
+        payeeFiscalCode:
+          type: string
+          description: EC fiscal code
+        serviceProviderId:
+          type: string
+          description: unique service provider id, provided during onboarding
+          
+    EnrollDataModelResponse:
+      type: object
+      properties:
+        payee:
+          $ref: '#/components/schemas/Payee'
+        
+          
+          
+        
+      
+        
 
   securitySchemes:
-    mil_sp_auth:
+    mil_auth:
+      description: A bearer token in the format of a JWS and conforms to the specifications included in RFC8725
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+        clientCredentials:
+          tokenUrl: https://mil-d-apim.azure-api.net/mil-auth/token
+          refreshUrl: https://mil-d-apim.azure-api.net/mil-auth/token
           scopes:
-            write:activation: modify user activation in your account
-            read:activation: read user activation
-    mil_ec_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            read:registry: read your pets
+            service_provider: Represents Service Provider role
+            mil_papos_admin: Represents system administrator role
