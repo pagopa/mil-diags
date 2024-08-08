@@ -238,13 +238,18 @@ paths:
           
   
   /messages:
-    put:
+    post:
       tags:
         - message
       summary: initiate a new message 
-      operationId: createS008Url
+      operationId: createMessage
       requestBody:
-        description: Create a new a S008 Url 
+        description: | 
+          Create a new message, 
+          PagoPA will check Payment Notice information and will provide:
+          - a functional positive callback 
+          - an unique message id 
+          - a S008 url
         content:
           application/json:
             schema:
@@ -255,7 +260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/S008'
+                $ref: '#/components/schemas/Message'
         '400':
           description: Invalid ID supplied
         '404':
@@ -331,30 +336,51 @@ components:
         serviceProviderId:
           type: string
           description: Identifier of the Payer’s RTP Service Provider (N001)
+    
+    
     Message:
       type: object
       properties:
-        noticeNumber:
+        messageId:
           type: string
-          description: numero avviso
-        ecFiscalCode:
+          format: uuid
+          description: unique message Id (S002 - Payee’s end-to-end reference of the RTP
+        callbackUrl:
           type: string
-          description: codice fiscale ente creditore
-        due_date:
-          type: string 
-          description: data fine richiesta di pagamento 
-    S008:
-      type: object
-      properties:
-        noticeNumber:
+          description: positive functional url
+        paymentInfoUrl:
           type: string
-          description: numero avviso
-        ecFiscalCode:
+          description: S008 url, used by the debtor Spsrtp to show payment information
+        payment:
+          type: object 
+          properties: 
+            noticeNumber:
+              type: string
+              description: numero avviso
+            ecFiscalCode:
+              type: string
+              description: codice fiscale ente creditore
+        executionDateTime:
+          description: Request execution Date/Time, same as  Expiring Date/Time
           type: string
-          description: codice fiscale ente creditore
-        s008Url: 
+          format: date-time
+        amount:
+         type: integer
+         description : Amount of the RTP (cents)
+        payeeRef:
           type: string
-          format: url
+          description : R133- Payee’s associated RTP transaction reference
+        serviceProviderId:
+          type: string
+          description: uniqui service provider id
+      required:
+        - payment
+        - executionDateTime
+        - amount
+        - serviceProviderId
+        
+
+    
 
     PaymentNoticeInfo:
       type: object
